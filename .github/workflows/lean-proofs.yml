@@ -1,0 +1,76 @@
+name: Verify Lean Proofs
+
+# Runs on every push/PR to main, and can be triggered manually.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    name: Build & Verify Lean 4 Proofs
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: formal-lean
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # elan is the Lean version manager (analogous to rustup).
+      # We install it without a default toolchain; the lean-toolchain file
+      # in formal-lean/ selects the exact version automatically.
+      - name: Install elan (Lean version manager)
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Install Lean toolchain
+        run: elan toolchain install "$(cat lean-toolchain)"
+
+      # Cache the Mathlib prebuilt artifacts and the .lake build directory to
+      # avoid a full 60-minute Mathlib recompilation on every run.
+      - name: Cache Lean / Mathlib build artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.elan
+            formal-lean/.lake/packages
+            formal-lean/.lake/build
+          key: lake-${{ runner.os }}-${{ hashFiles('formal-lean/lean-toolchain', 'formal-lean/lakefile.lean') }}
+          restore-keys: |
+            lake-${{ runner.os }}-
+
+      # Download pre-compiled Mathlib oleans from the community cache server.
+      # This is ~300 MB but avoids a ~60-minute local compilation.
+      - name: Download Mathlib prebuilt cache
+        run: lake exe cache get
+
+      # Compile every module listed in lakefile.lean.
+      # A non-zero exit code means at least one proof is broken.
+      - name: Build all Lean modules (lake build)
+        run: lake build
+
+      # Run the formalLean executable, which prints a structured summary of
+      # every verified theorem.  The output is saved both as a step summary
+      # (visible in the Actions UI) and as a downloadable artifact.
+      - name: Print verified theorem summary
+        run: |
+          lake exe formalLean | tee /tmp/theorem-summary.txt
+          echo "## 📐 Verified Theorem Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          cat /tmp/theorem-summary.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload theorem summary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: theorem-summary
+          path: /tmp/theorem-summary.txt
+          retention-days: 90
