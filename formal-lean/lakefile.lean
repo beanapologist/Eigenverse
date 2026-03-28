@@ -33,8 +33,7 @@ require mathlib from git
 lean_lib «FormalLean» where
   roots := #[`CriticalEigenvalue, `TimeCrystal, `SpaceTime, `Turbulence, `FineStructure,
              `ParticleMass, `OhmTriality, `SilverCoherence, `KernelAxle, `ForwardClassicalTime,
-             `SpeedOfLight, `CrossChainDeFiAggregator, `PumpFunBot, `GravityQuantumDuality,
-             `CryptoBridge, `Quantization, `Chemistry, `BidirectionalTime]
+             `SpeedOfLight, `GravityQuantumDuality, `Quantization, `Chemistry, `BidirectionalTime]
 
 /-- Executable entry point that prints a summary of verified theorems. -/
 @[default_target]
