@@ -167,10 +167,10 @@ theorem koide_empirical :
   have hD_lb : (2824.47605764 : ℝ) ≤
       (Real.sqrt m_e + Real.sqrt m_mu + Real.sqrt m_tau) ^ 2 :=
     le_trans (by norm_num : (2824.47605764 : ℝ) ≤ (53.1458 : ℝ) ^ 2)
-      (pow_le_pow_left (by norm_num : (0 : ℝ) ≤ 53.1458) hS_lb 2)
+      (pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 53.1458) hS_lb 2)
   have hD_ub : (Real.sqrt m_e + Real.sqrt m_mu + Real.sqrt m_tau) ^ 2 ≤
       (2824.69927441 : ℝ) :=
-    le_trans (pow_le_pow_left hS_nn hS_ub 2)
+    le_trans (pow_le_pow_left₀ hS_nn hS_ub 2)
       (by norm_num : (53.1479 : ℝ) ^ 2 ≤ 2824.69927441)
   -- Step 4: prove the absolute value bound by splitting into two cases
   unfold koideQuotient
@@ -183,7 +183,10 @@ theorem koide_empirical :
       mul_le_mul_of_nonneg_left hD_ub (by norm_num : (0 : ℝ) ≤ 2 / 3 - 1 / 1000)
     have hval : (2 / 3 - 1 / 1000 : ℝ) * 2824.69927441 <
         m_e + m_mu + m_tau := by unfold m_e m_mu m_tau; norm_num
-    linarith [(lt_div_iff hD_pos).mpr (by linarith)]
+    have hkey : (2 / 3 - 1 / 1000 : ℝ) *
+        (Real.sqrt m_e + Real.sqrt m_mu + Real.sqrt m_tau) ^ 2 <
+        m_e + m_mu + m_tau := by linarith
+    linarith [(lt_div_iff₀ hD_pos).mpr hkey]
   · -- Upper bound: M/D − 2/3 < 1/1000,  i.e.,  M < (2/3 + 1/1000)·D
     have hprod_lb : (2 / 3 + 1 / 1000 : ℝ) * 2824.47605764 ≤
         (2 / 3 + 1 / 1000) *
@@ -191,7 +194,10 @@ theorem koide_empirical :
       mul_le_mul_of_nonneg_left hD_lb (by norm_num : (0 : ℝ) ≤ 2 / 3 + 1 / 1000)
     have hval : m_e + m_mu + m_tau <
         (2 / 3 + 1 / 1000 : ℝ) * 2824.47605764 := by unfold m_e m_mu m_tau; norm_num
-    linarith [(div_lt_iff hD_pos).mpr (by linarith)]
+    have hkey : m_e + m_mu + m_tau <
+        (2 / 3 + 1 / 1000 : ℝ) *
+        (Real.sqrt m_e + Real.sqrt m_mu + Real.sqrt m_tau) ^ 2 := by linarith
+    linarith [(div_lt_iff₀ hD_pos).mpr hkey]
 
 -- ════════════════════════════════════════════════════════════════════════════
 -- Section 4 — Theory–Experiment Bridge
