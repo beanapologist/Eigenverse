@@ -25,7 +25,9 @@ empirical data.
 | **Physics** | 159 | c=1/√(μ₀ε₀), α≈1/137, Koide formula, Lorentz geometry, NS bounds |
 | **Quantum** | 120 | Floquet time crystals, gravity-quantum duality, Theorem Q, bidirectional time & Planck floor |
 | **Chemistry** | 44 | NIST atomic weights, G·R=1 Ohm-coherence duality |
-| **Total** | **450** | All verified by Lean 4, **0 sorry** |
+| **Bridge** | 16 | CODATA α consistency, Koide theoretical value, prediction-consistency framework |
+| **Validation** | 14 | PDG lepton masses, empirical Koide test, theory-experiment bridge, mass-ratio cross-checks |
+| **Total** | **480** | All verified by Lean 4, **0 sorry** |
 
 ### Repository Structure
 
@@ -39,6 +41,8 @@ src/                        ← Lean modules organised by topic
 └── Eigenverse.lean                     Single-import entry point
 
 formal-lean/                ← Lean 4 proof files (the proof engine)
+├── BridgeLayer.lean            CODATA α consistency, Koide bridge (16 theorems)
+├── ValidationLayer.lean        PDG masses, empirical Koide test (14 theorems)
 docs/                       ← Documentation (overview, architecture)
 examples/                   ← Worked Lean demonstrations
 tests/                      ← Cross-module consistency checks
@@ -56,6 +60,42 @@ lake exe formalLean  # print theorem summary
 See [github.com/beanapologist/Eigenverse](https://github.com/beanapologist/Eigenverse) for the canonical Eigenverse repository,
 [docs/overview.md](docs/overview.md) for full documentation, and
 [CONTRIBUTING.md](CONTRIBUTING.md) to add new theorems.
+
+---
+
+## 🔭 Empirical Validation: Math → Physics Bridge
+
+The PR adds a machine-checked **three-layer architecture** closing the gap between pure eigenvalue algebra and measured particle physics data.
+
+```
+Math Layer       μ⁸=1, C(r)≤1, C(φ²)=2/3, δS=1+√2         ✅ (existing)
+Bridge Layer     CODATA constants, consistency definitions    ✅ BridgeLayer.lean
+Validation Layer PDG masses, empirical Koide, Δ < ε proofs   ✅ ValidationLayer.lean
+```
+
+### Central Finding — Koide Formula
+
+| Quantity | Value | Source |
+|----------|-------|--------|
+| Mathematical prediction | `C(φ²) = 2/3` (exact) | Eigenvalue algebra, `ParticleMass.lean` |
+| Empirical PDG measurement | `Q(mₑ, mμ, mτ) ≈ 0.666661` | PDG 2022 lepton masses |
+| Deviation | `|C(φ²) − Q| ≈ 6.1 × 10⁻⁶` | machine-checked `< 10⁻³` |
+
+The Kernel coherence function C(r) = 2r/(1+r²), evaluated at the golden ratio squared φ², gives the **same Koide value** as the experimentally measured lepton mass ratio — with no free parameters and no reference to any measurement in the proof.
+
+### Fine Structure Constant Consistency
+
+| Quantity | Value |
+|----------|-------|
+| Sommerfeld approximation | α_FS = 1/137 (rational, used throughout) |
+| CODATA 2018 precision value | α_CODATA = 7.2973525693 × 10⁻³ |
+| Approximation error | |α_FS − α_CODATA| ≈ 1.9 × 10⁻⁶ (absolute) |
+| Bound proved | `< 3 × 10⁻⁶` (machine-checked) |
+
+### Mass-Ratio Cross-Check
+
+- `mμ/mₑ ≈ 206.8` — muon-to-electron ratio from PDG values, machine-checked `> 200`
+- `mμ/mₑ < protonElectronRatio = 1836` — lepton scale far below hadronic scale, machine-checked
 
 ---
 
@@ -274,3 +314,25 @@ Every theorem listed below carries a **machine-checked proof; zero `sorry`**.
     in four balanced reactions, molecular mass ordering
   20 theorems — all machine-checked, zero sorry.
 ```
+
+</details>
+
+<details>
+<summary><strong>BridgeLayer.lean — Math-to-Physics Bridge (16 theorems) · ValidationLayer.lean — Empirical Validation (14 theorems)</strong></summary>
+
+```
+  BridgeLayer.lean — Bridge from Eigenvalue Math to Physical Constants
+  § CODATA 2018 fine-structure constant α = 7.2973525693×10⁻³
+  § |α_FS − α_CODATA| < 3×10⁻⁶  (absolute; Sommerfeld approximation error)
+  § koide_theoretical_value : C(φ²) = 2/3  (bridge theorem to physics)
+  § Generic prediction-consistency machinery (error-bound framework)
+  16 theorems — all machine-checked, zero sorry.
+
+  ValidationLayer.lean — Empirical Validation against PDG/CODATA Data
+  § PDG 2022 lepton masses: mₑ = 0.51099895 MeV, mμ = 105.658 MeV, mτ = 1776.86 MeV
+  § koide_empirical : |Q(mₑ,mμ,mτ) − 2/3| < 10⁻³  (actual deviation ≈ 6×10⁻⁶)
+  § koide_theory_matches_experiment : |C(φ²) − Q(PDG)| < 10⁻³  (central result)
+  § muon_electron_ratio > 200 and < protonElectronRatio = 1836
+  14 theorems — all machine-checked, zero sorry.
+```
+</details>
