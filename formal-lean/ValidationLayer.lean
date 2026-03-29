@@ -159,7 +159,9 @@ theorem koide_empirical :
     by linarith [Real.sqrt_nonneg m_e, Real.sqrt_nonneg m_mu, Real.sqrt_nonneg m_tau]
   -- Step 2: D = (√mₑ + √mμ + √mτ)² is positive
   have hD_pos : (0 : ℝ) < (Real.sqrt m_e + Real.sqrt m_mu + Real.sqrt m_tau) ^ 2 := by
-    positivity
+    have hS_pos : (0 : ℝ) < Real.sqrt m_e + Real.sqrt m_mu + Real.sqrt m_tau := by
+      linarith
+    exact pow_pos hS_pos 2
   -- Step 3: rational bounds on D using monotone squaring
   --   D_lb = 53.1458² = 2824.47605764 ≤ D ≤ 53.1479² = 2824.69927441 = D_ub
   have hD_lb : (2824.47605764 : ℝ) ≤
