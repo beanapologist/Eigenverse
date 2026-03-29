@@ -98,7 +98,9 @@ theorem α_uncertainty_pos : 0 < α_uncertainty := by unfold α_uncertainty; nor
     calculation; it deviates from the measured value by ~0.26 ppm. -/
 theorem α_uncertainty_much_less_than_approx_error :
     α_uncertainty < |α_FS - α_CODATA| := by
-  unfold α_FS α_CODATA α_uncertainty; norm_num
+  unfold α_FS α_CODATA α_uncertainty
+  rw [abs_of_pos (by norm_num : (0 : ℝ) < 1 / 137 - 72973525693 / 10000000000000)]
+  norm_num
 
 -- ════════════════════════════════════════════════════════════════════════════
 -- Section 2 — Sommerfeld Approximation Consistency
@@ -123,7 +125,9 @@ theorem α_uncertainty_much_less_than_approx_error :
     the sub-ppm precision of modern CODATA measurements. -/
 theorem α_FS_consistent_with_CODATA :
     |α_FS - α_CODATA| < 3 / 1000000 := by
-  unfold α_FS α_CODATA; norm_num
+  unfold α_FS α_CODATA
+  rw [abs_of_pos (by norm_num : (0 : ℝ) < 1 / 137 - 72973525693 / 10000000000000)]
+  norm_num
 
 /-- The CODATA value is slightly less than the Sommerfeld approximation α_FS.
 
