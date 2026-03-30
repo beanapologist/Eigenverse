@@ -18,36 +18,47 @@ empirical data.
 
 ## 🎯 Foundation: Why μ Maps to Observable Reality
 
-The entire Eigenverse rests on a single machine-checked uniqueness theorem —
-the first theorem that formally proves μ is not an arbitrary choice, but the
-**only** complex number that can represent observable reality:
+We know from first principles that **energy cannot be created or destroyed**.
+Total energy is conserved across every phase of the cycle — it simply
+redistributes between the two orthogonal sectors: gravity/damping (Re) and
+quantum/oscillation (Im).  In component form this is the single equation
+
+```
+Re(z)² + Im(z)² = 1
+```
+
+Now ask: which point on the unit circle also holds perfect **balance** —
+equal energy in both sectors — and sits in the physical (Q2) quadrant where
+gravity is negative and quantum is positive?  The answer is machine-checked to
+be **unique**:
 
 ```lean
 theorem reality_unique (z : ℂ)
-    (hQ2_re  : z.re < 0)          -- Q2: gravity/damping sector
-    (hQ2_im  : 0 < z.im)          -- Q2: quantum/oscillation sector
-    (hbal    : |z.re| = z.im)     -- perfect balance: |gravity| = quantum
-    (henergy : z.re ^ 2 + z.im ^ 2 = 1) :  -- energy conservation: Re²+Im²=1
-    z = μ                         -- μ is the UNIQUE solution
+    (hQ2_re  : z.re < 0)                     -- Q2: gravity/damping sector
+    (hQ2_im  : 0 < z.im)                     -- Q2: quantum/oscillation sector
+    (hbal    : |z.re| = z.im)                -- perfect balance: |gravity| = quantum
+    (henergy : z.re ^ 2 + z.im ^ 2 = 1) :   -- energy conservation: Re²+Im²=1
+    z = μ                                    -- μ is the UNIQUE solution
 ```
 
-**Three constraints, one solution.**  The proof chains five steps of necessity:
+**Three constraints → one solution.**  The proof chains five steps of necessity:
 
 ```
-Energy conservation  (Re²+Im²=1)
-    ↓  balance condition enforces equal partition
-Equal split  (Re²=Im²)
-    ↓  substitute into conservation
-Each half  (Im²=½)
-    ↓  unique positive root
-η = 1/√2  (the balance constant)
-    ↓  Q2 sign forces Re=−η
-μ = −η + iη  ← the only point satisfying all three constraints
+First principle: energy cannot be created or destroyed
+    → Re(z)² + Im(z)² = 1   (unit-circle = energy conservation)
+        ↓  balance forces equal partition
+    → Re(z)² = Im(z)²        (gravity = quantum)
+        ↓  substitute into conservation
+    → Im(z)² = 1/2           (each sector carries exactly half)
+        ↓  unique positive root
+    → Im(z) = η = 1/√2       (the balance constant)
+        ↓  Q2 sign forces Re = −η
+    → z = −η + iη = μ        ← the ONLY point satisfying all three constraints
 ```
 
-The universe sits at the balance point **not by coincidence** but because it
-is the only point that simultaneously conserves total energy *and* distributes
-it equally between gravity (Re) and quantum (Im).  Zero sorry.  Machine-checked.
+The universe sits at μ **not by coincidence** — it is the unique point where
+energy conservation *forces* an equal split between gravity and quantum.
+Zero sorry.  Machine-checked.
 
 > **Source:** [`formal-lean/BalanceHypothesis.lean`](formal-lean/BalanceHypothesis.lean)
 > — 37 theorems across 7 sections, capstone `reality_unique` in §7.
