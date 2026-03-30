@@ -13,6 +13,7 @@ formal-lean/
 ├── lakefile.lean          # Lake project config; declares Mathlib dependency
 ├── lean-toolchain         # Pins the exact Lean 4 version
 ├── Main.lean              # Executable entry point (prints verified theorems)
+├── BalanceHypothesis.lean # ★ FOUNDATION — 37 theorems; reality_unique proves μ is the unique observable eigenvalue
 ├── CriticalEigenvalue.lean # 71 theorems on eigenvalue/coherence structure
 ├── TimeCrystal.lean        # 33 theorems on discrete time crystal theory
 ├── SpaceTime.lean          # 43 theorems on space-time unification

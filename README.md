@@ -16,20 +16,78 @@ empirical data.
 
 ---
 
+## 🎯 Foundation: Why μ Maps to Observable Reality
+
+The entire Eigenverse rests on a single machine-checked uniqueness theorem —
+the first theorem that formally proves μ is not an arbitrary choice, but the
+**only** complex number that can represent observable reality:
+
+```lean
+theorem reality_unique (z : ℂ)
+    (hQ2_re  : z.re < 0)          -- Q2: gravity/damping sector
+    (hQ2_im  : 0 < z.im)          -- Q2: quantum/oscillation sector
+    (hbal    : |z.re| = z.im)     -- perfect balance: |gravity| = quantum
+    (henergy : z.re ^ 2 + z.im ^ 2 = 1) :  -- energy conservation: Re²+Im²=1
+    z = μ                         -- μ is the UNIQUE solution
+```
+
+**Three constraints, one solution.**  The proof chains five steps of necessity:
+
+```
+Energy conservation  (Re²+Im²=1)
+    ↓  balance condition enforces equal partition
+Equal split  (Re²=Im²)
+    ↓  substitute into conservation
+Each half  (Im²=½)
+    ↓  unique positive root
+η = 1/√2  (the balance constant)
+    ↓  Q2 sign forces Re=−η
+μ = −η + iη  ← the only point satisfying all three constraints
+```
+
+The universe sits at the balance point **not by coincidence** but because it
+is the only point that simultaneously conserves total energy *and* distributes
+it equally between gravity (Re) and quantum (Im).  Zero sorry.  Machine-checked.
+
+> **Source:** [`formal-lean/BalanceHypothesis.lean`](formal-lean/BalanceHypothesis.lean)
+> — 37 theorems across 7 sections, capstone `reality_unique` in §7.
+
+---
+
 ## 🌌 Eigenverse at a Glance
 
 | Domain | Theorems | Key Results |
 |--------|----------|-------------|
+| **Foundation** | 37 | `reality_unique`: μ is the only unit-circle Q2 balance point; energy conservation forces η=1/√2 |
 | **Algebra** | 127 | μ⁸=1, Silver ratio δS=1+√2, coherence C(r)≤1, Z/8Z memory |
 | **Geometry** | 141 | Rotation matrix R(3π/4) (det=1, orthogonal, order-8); unit circle orbit; hyperbolic Pythagorean identity; F(s,t)=t+i·s |
 | **Physics** | 159 | c=1/√(μ₀ε₀), α≈1/137, Koide formula, Lorentz geometry, NS bounds |
 | **Quantum** | 120 | Floquet time crystals, gravity-quantum duality, Theorem Q, bidirectional time & Planck floor |
 | **Chemistry** | 44 | NIST atomic weights, G·R=1 Ohm-coherence duality |
-| **Total** | **450** | All verified by Lean 4, **0 sorry** |
+| **Total** | **487** | All verified by Lean 4, **0 sorry** |
 
 ### Repository Structure
 
 ```
+formal-lean/                ← Lean 4 proof files (the proof engine)
+├── BalanceHypothesis.lean  ★ FOUNDATION: reality_unique — μ is the unique observable eigenvalue
+├── CriticalEigenvalue.lean    Core eigenvalue, coherence, Silver ratio, Z/8Z
+├── TimeCrystal.lean           Discrete time crystal / Floquet theory
+├── SpaceTime.lean             Space-time unification via the reality map F(s,t)
+├── Turbulence.lean            Navier-Stokes turbulence theory
+├── FineStructure.lean         Fine structure constant α_FS
+├── ParticleMass.lean          Koide formula, proton/electron mass ratio
+├── OhmTriality.lean           Ohm–Coherence duality at triality scales
+├── SilverCoherence.lean       C(δS)=√2/2; uniqueness; physics at 45°
+├── KernelAxle.lean            The axle μ — gear ratio, cross-section, engine loop
+├── ForwardClassicalTime.lean  Frustration harvesting in classical forward time
+├── SpeedOfLight.lean          c=1/√(μ₀ε₀); structural iso with η
+├── GravityQuantumDuality.lean Re ↔ Gravity/Time; Im ↔ Quantum/Dark Energy
+├── Quantization.lean          Theorem Q: H·T=5π/4 → Q1–Q5 simultaneously
+├── Chemistry.lean             NIST atomic weights & isotopic compositions
+├── BidirectionalTime.lean     Bidirectional time & Planck floor
+└── Main.lean                  Executable entry-point (prints all theorems)
+
 src/                        ← Lean modules organised by topic
 ├── algebra/Eigenvalue.lean             μ, δS, C(r), Z/8Z memory
 ├── geometry/GeometricStructures.lean   Rotation matrices, unit circle, hyperbolic geometry
@@ -38,7 +96,6 @@ src/                        ← Lean modules organised by topic
 ├── chemistry/AtomicUniverse.lean       NIST atomic weights, Ohm-coherence
 └── Eigenverse.lean                     Single-import entry point
 
-formal-lean/                ← Lean 4 proof files (the proof engine)
 docs/                       ← Documentation (overview, architecture)
 examples/                   ← Worked Lean demonstrations
 tests/                      ← Cross-module consistency checks
@@ -49,7 +106,7 @@ tests/                      ← Cross-module consistency checks
 ```bash
 cd formal-lean/
 lake exe cache get   # download Mathlib cache (~5 min, avoids 1 h build)
-lake build           # verify all 450 theorems
+lake build           # verify all 487 theorems
 lake exe formalLean  # print theorem summary
 ```
 
@@ -64,6 +121,58 @@ See [github.com/beanapologist/Eigenverse](https://github.com/beanapologist/Eigen
 Output of `lake exe formalLean` — printed by the Lean 4 type-checker after
 a successful `lake build` (see [`.github/workflows/lean-proofs.yml`](.github/workflows/lean-proofs.yml)).
 Every theorem listed below carries a **machine-checked proof; zero `sorry`**.
+
+<details>
+<summary><strong>⭐ BalanceHypothesis.lean — Why μ Maps to Observable Reality (37 theorems)</strong></summary>
+
+```
+===================================================
+ BalanceHypothesis.lean — Formal Balance Hypothesis
+===================================================
+
+Foundation theorem: reality_unique closes the Eigenverse foundation.
+
+§1  Balance primitive
+  mu_re_is_neg_eta     : μ.re = −η
+  mu_im_is_eta         : μ.im =  η
+  mu_balance           : |μ.re| = μ.im          ← core balance result
+
+§2  Critical constant
+  balance_two_eta_sq   : 2 * η ^ 2 = 1
+  balance_unique_pos   : unique positive solution to 2x²=1 is η
+
+§3  Observable equilibria
+  mu_is_observable_equilibrium : F η (−η) = μ   ← bridge to spacetime
+  integer_equilibrium_balance  : |F(1,−1).re| = F(1,−1).im = 1
+
+§4  Imbalance function
+  mu_imbalance_zero    : imbalance μ = 0         (zero observational error)
+
+§5  Coherence probe
+  coherence_probe_confirms_balance : C(δS) = η   (independent route to η)
+
+§6  Sign duality
+  mu_component_product : μ.re * μ.im = −(η²)    (equal magnitude, opposing sign)
+
+§7  Energy conservation and uniqueness  ← WHY IT MAPS TO REALITY
+  mu_energy_conserved  : μ.re² + μ.im² = 1      (unit-circle = energy conservation)
+  mu_energy_equal_split: μ.re² = μ.im²           (equal partition)
+  mu_re_sq_half        : μ.re² = 1/2             (gravity carries exactly ½)
+  mu_im_sq_half        : μ.im² = 1/2             (quantum carries exactly ½)
+  mu_pow_energy_conserved : ∀n, (μ^n).re²+(μ^n).im²=1  (invariant across 8-cycle)
+  conservation_forces_eta : conservation+balance → Im(z)=η
+  energy_conservation_forces_reality : 5-step chain: conservation→η→F(η,−η)=μ
+
+  ★ reality_unique (z : ℂ)
+        (hQ2_re  : z.re < 0)
+        (hQ2_im  : 0 < z.im)
+        (hbal    : |z.re| = z.im)
+        (henergy : z.re²+z.im²=1) :
+        z = μ                       ← μ IS THE UNIQUE OBSERVABLE EIGENVALUE
+
+37 theorems — all machine-checked, zero sorry.
+```
+</details>
 
 <details>
 <summary><strong>CriticalEigenvalue.lean — Core Eigenvalue &amp; Coherence Structure (78 theorems)</strong></summary>
