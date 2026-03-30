@@ -258,7 +258,6 @@ theorem integer_equilibrium_balance :
 theorem equilibrium_scale_ratio :
     (F 1 (-1)).im / (F η (-η)).im = 1 / η := by
   rw [F_im, F_im]
-  norm_num
 
 -- ════════════════════════════════════════════════════════════════════════════
 -- §4  Imbalance function and zero deviation
@@ -347,7 +346,7 @@ theorem coherence_probe_eq_mu_im : C δS = μ.im :=
     Both the real and imaginary sides of μ are independently confirmed
     by the silver-ratio coherence measurement. -/
 theorem coherence_probe_eq_mu_abs_re : C δS = |μ.re| := by
-  rw [coherence_probe_confirms_balance, ← mu_balance]
+  rw [coherence_probe_confirms_balance, mu_re_is_neg_eta, abs_neg, abs_of_pos eta_pos]
 
 /-- The coherence at the silver ratio reproduces the balance equation:
         2 · C(δS)² = 1.
@@ -510,13 +509,14 @@ theorem conservation_forces_eta (z : ℂ)
     have him_zero : z.im = 0 := le_antisymm h (hbal ▸ hnn)
     have hre_zero : |z.re| = 0 := by rw [hbal, him_zero]
     simp [abs_eq_zero] at hre_zero
-    linarith [sq_nonneg z.re, sq_nonneg z.im, hcons,
-              show z.re = 0 from hre_zero, show z.im = 0 from him_zero]
+    rw [hre_zero, him_zero] at hcons
+    norm_num at hcons
   have h2 : 2 * z.im ^ 2 = 1 := by
     -- Square both sides of hbal: z.re² = z.im²  (since |z.re|² = z.re²)
     have hsq : z.re ^ 2 = z.im ^ 2 := by
-      have : |z.re| ^ 2 = z.im ^ 2 := by rw [hbal]
-      rwa [sq_abs] at this
+      have h : z.re ^ 2 = |z.re| ^ 2 := by
+        rcases abs_cases z.re with ⟨heq, _⟩ | ⟨heq, _⟩ <;> simp [heq, neg_sq]
+      rw [h, hbal]
     linarith
   exact balance_unique_pos z.im him_pos h2
 
@@ -576,10 +576,10 @@ theorem energy_conservation_forces_reality :
     Nothing else can be "the balance point" — it is not a choice but a
     mathematical necessity imposed by the three constraints together. -/
 theorem reality_unique (z : ℂ)
-    (hQ2_re  : z.re < 0)
-    (hQ2_im  : 0 < z.im)
-    (hbal    : |z.re| = z.im)
-    (henergy : z.re ^ 2 + z.im ^ 2 = 1) :
+    (hQ2_re   : z.re < 0)
+    (_hQ2_im  : 0 < z.im)
+    (hbal     : |z.re| = z.im)
+    (henergy  : z.re ^ 2 + z.im ^ 2 = 1) :
     z = μ := by
   -- Step 1: Im(z) = η  (energy + balance → conservation_forces_eta)
   have him : z.im = η := conservation_forces_eta z henergy hbal
