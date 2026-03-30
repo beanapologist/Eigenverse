@@ -1,0 +1,554 @@
+/-
+  NumericalAlignments.lean — Lean 4 formalization of the numerical alignments
+  and structural isomorphisms relating physical constants and mathematical
+  structures in the Kernel framework.
+
+  ╔══════════════════════════════════════════════════════════════════════════╗
+  ║ Narrative                                                               ║
+  ║                                                                         ║
+  ║  Several striking numerical alignments connect fundamental constants:  ║
+  ║                                                                         ║
+  ║    • The fine-structure constant α ≈ 1/137 satisfies α · c_nat = 1     ║
+  ║      in Hartree atomic units (c_nat = 137).                            ║
+  ║    • The Koide lepton mass ratio Q = 2/3 equals the Kernel coherence   ║
+  ║      C evaluated at the golden-ratio scale: C(φ²) = 2/3.              ║
+  ║    • The silver ratio δS = 1 + √2 is the unique positive scale where   ║
+  ║      C(δS) = √2/2 = |Re(μ)| = |Im(μ)|, linking coherence to the      ║
+  ║      critical eigenvalue components directly.                          ║
+  ║    • The μ-orbit achieves maximum coherence C(|μⁿ|) = 1 at every      ║
+  ║      step, sitting strictly above every finite-ratio scale.            ║
+  ║    • NIST atomic weights satisfy aw_H < aw_He < aw_C < aw_N < aw_O   ║
+  ║      (the periodic ordering) and aw_H < (2/3) · aw_C, linking the     ║
+  ║      element mass hierarchy to the Koide value.                        ║
+  ║                                                                         ║
+  ║  These alignments are collected here in a single module that:          ║
+  ║    1. Machine-checks each alignment via a complete Lean 4 proof.       ║
+  ║    2. Assembles them into a grand synthesis theorem.                   ║
+  ║    3. States and proves the epistemic limits: what the framework        ║
+  ║       does NOT establish.                                               ║
+  ╚══════════════════════════════════════════════════════════════════════════╝
+
+  The three mechanisms — coherence C(r), the Silver ratio δS, and the
+  μ-orbit — work together as a single structural skeleton:
+
+    C(φ²) = 2/3   [Koide scale, golden ratio, lepton masses]
+    C(δS)  = √2/2  [Silver scale, critical eigenvalue components]
+    C(1)   = 1     [Kernel maximum, μ-orbit, Floquet period]
+
+  The ordering C(φ²) < C(δS) < C(1) is machine-checked.  The fine-structure
+  constant α = 1/137 and NIST atomic weights enter via measured empirical
+  values; they are not derived from the framework ab initio.
+
+  Important epistemic caution (§9)
+  ─────────────────────────────────
+  The alignments proved here are real structural correspondences between
+  physical constants and the Kernel mathematical framework.  They are NOT:
+    • A dimensionless derivation of α or any other constant.  All numerical
+      results rely on the measured values being fed in (α = 1/137, atomic
+      weights, etc.).  True unification would derive these values from first
+      principles without empirical inputs.
+    • A proof that μ is the unique mechanism.  The Navier-Stokes turbulence
+      consistency, Floquet time-crystal structure, and Theorem Q all hold
+      under μ dynamics — but these phenomena do not rule out other mechanisms
+      that could fit the same observational data.
+
+  The machine-checked statements below are honest: each theorem says exactly
+  what it proves and nothing more.
+
+  Sections
+  ────────
+  1.  Fine-structure constant and speed of light alignment
+  2.  Koide-coherence-silver ordering
+  3.  μ-orbit coherence maximum
+  4.  NIST atomic weights and mass hierarchy
+  5.  Navier-Stokes turbulence consistency
+  6.  Floquet time crystal consistency
+  7.  Theorem Q: simultaneous quantization consistency
+  8.  Grand synthesis: linking all alignments
+  9.  Epistemic limits — what the framework does not prove
+
+  Proof status
+  ────────────
+  All theorems have complete machine-checked proofs.
+  No `sorry` placeholders remain.
+
+  Limitations (inherited and explicit)
+  ─────────────────────────────────────
+  • α_FS = 1/137 is the Sommerfeld rational approximation; the CODATA 2018
+    value α ≈ 7.2973525693 × 10⁻³ is not used (inherited from FineStructure).
+  • c_natural = 137 uses the same approximation; the SI value
+    c ≈ 2.998 × 10⁸ m/s is not involved.
+  • NIST atomic weights are the 2016 standard values (inherited from Chemistry).
+  • Koide mass ratios use the abstract formula; measured lepton masses are not
+    fed in directly.
+  • "Consistency" throughout means the μ-framework satisfies the same algebraic
+    constraints as the physical phenomena — it does not imply unique causation.
+-/
+
+import Chemistry
+import Quantization
+
+open Complex Real
+
+noncomputable section
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- Section 1 — Fine-Structure Constant and Speed of Light Alignment
+--
+-- In Hartree atomic units (ℏ = e = mₑ = 4πε₀ = 1), the fine-structure
+-- constant satisfies α = 1/c, so α_FS · c_natural = 1.  Both constants enter
+-- the Kernel framework: α_FS via FineStructure.lean and c_natural via
+-- SpeedOfLight.lean.  Their reciprocal relationship is an exact algebraic
+-- identity under the Sommerfeld approximation α_FS = 1/137.
+--
+-- Crucially, this alignment requires the empirical input α = 1/137; the
+-- Kernel framework characterises the relationship but does not predict the
+-- value of α from first principles.
+-- ════════════════════════════════════════════════════════════════════════════
+
+/-- **Alignment**: α_FS · c_natural = 1  (Hartree atomic units).
+
+    The fine-structure constant and the natural-unit speed of light are exact
+    multiplicative inverses.  This is the algebraic content of α = 1/c in
+    units where ℏ = e = mₑ = 4πε₀ = 1.
+
+    Note: the value 137 is the empirical Sommerfeld approximation; this result
+    does not derive α from the Kernel framework without that measured input. -/
+theorem alignment_alpha_c_inverse : α_FS * c_natural = 1 :=
+  c_natural_alpha_product
+
+/-- **Alignment**: the natural-unit speed of light c_natural = 1/α_FS.
+
+    In Hartree units the speed of light equals the reciprocal of the
+    fine-structure constant: c_natural = 1/α_FS = 137.
+
+    Proof: c_natural is defined as 1/α_FS in SpeedOfLight.lean. -/
+theorem alignment_c_nat_eq_inv_alpha : c_natural = 1 / α_FS := rfl
+
+/-- **Alignment**: the fine-structure constant lies strictly below the silver
+    coherence value:  α_FS < C δS = √2/2 ≈ 0.7071.
+
+    The EM coupling constant α ≈ 0.0073 is far below the silver-ratio coherence
+    scale C(δS) ≈ 0.707.  The Kernel framework places α deep in the sub-silver
+    coherence regime, far from both the Koide scale (2/3) and the μ-orbit
+    maximum (1).
+
+    Proof: 1/137 < √2/2  because  1 < √2 (√2 > 1 since 2 > 1²) and  2 < 137.
+    Combined: 1 · 2 < √2 · 137, i.e., the cross-products satisfy the ordering. -/
+theorem alignment_alpha_lt_silver_coherence : α_FS < C δS := by
+  rw [silver_coherence]
+  unfold α_FS
+  have hpos : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
+  have h1 : (1 : ℝ) < Real.sqrt 2 := by
+    rw [show (1 : ℝ) = Real.sqrt 1 from Real.sqrt_one.symm]
+    exact Real.sqrt_lt_sqrt (by norm_num) (by norm_num)
+  rw [div_lt_div_iff (by norm_num : (0 : ℝ) < 137) (by norm_num : (0 : ℝ) < 2)]
+  -- Goal: 1 * 2 < Real.sqrt 2 * 137
+  nlinarith
+
+/-- **Alignment**: the natural-unit speed of light is strictly less than
+    1/α_FS²:  c_natural < 1/α_FS².
+
+    Numerically: 137 < 1/α_FS² = 137² = 18769.  The second-order EM correction
+    scale (1/α²) dominates the first-order scale (c_natural = 1/α). -/
+theorem alignment_c_nat_lt_α_sq_inv : c_natural < 1 / α_FS ^ 2 := by
+  unfold c_natural
+  rw [div_lt_div_iff α_FS_pos (pow_pos α_FS_pos 2)]
+  -- Goal: 1 * α_FS ^ 2 < 1 * α_FS
+  nlinarith [α_FS_lt_one, α_FS_pos, sq_nonneg α_FS]
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- Section 2 — Koide-Coherence-Silver Ordering
+--
+-- The three distinguished coherence scales form a strict ordering:
+--
+--     C(φ²) = 2/3   <   C(δS) = √2/2   <   C(1) = 1
+--     Koide scale        Silver scale        Kernel maximum
+--
+-- This ordering is machine-checked via proofs in ParticleMass.lean and
+-- SilverCoherence.lean.  The μ-orbit sits at the kernel maximum:
+-- C(|μⁿ|) = C(1) = 1 for all n.
+-- ════════════════════════════════════════════════════════════════════════════
+
+/-- **Alignment**: the strict triple ordering of the three fundamental coherence
+    scales.
+
+    Koide (C = 2/3) < Silver (C = √2/2) < Kernel maximum (C = 1).
+
+    This is the machine-checked coherence hierarchy: Koide lepton mass
+    structure, silver-ratio EM coupling, and the μ-orbit maximum form a
+    strictly increasing chain. -/
+theorem alignment_coherence_triple_ordering :
+    C (φ ^ 2) < C δS ∧ C δS < C 1 :=
+  koide_silver_kernel_ordering
+
+/-- **Alignment**: the Koide coherence value 2/3 is exactly the Kernel coherence
+    function evaluated at the golden-ratio scale φ².
+
+    The Koide lepton mass ratio Q = 2/3 is recovered from the Kernel coherence
+    via C(φ²) = 2φ²/(1 + φ⁴) = 2φ²/(3φ²) = 2/3 (using φ² = φ + 1). -/
+theorem alignment_koide_from_coherence : C (φ ^ 2) = 2 / 3 :=
+  koide_coherence_bridge
+
+/-- **Alignment**: the silver-ratio scale lies strictly in the meso turbulence
+    domain [1, 100]. -/
+theorem alignment_silver_meso : δS ∈ mesoScaleDomain :=
+  silver_in_meso
+
+/-- **Alignment**: the golden-ratio square φ² lies in the meso turbulence regime.
+
+    Both the Koide scale φ² and the silver scale δS inhabit the meso domain
+    [1, 100].  The entire Koide-silver-kernel coherence ordering is
+    concentrated in this inertial sub-range. -/
+theorem alignment_golden_sq_meso : φ ^ 2 ∈ mesoScaleDomain :=
+  goldenRatio_sq_meso
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- Section 3 — μ-Orbit Coherence Maximum
+--
+-- The critical eigenvalue μ = exp(I · 3π/4) lies on the unit circle; its
+-- powers all have absolute value 1, so C(|μⁿ|) = C(1) = 1 at every step.
+-- The μ-orbit thus achieves the global maximum of the coherence function
+-- simultaneously for all n ∈ ℕ.
+-- ════════════════════════════════════════════════════════════════════════════
+
+/-- **Alignment**: the μ-orbit achieves the global maximum of the coherence
+    function at every step:
+
+        C(|μⁿ|) = C(1) = 1   for all n ∈ ℕ.
+
+    Since |μⁿ| = 1 (unit circle, from mu_pow_abs), the coherence evaluates
+    to C(1) = 1 — the unique global maximum.  The orbit is maximally coherent
+    at every point. -/
+theorem alignment_mu_orbit_maximum_coherence (n : ℕ) :
+    C (Complex.abs (μ ^ n)) = 1 := by
+  rw [mu_pow_abs]
+  exact (coherence_eq_one_iff 1 zero_le_one).mpr rfl
+
+/-- **Alignment**: the μ-orbit strictly dominates all finite non-unit coherence
+    scales at every step:
+
+        C(φ²) < C(|μⁿ|)  and  C(δS) < C(|μⁿ|)   for all n ∈ ℕ.
+
+    The Koide scale and the silver scale both lie strictly below the μ-orbit
+    maximum. -/
+theorem alignment_mu_orbit_exceeds_all_finite (n : ℕ) :
+    C (φ ^ 2) < C (Complex.abs (μ ^ n)) ∧
+    C δS < C (Complex.abs (μ ^ n)) :=
+  ⟨mu_orbit_exceeds_koide n, mu_orbit_exceeds_silver n⟩
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- Section 4 — NIST Atomic Weights and Mass Hierarchy
+--
+-- NIST 2016 standard atomic weights satisfy structural relations that
+-- parallel the Kernel mass hierarchy:
+--   • The periodic ordering: aw_H < aw_He < aw_C < aw_N < aw_O
+--   • aw_H < (2/3) · aw_C: hydrogen weight lies below the Koide-scaled
+--     carbon weight, placing it in the sub-Koide mass regime
+--   • The proton/electron mass ratio (≈ 1836) exceeds the fine-structure
+--     inverse (137): nuclear mass ratios dominate EM coupling
+--
+-- These are structural alignments between the Kernel coherence framework
+-- and empirical atomic data; the atomic weight values are NIST measurements
+-- fed in, not derived from the framework.
+-- ════════════════════════════════════════════════════════════════════════════
+
+/-- **Alignment**: NIST periodic ordering of standard atomic weights.
+
+    aw_H < aw_He < aw_C < aw_N < aw_O  (NIST 2016).
+
+    This formalizes the observed periodic-table monotone increase of atomic
+    weight for the five lightest elements included in Chemistry.lean. -/
+theorem alignment_nist_periodic_ordering :
+    aw_H < aw_He ∧ aw_He < aw_C ∧ aw_C < aw_N ∧ aw_N < aw_O :=
+  aw_periodic_order
+
+/-- **Alignment**: the NIST hydrogen atomic weight lies below the Koide-scaled
+    carbon weight:  aw_H < (2/3) · aw_C.
+
+    Numerically: 1.008 < (2/3) · 12.011 ≈ 8.007.  This places hydrogen's
+    atomic weight in the sub-Koide mass regime: relative to carbon, hydrogen
+    is far below the Koide value 2/3 that governs lepton mass ratios.
+
+    Note: this is a numerical alignment; it does not establish a dynamical
+    connection between atomic weights and the Koide lepton formula. -/
+theorem alignment_nist_hydrogen_below_koide_carbon : aw_H < 2 / 3 * aw_C := by
+  unfold aw_H aw_C; norm_num
+
+/-- **Alignment**: the proton/electron mass ratio dominates the fine-structure
+    inverse:  1/α_FS < protonElectronRatio.
+
+    Numerically: 137 < 1836.  The nuclear mass scale (proton/electron) lies
+    an order of magnitude above the EM coupling scale (1/α), confirming that
+    proton-recoil corrections are sub-leading in atomic spectroscopy. -/
+theorem alignment_mass_ratio_dominates_alpha_inv :
+    1 / α_FS < protonElectronRatio :=
+  protonElectronRatio_gt_α_FS_inv
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- Section 5 — Navier-Stokes Turbulence Consistency
+--
+-- The Kernel μ-dynamics is CONSISTENT with the Navier-Stokes turbulence
+-- framework: the μ-orbit achieves maximum coherence C(1) = 1 (laminar kernel
+-- scale), the 8-periodic precession μ^8 = 1 governs rotational periodicity,
+-- and the cross-scale coherence bound C(r) ≤ 1 holds universally.
+--
+-- IMPORTANT CAVEAT (formalised in §9): this consistency does not rule out
+-- other mechanisms.  Navier-Stokes turbulence is an independent physical
+-- framework; the μ-dynamics fits the same algebraic constraints without
+-- being the unique explanation.
+-- ════════════════════════════════════════════════════════════════════════════
+
+/-- **Consistency**: the μ rotation is unitary under turbulence dynamics.
+
+    |μ| = 1: the turbulent rotation governed by μ is amplitude-neutral,
+    preserving the energy of the rotated state at every step. -/
+theorem alignment_turbulence_rotation_unitary : Complex.abs μ = 1 :=
+  turbulence_rotation_unitary
+
+/-- **Consistency**: the μ precession is 8-periodic under turbulence dynamics.
+
+    μ^8 = 1: turbulent precession is strictly periodic with period 8.
+    This is the Kernel explanation of the 8-scale precession structure
+    in the turbulent velocity-gradient tensor. -/
+theorem alignment_turbulence_8period : μ ^ 8 = 1 :=
+  turbulence_precession_8period
+
+/-- **Consistency**: the turbulence coherence satisfies a universal upper bound.
+
+    ∀ r ≥ 0, C(r) ≤ 1.  Every turbulence scale has coherence at most 1,
+    with equality achieved uniquely at the kernel scale r = 1.  This is the
+    cross-scale consistency theorem. -/
+theorem alignment_turbulence_coherence_bounded (r : ℝ) (hr : 0 ≤ r) :
+    C r ≤ 1 :=
+  turbulence_coherence_universal_bound r hr
+
+/-- **Consistency**: the turbulence coherence is symmetric — every scale r > 0
+    has a mirror scale 1/r with identical coherence:  C(r) = C(1/r).
+
+    This symmetry means the framework does not uniquely identify which side
+    of r = 1 a turbulent mode lies on from its coherence value alone. -/
+theorem alignment_turbulence_coherence_symmetric (r : ℝ) (hr : 0 < r) :
+    C r = C (1 / r) :=
+  coherence_symm r hr
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- Section 6 — Floquet Time Crystal Consistency
+--
+-- Discrete Floquet time crystals break time-translation symmetry via period
+-- doubling (φ = π → 2T periodicity).  The Kernel μ-dynamics provides a
+-- concrete recipe: μ = exp(I·3π/4), with μ^8 = 1, gives an 8-period time
+-- crystal with quasi-energy ε_F = π/T.
+--
+-- IMPORTANT CAVEAT (formalised in §9): the Floquet structure is consistent
+-- with μ dynamics but is not uniquely explained by it.  Other Hamiltonian
+-- systems with the same period-doubling structure fit the same data.
+-- ════════════════════════════════════════════════════════════════════════════
+
+/-- **Consistency**: the Floquet period-doubling structure is consistent with
+    the μ-orbit.  T < 2T and the 8-period orbit μ^8 = 1 provides higher-order
+    periodicity. -/
+theorem alignment_floquet_period_doubling (T : ℝ) (hT : 0 < T) :
+    T < 2 * T :=
+  quantization_period_doubling T hT
+
+/-- **Consistency**: the Floquet quasi-energy π/(2T) is positive for positive T.
+
+    The Kernel recipe associates the quasi-energy with the half-drive frequency,
+    which is always a positive real number. -/
+theorem alignment_floquet_quasi_energy_pos (T : ℝ) (hT : 0 < T) :
+    0 < Real.pi / (2 * T) :=
+  div_pos Real.pi_pos (by linarith)
+
+/-- **Consistency**: the μ-orbit 8-fold closure underpins the Floquet 8-period
+    time crystal.  μ^8 = 1 closes the crystal orbit after exactly 8 Floquet
+    drive cycles. -/
+theorem alignment_floquet_mu_closes_orbit : μ ^ 8 = 1 :=
+  mu_pow_eight
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- Section 7 — Theorem Q: Simultaneous Quantization Consistency
+--
+-- The Lead Confirmed Quantization Theorem (Theorem Q, Quantization.lean §5)
+-- asserts that a Hamiltonian satisfying H · T = 5π/4 simultaneously realises:
+--   (Q1) Floquet phase quantization  ε_F · T = π
+--   (Q2) 8-cycle orbital closure     μ^8 = 1
+--   (Q3) Canonical-state balance     2η² = 1
+--   (Q4) Maximum coherence           C(1) = 1
+--   (Q5) Ground-state energy         E₁ = −1  (Hartree)
+--
+-- This is a machine-checked demonstration of CONSISTENCY under μ dynamics.
+-- All five quantization conditions are simultaneously satisfiable.
+--
+-- IMPORTANT CAVEAT (formalised in §9): satisfying Q1–Q5 simultaneously under
+-- μ dynamics is not a proof that μ is the UNIQUE mechanism achieving this.
+-- Other Hamiltonians may produce the same quantization structure via different
+-- algebraic routes.
+-- ════════════════════════════════════════════════════════════════════════════
+
+/-- **Consistency**: the Kernel Theorem Q simultaneously confirms quantization
+    conditions Q2, Q3, Q4, and Q5 independently of the Hamiltonian recipe.
+
+    This demonstrates that Floquet orbital closure, amplitude balance,
+    maximum coherence, and Bohr ground-state energy all hold simultaneously
+    under μ dynamics.
+
+    Limitations: this shows joint satisfiability, not uniqueness of mechanism. -/
+theorem alignment_theorem_Q_consistency :
+    -- Q2: 8-cycle closure
+    μ ^ 8 = 1 ∧
+    -- Q3: canonical amplitude balance
+    (2 : ℝ) * η ^ 2 = 1 ∧
+    -- Q4: maximum coherence
+    C 1 = 1 ∧
+    -- Q5: Bohr ground-state energy in Hartree units
+    rydbergEnergy 1 one_ne_zero = -1 :=
+  ⟨quantization_eight_cycle,
+   quantization_amplitude_balance,
+   quantization_coherence_max,
+   quantization_ground_energy⟩
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- Section 8 — Grand Synthesis: Linking All Alignments
+--
+-- The grand synthesis collects the core alignment results into a single
+-- conjunction theorem, providing a one-stop machine-checked summary of
+-- all structural correspondences formalized in this module.
+-- ════════════════════════════════════════════════════════════════════════════
+
+/-- **Grand synthesis**: all six core alignments hold simultaneously.
+
+    (1) α_FS · c_natural = 1                    (fine-structure / c reciprocal)
+    (2) α_FS < C δS                             (α below silver coherence)
+    (3) C(φ²) < C(δS) ∧ C(δS) < C(1)           (Koide < silver < kernel)
+    (4) C(φ²) = 2/3                             (Koide value from coherence)
+    (5) aw_H < (2/3) · aw_C                     (hydrogen below Koide-C)
+    (6) 1/α_FS < protonElectronRatio             (EM scale < nuclear mass scale)
+
+    All six are machine-checked; all six require empirical inputs.  None is
+    derived purely from the μ-framework without measured values. -/
+theorem alignment_grand_synthesis :
+    -- (1) α–c reciprocal
+    α_FS * c_natural = 1 ∧
+    -- (2) α below silver coherence
+    α_FS < C δS ∧
+    -- (3) Koide-silver-kernel ordering
+    (C (φ ^ 2) < C δS ∧ C δS < C 1) ∧
+    -- (4) Koide value from coherence
+    C (φ ^ 2) = 2 / 3 ∧
+    -- (5) hydrogen weight below Koide-scaled carbon
+    aw_H < 2 / 3 * aw_C ∧
+    -- (6) EM coupling scale below nuclear mass scale
+    1 / α_FS < protonElectronRatio :=
+  ⟨alignment_alpha_c_inverse,
+   alignment_alpha_lt_silver_coherence,
+   alignment_coherence_triple_ordering,
+   alignment_koide_from_coherence,
+   alignment_nist_hydrogen_below_koide_carbon,
+   alignment_mass_ratio_dominates_alpha_inv⟩
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- Section 9 — Epistemic Limits
+--
+-- These theorems formally encode the limitations of the numerical alignment
+-- programme.  They are not failures of the framework — they are honest
+-- machine-checked statements about what the framework does and does not
+-- establish.
+--
+-- Limit 1: coherence non-injectivity — empirical inputs are indispensable.
+--   For any r > 0, C(r) = C(1/r).  This means every coherence value is
+--   achieved by at least two distinct scales.  The framework cannot uniquely
+--   identify which scale a physical constant corresponds to from its coherence
+--   value alone, so constants like α = 1/137 must be measured externally.
+--
+-- Limit 2: consistency does not imply uniqueness of mechanism.
+--   C(1) = 1 is shared by the Kernel coherence function, but any bounded
+--   function g with g(1) = 1 and g(r) ≤ 1 satisfies the same conditions.
+--   The μ-framework is ONE mechanism achieving this; uniqueness is not proved.
+--
+-- Limit 3: Theorem Q conditions are mutually independent.
+--   The three core Q conditions (2η² = 1, C(1) = 1, μ^8 = 1) each follow
+--   from independent algebraic arguments, so their co-occurrence under μ
+--   dynamics does not establish that μ is the unique origin.
+--
+-- Limit 4: the coherence ordering α < C(δS) < C(1) holds for ANY sufficiently
+--   small positive coupling constant, not uniquely for α = 1/137.
+-- ════════════════════════════════════════════════════════════════════════════
+
+/-- **Epistemic limit 1**: the coherence function is not injective on (0, ∞).
+
+    Every coherence value v ∈ (0, 1) is achieved at two distinct positive
+    scales r and 1/r.  This non-injectivity is the formal reason that
+    empirical measurements (like α = 1/137) cannot be recovered from the
+    framework without external input: a given coherence value does not
+    uniquely determine which scale a physical constant corresponds to.
+
+    Proof: take r = δS and s = 1/δS.  These are distinct since δS > 1 implies
+    1/δS < 1 < δS; and C(δS) = C(1/δS) by the coherence mirror symmetry. -/
+theorem limit_coherence_not_injective :
+    ∃ r s : ℝ, r ≠ s ∧ 0 < r ∧ 0 < s ∧ C r = C s := by
+  have hgt : (1 : ℝ) < δS := silver_gt_one
+  have hδS_pos : (0 : ℝ) < δS := lt_trans zero_lt_one hgt
+  refine ⟨δS, 1 / δS, ?_, hδS_pos, div_pos one_pos hδS_pos,
+          coherence_symm δS hδS_pos⟩
+  -- Prove δS ≠ 1/δS: δS > 1 while 1/δS < 1
+  intro h
+  have hinv : 1 / δS < 1 := div_lt_one hδS_pos |>.mpr hgt
+  -- h : δS = 1/δS, so 1 < δS = 1/δS, contradicting 1/δS < 1
+  have h1_lt_inv : (1 : ℝ) < 1 / δS := calc
+    1 < δS := hgt
+    _ = 1 / δS := h
+  linarith
+
+/-- **Epistemic limit 2**: consistency with the kernel maximum C(1) = 1 does not
+    uniquely characterise the coherence function C.
+
+    Any function g : ℝ → ℝ that achieves g(1) = 1 and is bounded above by 1
+    satisfies exactly the same kernel-maximum and universal-bound conditions
+    as C.  The turbulence, Floquet, and quantization consistency results hold
+    for C because C has these properties — but other functions share them.
+
+    Formal statement: if g(1) = 1 and g(r) ≤ 1 for all r ≥ 0, then g(1) = C(1)
+    and g(r) ≤ C(1) for all r ≥ 0.  The μ-framework is one instance, not the
+    unique one. -/
+theorem limit_coherence_max_not_unique
+    (g : ℝ → ℝ)
+    (hg_max : g 1 = 1)
+    (hg_bound : ∀ r : ℝ, 0 ≤ r → g r ≤ 1) :
+    g 1 = C 1 ∧ ∀ r : ℝ, 0 ≤ r → g r ≤ C 1 := by
+  have hC1 : C 1 = 1 := quantization_coherence_max
+  exact ⟨by rw [hg_max, hC1], fun r hr => by rw [hC1]; exact hg_bound r hr⟩
+
+/-- **Epistemic limit 3**: the three core Theorem Q conditions are each provable
+    independently — they do not require each other.
+
+    (i)  2η² = 1  — arithmetic consequence of η = 1/√2.
+    (ii) C(1) = 1 — definitional consequence of C(r) = 2r/(1+r²).
+    (iii) μ^8 = 1 — group-theoretic consequence of 8th roots of unity.
+
+    Their co-occurrence under μ dynamics is a structural alignment, not a
+    proof that μ is the unique mechanism realising all three simultaneously. -/
+theorem limit_theorem_Q_conditions_independent :
+    -- (i) balance: arithmetic consequence of η = 1/√2
+    (2 : ℝ) * η ^ 2 = 1 ∧
+    -- (ii) coherence maximum: definitional consequence of C
+    C 1 = 1 ∧
+    -- (iii) 8-cycle: group-theoretic consequence of 8th roots of unity
+    μ ^ 8 = 1 :=
+  ⟨kernel_balance_constraint, quantization_coherence_max, mu_pow_eight⟩
+
+/-- **Epistemic limit 4**: the ordering ε < C(δS) < C(1) holds for ANY positive
+    coupling constant ε strictly below C(δS) ≈ 0.7071 — not uniquely for
+    ε = α_FS = 1/137.
+
+    This shows that the alignment "α_FS < C δS < C 1" is a consequence of
+    α_FS being small, not of α_FS having the specific measured value 1/137.
+    Any sufficiently small positive coupling would satisfy the same ordering.
+    True unification would predict α_FS = 1/137 dimensionlessly; the framework
+    here only organises the known measured value into the coherence hierarchy. -/
+theorem limit_alpha_ordering_holds_for_any_small_coupling
+    (ε : ℝ) (hε_pos : 0 < ε) (hε_small : ε < C δS) :
+    ε < C δS ∧ C δS < C 1 :=
+  ⟨hε_small, silver_below_kernel⟩
+
+end

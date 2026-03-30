@@ -26,6 +26,7 @@ import GravityQuantumDuality
 import Quantization
 import Chemistry
 import BalanceHypothesis
+import NumericalAlignments
 
 set_option maxRecDepth 2000 in
 def printCriticalEigenvalue : IO Unit := do
@@ -1051,6 +1052,84 @@ def printBalanceHypothesis : IO Unit := do
   IO.println "See BalanceHypothesis.lean for full proof terms."
   IO.println ""
 
+def printNumericalAlignments : IO Unit := do
+  IO.println "==================================================="
+  IO.println " NumericalAlignments.lean — Physical Constants and Mathematical Structures"
+  IO.println "==================================================="
+  IO.println ""
+  IO.println "  Formalizes the numerical alignments and structural isomorphisms"
+  IO.println "  linking α_FS ≈ 1/137, c = 1/√(μ₀ε₀), Koide mass ratios, and"
+  IO.println "  NIST atomic weights via coherence C(r), the Silver ratio δS,"
+  IO.println "  and the μ-orbit.  All results include explicit epistemic caveats."
+  IO.println ""
+  IO.println "§1    Fine-structure constant and speed of light alignment"
+  IO.println ""
+  IO.println "  [1]  alignment_alpha_c_inverse              : α_FS · c_natural = 1"
+  IO.println "  [2]  alignment_alpha_lt_silver_coherence    : α_FS < C δS  (sub-silver)"
+  IO.println "  [3]  alignment_c_nat_lt_α_sq_inv            : c_natural < 1/α_FS²"
+  IO.println ""
+  IO.println "§2    Koide-coherence-silver ordering"
+  IO.println ""
+  IO.println "  [4]  alignment_coherence_triple_ordering    : C(φ²) < C(δS) < C(1)"
+  IO.println "  [5]  alignment_koide_from_coherence         : C(φ²) = 2/3"
+  IO.println "  [6]  alignment_silver_meso                  : δS ∈ mesoScaleDomain"
+  IO.println "  [7]  alignment_golden_sq_meso               : φ² ∈ mesoScaleDomain"
+  IO.println ""
+  IO.println "§3    μ-orbit coherence maximum"
+  IO.println ""
+  IO.println "  [8]  alignment_mu_orbit_maximum_coherence   : C(|μⁿ|) = 1  ∀n"
+  IO.println "  [9]  alignment_mu_orbit_exceeds_all_finite  : C(φ²) < C(|μⁿ|) ∧ C(δS) < C(|μⁿ|)"
+  IO.println ""
+  IO.println "§4    NIST atomic weights and mass hierarchy"
+  IO.println ""
+  IO.println "  [10] alignment_nist_periodic_ordering       : aw_H < aw_He < aw_C < aw_N < aw_O"
+  IO.println "  [11] alignment_nist_hydrogen_below_koide_carbon : aw_H < (2/3)·aw_C"
+  IO.println "  [12] alignment_mass_ratio_dominates_alpha_inv   : 1/α_FS < protonElectronRatio"
+  IO.println ""
+  IO.println "§5    Navier-Stokes turbulence consistency"
+  IO.println ""
+  IO.println "  [13] alignment_turbulence_rotation_unitary  : |μ| = 1"
+  IO.println "  [14] alignment_turbulence_8period           : μ^8 = 1"
+  IO.println "  [15] alignment_turbulence_coherence_bounded : C(r) ≤ 1  ∀r ≥ 0"
+  IO.println "  [16] alignment_turbulence_coherence_symmetric : C(r) = C(1/r)"
+  IO.println ""
+  IO.println "§6    Floquet time crystal consistency"
+  IO.println ""
+  IO.println "  [17] alignment_floquet_period_doubling      : T < 2T"
+  IO.println "  [18] alignment_floquet_quasi_energy_pos     : 0 < π/(2T)"
+  IO.println "  [19] alignment_floquet_mu_closes_orbit      : μ^8 = 1"
+  IO.println ""
+  IO.println "§7    Theorem Q: simultaneous quantization consistency"
+  IO.println ""
+  IO.println "  [20] alignment_theorem_Q_consistency        : μ^8=1 ∧ 2η²=1 ∧ C(1)=1 ∧ E₁=−1"
+  IO.println ""
+  IO.println "§8    Grand synthesis"
+  IO.println ""
+  IO.println "  [21] alignment_grand_synthesis   : all six core alignments simultaneously"
+  IO.println "         (1) α_FS · c_natural = 1"
+  IO.println "         (2) α_FS < C δS"
+  IO.println "         (3) C(φ²) < C(δS) < C(1)"
+  IO.println "         (4) C(φ²) = 2/3"
+  IO.println "         (5) aw_H < (2/3) · aw_C"
+  IO.println "         (6) 1/α_FS < protonElectronRatio"
+  IO.println ""
+  IO.println "§9    Epistemic limits (what the framework does NOT prove)"
+  IO.println ""
+  IO.println "  [22] limit_coherence_not_injective          : ∃ r≠s, C(r)=C(s)  (non-unique)"
+  IO.println "  [23] limit_coherence_max_not_unique         : any g with g(1)=1,g≤1 matches C at 1"
+  IO.println "  [24] limit_theorem_Q_conditions_independent : Q conditions hold independently"
+  IO.println "  [25] limit_alpha_ordering_holds_for_any_small_coupling : ordering holds for any ε<C(δS)"
+  IO.println ""
+  IO.println "  CAVEAT: these results require measured inputs (α=1/137, NIST weights, φ, δS)."
+  IO.println "  True unification would derive dimensionless constants without empirical input."
+  IO.println "  Turbulence / Floquet / Theorem Q consistency under μ does not rule out"
+  IO.println "  alternative mechanisms that also fit the observational data."
+  IO.println ""
+  IO.println "25 theorems — all machine-checked, zero sorry."
+  IO.println ""
+  IO.println "See NumericalAlignments.lean for full proof terms."
+  IO.println ""
+
 def main : IO Unit := do
   printCriticalEigenvalue
   printTimeCrystal
@@ -1067,3 +1146,4 @@ def main : IO Unit := do
   printQuantization
   printChemistry
   printBalanceHypothesis
+  printNumericalAlignments
