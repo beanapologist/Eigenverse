@@ -67,6 +67,9 @@
        `conservation_forces_eta` proves that ANY unit-circle point satisfying
        the balance condition must have Im(z) = η.  THIS is why the hypothesis
        maps to reality: conservation + equal partition → η = 1/√2 → F(η,−η) = μ.
+       The capstone theorem `reality_unique` closes the foundation: μ is the
+       ONLY complex number that is simultaneously Q2, balanced, and energy-
+       conserving — uniqueness is machine-checked, not just exemplified.
 
   All seven tests pass: machine-checked proofs, zero sorry placeholders.
 
@@ -82,7 +85,7 @@
 
   Proof status
   ────────────
-  All 36 theorems have complete machine-checked proofs.
+  All 37 theorems have complete machine-checked proofs.
   No `sorry` placeholders remain.
 -/
 
@@ -555,5 +558,40 @@ theorem energy_conservation_forces_reality :
    mu_im_sq_half,
    mu_im_is_eta,
    mu_is_observable_equilibrium⟩
+
+/-- **Uniqueness of μ** — the capstone result.
+    μ is the ONLY complex number simultaneously satisfying all three
+    fundamental constraints:
+
+        (Q2)     Re(z) < 0  ∧  Im(z) > 0     — second quadrant
+        (Balance)  |Re(z)| = Im(z)             — equal magnitude
+        (Energy)   Re(z)² + Im(z)² = 1         — conservation law
+
+    Proof outline:
+      1. From Energy + Balance:  `conservation_forces_eta` gives Im(z) = η.
+      2. From Balance:           |Re(z)| = Im(z) = η, so Re(z) = ±η.
+      3. From Q2 (Re(z) < 0):   Re(z) = −η.
+      4. Hence z = −η + i·η = μ.
+
+    Nothing else can be "the balance point" — it is not a choice but a
+    mathematical necessity imposed by the three constraints together. -/
+theorem reality_unique (z : ℂ)
+    (hQ2_re  : z.re < 0)
+    (hQ2_im  : 0 < z.im)
+    (hbal    : |z.re| = z.im)
+    (henergy : z.re ^ 2 + z.im ^ 2 = 1) :
+    z = μ := by
+  -- Step 1: Im(z) = η  (energy + balance → conservation_forces_eta)
+  have him : z.im = η := conservation_forces_eta z henergy hbal
+  -- Step 2: |Re(z)| = η  (substituting Im(z) = η into balance)
+  have habs_re : |z.re| = η := by rw [hbal, him]
+  -- Step 3: Re(z) = −η  (Q2 says Re(z) < 0, so |Re(z)| = −Re(z))
+  have hre : z.re = -η := by
+    have h : -z.re = η := by rw [← abs_of_neg hQ2_re, habs_re]
+    linarith
+  -- Step 4: z = μ  (component-wise equality)
+  apply Complex.ext
+  · rw [hre, mu_re_is_neg_eta]
+  · rw [him, mu_im_is_eta]
 
 end -- noncomputable section
