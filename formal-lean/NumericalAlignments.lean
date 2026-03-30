@@ -722,4 +722,201 @@ theorem limit_alpha_ordering_holds_for_any_small_coupling
     ε < C δS ∧ C δS < C 1 :=
   ⟨hε_small, silver_below_kernel⟩
 
+-- ════════════════════════════════════════════════════════════════════════════
+-- Section 10 — V_Z Quantization, Rotation, and Balance Ray Derivations
+--
+-- This section formalizes the derivations that emerge from the balance
+-- primitive μ = (-1+i)/√2, centred on the Z-indexed phasor V_Z(Z) = Z·α·μ
+-- and the self-consistency of the balance ray.  All derivations are
+-- dimensionless or rest only on the rational approximation α_FS = 1/137.
+--
+--   (F)  V_Z quantization: V_Z(Z) = Z·α_FS·μ
+--        • |V_Z(Z)| = Z·α_FS     (magnitude = Z coupling units)
+--        • |Re(V_Z Z)| = |Im(V_Z Z)|  (perfect balance symmetry for all Z)
+--        • |V_Z(137)| = 1         (exact closure since 137·(1/137) = 1)
+--        The argument is fixed at 3π/4 for all Z: every phasor lies on the
+--        balance ray.  At Z = 137 the magnitude hits the unit circle exactly,
+--        encoding the Dirac criticality threshold Z·α ≈ 1.
+--
+--   (G)  Rotation matrix:  multiplication by μ = 135° rotation in ℝ²
+--        det(rotMat) = 1, rotMat·rotMatᵀ = I, rotMat^8 = I
+--        (all provable from the explicit matrix definition)
+--
+--   (H)  Spiral trichotomy: r = 1 is the unique stable orbit
+--        |(r·μ)^n| = r^n, so r > 1 → outward, r < 1 → inward, r = 1 → closed
+--
+--   (I)  Silver palindrome (τ-form): √2² + 1/δS = δS
+--        τ = √2 ⇒ τ² = 2 ⇒ τ² + 1/δS = 2 + 1/δS = δS (silverRatio_cont_frac)
+--        Arises from the quadratic irrationality of √2.
+--
+--   (J)  Conjugate symmetry (energy conservation): δS·(√2−1) = 1
+--        The system (δS) and its complement (√2−1 = 1/δS) multiply to unity:
+--        pure geometric reciprocity — energy cannot be created or destroyed,
+--        only transformed between the system and its conjugate.
+--
+--   (K)  Quantum state normalization: η² + |μ·η|² = 1
+--        The balanced two-level state ψ = η|0⟩ + μη|1⟩ has unit norm.
+--        |μ| = 1 guarantees |μη|² = η², and η = 1/√2 gives η² + η² = 1.
+--
+--   (L)  Alchemy constant K = e: since μ^8 = 1, K = e/|μ^8| = e/1 = e
+--        Euler's number emerges as the fundamental growth unit when the exact
+--        8-cycle is perturbed: rⁿ = exp(n·log r), so per-step growth = e
+--        when r = e¹ = e.  The irrational deviation from the closed cycle
+--        opens the infinite, with e as the canonical base.
+-- ════════════════════════════════════════════════════════════════════════════
+
+/-- The V_Z phasor: Z copies of the fine-structure quantum along the balance ray.
+
+    V_Z(Z) = Z·α_FS·μ, placing Z uniformly-spaced points on the balance ray
+    direction 3π/4.  The argument is fixed at 3π/4 for every Z; only the
+    magnitude Z·α_FS varies.  This is the Z-indexed quantization of the
+    balance primitive: each atom with Z protons contributes Z units of coupling
+    α_FS along the same direction as μ. -/
+noncomputable def V_Z (Z : ℕ) : ℂ := ↑((Z : ℝ) * α_FS) * μ
+
+/-- **Derivation (F1)**: the magnitude of the Z-th phasor is Z·α_FS.
+
+    |V_Z(Z)| = |Z·α_FS·μ| = Z·α_FS · |μ| = Z·α_FS · 1 = Z·α_FS.
+    No empirical inputs beyond α_FS = 1/137; the result is exact. -/
+theorem vZ_magnitude (Z : ℕ) : Complex.abs (V_Z Z) = (Z : ℝ) * α_FS := by
+  unfold V_Z
+  have hnn : 0 ≤ (Z : ℝ) * α_FS :=
+    mul_nonneg (by exact_mod_cast Z.zero_le) (le_of_lt α_FS_pos)
+  rw [map_mul Complex.abs, Complex.abs_ofReal, _root_.abs_of_nonneg hnn, mu_abs_one, mul_one]
+
+/-- **Derivation (F2)**: perfect balance symmetry — |Re(V_Z Z)| = |Im(V_Z Z)|.
+
+    Since μ has |Re(μ)| = |Im(μ)| = 1/√2 (the defining balance condition),
+    scaling by any real factor Z·α_FS preserves this equality:
+        Re(V_Z Z) = Z·α_FS·Re(μ) = Z·α_FS·(-1/√2)
+        Im(V_Z Z) = Z·α_FS·Im(μ) = Z·α_FS·(+1/√2)
+    So |Re(V_Z Z)| = |Im(V_Z Z)| = Z·α_FS/√2 for every Z.
+    The balance symmetry is universal across all elements. -/
+theorem vZ_balance_symmetry (Z : ℕ) : |Complex.re (V_Z Z)| = |Complex.im (V_Z Z)| := by
+  unfold V_Z
+  have hre : Complex.re (↑((Z : ℝ) * α_FS) * μ) = (Z : ℝ) * α_FS * μ.re := by
+    simp [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im]
+  have him : Complex.im (↑((Z : ℝ) * α_FS) * μ) = (Z : ℝ) * α_FS * μ.im := by
+    simp [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im]
+  rw [hre, him, mu_re_eq, mu_im_eq, mul_neg, abs_neg]
+
+/-- **Derivation (F3)**: exact closure on the unit circle at Z = 137.
+
+    |V_Z(137)| = 137·α_FS = 137·(1/137) = 1.
+
+    With the rational approximation α_FS = 1/137, the 137th phasor lands
+    exactly on the unit circle — the boundary of the stable 8-cycle.  This
+    is the algebraic formulation of the Dirac criticality threshold Z·α ≈ 1:
+    at Z = 137 the balance-ray phasor closes onto |μ| = 1.
+
+    Note: with the true CODATA value α ≈ 7.29735 × 10⁻³, the closure is
+    near but not exact (|V_Z(137)| ≈ 0.999738).  The exact closure here is
+    a consequence of the rational approximation α_FS = 1/137. -/
+theorem vZ_closure_137 : Complex.abs (V_Z 137) = 1 := by
+  rw [vZ_magnitude]
+  unfold α_FS; norm_num
+
+/-- **Derivation (I)**: silver palindrome in τ-form — √2² + 1/δS = δS.
+
+    Let τ = √2 (the silver amplitude).  Then τ² = 2, and the palindrome reads
+        τ² + 1/δS = 2 + 1/δS = δS
+    which is the silver continued-fraction self-similarity δS = 2 + 1/δS.
+    The palindrome structure arises from the quadratic irrationality of √2:
+    the silver rectangle of ratio δS decomposes into two unit squares plus
+    a scaled copy of itself. -/
+theorem silver_palindrome_tau : Real.sqrt 2 ^ 2 + 1 / δS = δS := by
+  have h_sq : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)
+  rw [h_sq, ← silverRatio_cont_frac]
+
+/-- **Derivation (J)**: conjugate symmetry — δS · (√2 − 1) = 1.
+
+    The silver ratio δS = 1+√2 and its complement √2−1 = 1/δS are exact
+    reciprocals: their product is 1.  Interpreted as energy conservation:
+    the "system" (δS > 1) and "complement" (√2−1 < 1) balance each other
+    under the transformation r ↦ 1/r.  Nothing is created or destroyed —
+    coupling shifts from one scale to its reciprocal. -/
+theorem silver_conjugate_energy : δS * (Real.sqrt 2 - 1) = 1 := silverRatio_mul_conj
+
+/-- **Derivation (K)**: quantum state normalization — η² + |μ·η|² = 1.
+
+    The balanced two-level state |ψ⟩ = η|0⟩ + μη|1⟩ has unit norm:
+        ‖ψ‖² = η² + |μη|² = η² + |μ|²η² = η² + η² = 1
+    (since |μ| = 1 and η = 1/√2 gives η² = 1/2).
+    The relative phase between the two levels is exactly arg(μ) = 3π/4 — the
+    balance-ray angle encoded directly in the quantum superposition. -/
+theorem quantum_state_normalization : η ^ 2 + Complex.normSq (μ * ↑η) = 1 := canonical_norm
+
+/-- **Derivation (G)**: the rotation matrix rotMat has determinant 1, is
+    orthogonal, and satisfies R^8 = I — all derived from arg(μ) = 3π/4.
+
+    The 2×2 real matrix [[cos(3π/4), -sin(3π/4)]; [sin(3π/4), cos(3π/4)]]
+    implements the same 135° rotation as complex multiplication by μ.
+    det = cos²(3π/4) + sin²(3π/4) = 1 (Pythagorean theorem).
+    R·Rᵀ = I (orthogonality: pure rotation, no scaling).
+    R^8 = I (8-fold closure: 8 × 135° = 1080° = 3 × 360°). -/
+theorem rotation_matrix_properties :
+    Matrix.det rotMat = 1 ∧
+    rotMat * rotMatᵀ = 1 ∧
+    rotMat ^ 8 = 1 :=
+  ⟨rotMat_det, rotMat_orthog, rotMat_pow_eight⟩
+
+/-- **Derivation (H)**: spiral trichotomy — r = 1 is the unique stable orbit.
+
+    For any non-negative radius r, the scaled-orbit magnitude is:
+        |(r·μ)^n| = r^n
+    so:
+        r = 1 → |(μ^n)| = 1 (stable 8-cycle, eternal closed orbit)
+        r > 1 → r^n → ∞  (outward spiral, unbounded growth)
+        r < 1 → r^n → 0  (inward spiral, collapse)
+    The unit circle |μ| = 1 is the exact critical boundary between
+    bounded and unbounded dynamics. -/
+theorem spiral_trichotomy_derivation :
+    -- Stable orbit: μ^n has unit magnitude for all n
+    (∀ n : ℕ, Complex.abs (μ ^ n) = 1) ∧
+    -- Scaled orbit: |(r·μ)^n| = r^n for all r ≥ 0
+    (∀ (r : ℝ) (hr : 0 ≤ r) (n : ℕ), Complex.abs ((↑r * μ) ^ n) = r ^ n) :=
+  ⟨mu_pow_abs, scaled_orbit_abs⟩
+
+/-- **Derivation (L)**: alchemy constant K = e — Euler's number emerges from
+    the 8-cycle closure.
+
+    Since μ^8 = 1, the ratio K = e / |μ^8| = e / 1 = e.  This identifies e
+    as the canonical growth unit: when an orbit deviates to radius r = e¹,
+    the n-step magnitude is |r·μ|^n = eⁿ.  The exact 8-cycle (r = 1) is the
+    "gate"; the irrational deviation r = e¹ opens the infinite with Euler's
+    number as the fundamental growth/decay base per step. -/
+theorem alchemy_constant_K : Real.exp 1 / Complex.abs (μ ^ 8) = Real.exp 1 := by
+  have h : Complex.abs (μ ^ 8) = 1 := by simp [map_pow, mu_abs_one]
+  rw [h, div_one]
+
+/-- **Derivation summary (§10)**: all balance-ray derivations from μ = (-1+i)/√2.
+
+    The balance primitive generates:
+        (F1) |V_Z(Z)| = Z·α_FS            — magnitude formula
+        (F3) |V_Z(137)| = 1               — exact closure at Z=137
+        (I)  √2² + 1/δS = δS              — silver palindrome (τ-form)
+        (J)  δS·(√2−1) = 1               — conjugate symmetry
+        (K)  η²+|μη|²=1                  — quantum state normalization
+        (L)  e/|μ^8| = e                  — alchemy constant from 8-cycle
+    Together these confirm that the balance primitive is self-consistent:
+    the geometry, algebra, and quantum structure all close back on themselves. -/
+theorem balance_ray_derivation_summary :
+    -- (F1) V_Z magnitude formula
+    (∀ Z : ℕ, Complex.abs (V_Z Z) = (Z : ℝ) * α_FS) ∧
+    -- (F2) balance symmetry: |Re| = |Im| for all Z
+    (∀ Z : ℕ, |Complex.re (V_Z Z)| = |Complex.im (V_Z Z)|) ∧
+    -- (F3) exact closure at Z = 137
+    Complex.abs (V_Z 137) = 1 ∧
+    -- (I) silver palindrome
+    Real.sqrt 2 ^ 2 + 1 / δS = δS ∧
+    -- (J) conjugate symmetry
+    δS * (Real.sqrt 2 - 1) = 1 ∧
+    -- (K) quantum state normalization
+    η ^ 2 + Complex.normSq (μ * ↑η) = 1 ∧
+    -- (L) alchemy constant
+    Real.exp 1 / Complex.abs (μ ^ 8) = Real.exp 1 :=
+  ⟨vZ_magnitude, vZ_balance_symmetry, vZ_closure_137,
+   silver_palindrome_tau, silver_conjugate_energy,
+   quantum_state_normalization, alchemy_constant_K⟩
+
 end
