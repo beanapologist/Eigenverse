@@ -27,6 +27,20 @@ quantum/oscillation (Im).  In component form this is the single equation
 Re(z)² + Im(z)² = 1
 ```
 
+**Why is gravity negative real and quantum positive imaginary?**
+
+The two fundamental forces are *orthogonal* by nature — they cannot be the same
+kind of quantity.  Gravity/damping is a **dissipative** process: it removes
+energy from a mode over time, so its eigenvalue component must have a negative
+real part (exponential decay, `e^{Re·t} → 0` as `t → ∞`).  Quantum/oscillation
+is a **cyclic** process: it neither gains nor loses energy — it only rotates
+phase — so its eigenvalue component must be purely imaginary (a pure frequency,
+`e^{iIm·t}` on the unit circle).  The complex plane is the natural arena
+precisely because it separates these two orthogonal behaviours into independent
+axes: Re carries the growth/decay rate, Im carries the oscillation frequency.
+Q2 (Re < 0, Im > 0) is therefore the *only* quadrant where damping and
+oscillation simultaneously exist with the correct physical signs.
+
 Now ask: which point on the unit circle also holds perfect **balance** —
 equal energy in both sectors — and sits in the physical (Q2) quadrant where
 gravity is negative and quantum is positive?  The answer is machine-checked to
