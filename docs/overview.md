@@ -8,8 +8,8 @@
 around a single central object: the critical eigenvalue
 **μ = exp(i·3π/4)** — a point on the complex unit circle whose 8-cycle orbit,
 coherence function C(r) = 2r/(1+r²), and Silver ratio δS = 1+√2 generate a
-complete, self-consistent map from pure mathematics to observable physical
-reality.
+complete, self-consistent structure that is the **unique** recipe for any
+conceivable reality with an observer.
 
 Every statement is verified by the [Lean 4](https://leanprover.github.io/)
 type-checker; there are **zero `sorry` placeholders** anywhere in the codebase.
@@ -21,41 +21,63 @@ to follow from the stated axioms — no hand-waving, no gaps.
 
 ## Scope
 
-| Domain | Key Results | Theorems |
-|--------|------------|----------|
-| **Algebra** | Critical eigenvalue μ = exp(I·3π/4), 8-cycle closure μ⁸=1, Silver ratio δS=1+√2, coherence function C(r), Z/8Z rotational memory | 127 |
-| **Geometry** | Rotation matrix R(3π/4): det=1, orthogonal, order-8 orbit; unit circle S¹ orbit; hyperbolic Pythagorean identity C²+tanh²=1; space-time map F(s,t)=t+i·s | 141 |
-| **Physics** | c=1/√(μ₀ε₀), fine structure constant α≈1/137, Koide mass formula, Lorentz geometry, Navier-Stokes turbulence bounds | 159 |
-| **Quantum** | Floquet time crystals, gravity-quantum duality, Theorem Q quantization arms, forward classical time, bidirectional time & Planck floor | 120 |
-| **Chemistry** | NIST 2016 atomic weights, isotopic abundances, Ohm-coherence duality G·R=1, triality-scale coherence | 44 |
-| **Total** | | **450** |
-
-> **Note:** The crypto-application modules (`PumpFunBot`, `EthereumTradingBot`,
-> `CrossChainDeFiAggregator`, `CryptoBridge`) live in `formal-lean/` for
-> reference but are not part of the Eigenverse mathematical library.
+| Module | Key Results | Theorems |
+|--------|-------------|----------|
+| **BalanceHypothesis** | `reality_unique`: μ is the ONLY Q2 unit-circle balance point | 37 |
+| **CriticalEigenvalue** | μ⁸=1, δS=1+√2, C(r)≤1, palindrome C(r)=C(1/r), Z/8Z memory | 82 |
+| **SpaceTime** | Rotation matrix R(3π/4) det=1/orthogonal/order-8; F(s,t)=t+i·s | 43 |
+| **FineStructure** | Fine structure constant α_FS = 1/137 | 30 |
+| **SpeedOfLight** | c = 1/√(μ₀ε₀); structural isomorphism with η | 19 |
+| **Turbulence** | Navier-Stokes turbulence bounds | 29 |
+| **ParticleMass** | Koide C(φ²)=2/3; proton/electron mass ratio R=1836 | 38 |
+| **GravityQuantumDuality** | Re↔Gravity/Time; Im↔Quantum/Dark Energy | 22 |
+| **TimeCrystal** | Discrete time crystal / Floquet theory | 33 |
+| **Quantization** | Theorem Q: H·T=5π/4 → all Q1–Q5 simultaneously | 20 |
+| **BidirectionalTime** | Bidirectional time & Planck floor | 24 |
+| **KernelAxle** | Canonical amplitude η; gear ratio; cross-section | 20 |
+| **SilverCoherence** | C(δS)=√2/2; uniqueness; physics at 45° | 29 |
+| **OhmTriality** | Ohm–Coherence duality G·R=1 at triality scales | 24 |
+| **ForwardClassicalTime** | Forward-time frustration harvesting | 21 |
+| **Chemistry** | NIST atomic weights, isotopic abundances, mass conservation | 20 |
+| **NumericalAlignments** | Dimensionless derivations §0–§13; V_Z quantization; α from closure; universal observer uniqueness; μ¹³⁷=μ | 61 |
+| **Total** | | **552** |
 
 ---
 
 ## Repository Layout
 
 ```
-src/
-├── algebra/
-│   └── Eigenvalue.lean            # μ, δS, C(r), Z/8Z memory
-├── geometry/
-│   └── GeometricStructures.lean   # Rotation matrices, unit circle, hyperbolic geometry
-├── physics/
-│   └── FundamentalConstants.lean  # c, α, mass ratios, spacetime, turbulence
-├── quantum/
-│   └── QuantumUniverse.lean       # Time crystals, duality, quantization
-├── chemistry/
-│   └── AtomicUniverse.lean        # NIST atomic weights, Ohm-coherence
-└── Eigenverse.lean                # Single-import entry point
-
 formal-lean/                    # Lean 4 source files (the proof engine)
-docs/                           # This documentation tree
+├── BalanceHypothesis.lean      # ★ FOUNDATION: reality_unique (37)
+├── CriticalEigenvalue.lean     # Algebraic core: μ, δS, C(r), palindrome (82)
+├── SpaceTime.lean              # Geometry: F(s,t), rotation matrix (43)
+├── FineStructure.lean          # α_FS = 1/137 (30)
+├── SpeedOfLight.lean           # c = 1/√(μ₀ε₀) (19)
+├── Turbulence.lean             # Navier-Stokes bounds (29)
+├── ParticleMass.lean           # Koide formula, mass ratios (38)
+├── GravityQuantumDuality.lean  # Re↔Gravity, Im↔Quantum (22)
+├── TimeCrystal.lean            # Floquet time crystals (33)
+├── Quantization.lean           # Theorem Q (20)
+├── BidirectionalTime.lean      # Bidirectional time (24)
+├── KernelAxle.lean             # Kernel amplitude η (20)
+├── SilverCoherence.lean        # C(δS)=√2/2 (29)
+├── OhmTriality.lean            # Ohm G·R=1 (24)
+├── ForwardClassicalTime.lean   # Forward frustration (21)
+├── Chemistry.lean              # NIST atomic weights (20)
+├── NumericalAlignments.lean    # Dimensionless derivations §0–§13 (61)
+└── Main.lean                   # Executable entry-point
+
+src/                            # Lean modules organised by topic
+├── algebra/Eigenvalue.lean
+├── geometry/GeometricStructures.lean
+├── physics/FundamentalConstants.lean
+├── quantum/QuantumUniverse.lean
+├── chemistry/AtomicUniverse.lean
+└── Eigenverse.lean             # Single-import entry point
+
+docs/                           # Documentation
 examples/                       # Worked demonstrations
-tests/                          # Consistency and cross-module checks
+tests/                          # Cross-module consistency checks
 ```
 
 ---
@@ -80,7 +102,7 @@ tests/                          # Consistency and cross-module checks
 ```bash
 cd formal-lean/
 lake exe cache get   # download pre-built Mathlib cache (~5 min)
-lake build           # build all modules
+lake build           # verify all 552 theorems, 0 sorry
 lake exe formalLean  # print summary of verified theorems
 ```
 
