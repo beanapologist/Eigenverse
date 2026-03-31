@@ -1275,9 +1275,10 @@ theorem z137_prime_mod8_closure :
     (137 : ℝ) * α_FS = 1 ∧
     -- Uniqueness: among all positive Z, Z·α_FS = 1 ↔ Z = 137
     (∀ Z : ℕ, 0 < Z → (Z : ℝ) * α_FS = 1 ↔ Z = 137) := by
-  refine ⟨prime_137, mu_pow_137_eq_mu, ?_, fun Z _ => ?_⟩
+  refine ⟨prime_137, mu_pow_137_eq_mu, ?_, ?_⟩
   · unfold α_FS; norm_num
-  · constructor
+  · intro Z _
+    constructor
     · intro h
       have hZ' : (Z : ℝ) = 137 := by
         unfold α_FS at h
