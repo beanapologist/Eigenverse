@@ -89,7 +89,7 @@
 import Chemistry
 import Quantization
 
-open Complex Real
+open Complex Real Matrix
 
 noncomputable section
 
@@ -313,7 +313,7 @@ theorem alignment_alpha_lt_silver_coherence : α_FS < C δS := by
   have h1 : (1 : ℝ) < Real.sqrt 2 := by
     rw [show (1 : ℝ) = Real.sqrt 1 from Real.sqrt_one.symm]
     exact Real.sqrt_lt_sqrt (by norm_num) (by norm_num)
-  rw [div_lt_div_iff (by norm_num : (0 : ℝ) < 137) (by norm_num : (0 : ℝ) < 2)]
+  rw [div_lt_div_iff₀ (by norm_num : (0 : ℝ) < 137) (by norm_num : (0 : ℝ) < 2)]
   -- Goal: 1 * 2 < Real.sqrt 2 * 137
   nlinarith
 
@@ -324,7 +324,7 @@ theorem alignment_alpha_lt_silver_coherence : α_FS < C δS := by
     scale (1/α²) dominates the first-order scale (c_natural = 1/α). -/
 theorem alignment_c_nat_lt_α_sq_inv : c_natural < 1 / α_FS ^ 2 := by
   unfold c_natural
-  rw [div_lt_div_iff α_FS_pos (pow_pos α_FS_pos 2)]
+  rw [div_lt_div_iff₀ α_FS_pos (pow_pos α_FS_pos 2)]
   -- Goal: 1 * α_FS ^ 2 < 1 * α_FS
   nlinarith [α_FS_lt_one, α_FS_pos, sq_nonneg α_FS]
 
@@ -492,7 +492,7 @@ theorem alignment_turbulence_8period : μ ^ 8 = 1 :=
     cross-scale consistency theorem. -/
 theorem alignment_turbulence_coherence_bounded (r : ℝ) (hr : 0 ≤ r) :
     C r ≤ 1 :=
-  turbulence_coherence_universal_bound r hr
+  coherence_le_one r hr
 
 /-- **Consistency**: the turbulence coherence is symmetric — every scale r > 0
     has a mirror scale 1/r with identical coherence:  C(r) = C(1/r).
@@ -1011,7 +1011,7 @@ theorem alpha_unique_V137_closure (α : ℝ) (hα : 0 < α) :
       have : (137 : ℝ) * α = 1 := h
       field_simp; linarith
     rw [this]
-    unfold α_FS
+    unfold α_FS; rfl
   · intro h
     rw [h]
     unfold α_FS; norm_num
