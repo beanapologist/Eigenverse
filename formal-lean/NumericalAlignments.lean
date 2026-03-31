@@ -1163,6 +1163,7 @@ theorem self_referential_chain_unique :
   refine ⟨⟨hη_pos, lt_trans zero_lt_one silver_gt_one,
            silver_is_one_plus_inv_eta, self_referential_coherence_eta⟩, ?_⟩
   intro ⟨a, b⟩ ⟨ha, _, hb_eq, hCb⟩
+  simp only [Prod.fst, Prod.snd] at ha hb_eq hCb
   -- b = 1+1/a and C b = a; substituting: C(1+1/a) = a
   have hCa : C (1 + 1 / a) = a := hb_eq ▸ hCb
   -- by observer_fixed_point_unique, a = η
@@ -1245,10 +1246,7 @@ theorem prime_137 : Nat.Prime 137 := by decide
         μ^Z = μ^(8·(Z/8)+1) = (μ^8)^(Z/8) · μ = 1^(Z/8) · μ = μ. -/
 theorem mu_pow_phase_preserved (Z : ℕ) (hmod : Z % 8 = 1) : μ ^ Z = μ := by
   have hdiv : Z = 8 * (Z / 8) + 1 := by omega
-  calc μ ^ Z = μ ^ (8 * (Z / 8) + 1) := by rw [hdiv]
-    _ = (μ ^ 8) ^ (Z / 8) * μ ^ 1 := by rw [pow_add, pow_mul]
-    _ = 1 ^ (Z / 8) * μ ^ 1 := by rw [mu_pow_eight]
-    _ = μ := by simp
+  rw [hdiv, pow_add, pow_mul, mu_pow_eight, one_pow, pow_one, one_mul]
 
 /-- **μ¹³⁷ = μ**: the balance primitive is its own 137th power.
     Direct corollary of phase preservation, since 137 ≡ 1 (mod 8). -/
@@ -1276,20 +1274,19 @@ theorem z137_prime_mod8_closure :
     -- (C) unit closure: 137 · α_FS = 1
     (137 : ℝ) * α_FS = 1 ∧
     -- Uniqueness: among all positive Z, Z·α_FS = 1 ↔ Z = 137
-    (∀ Z : ℕ, 0 < Z → (Z : ℝ) * α_FS = 1 ↔ Z = 137) :=
-  ⟨prime_137, mu_pow_137_eq_mu,
-   by unfold α_FS; norm_num,
-   fun Z hZ => by
-     constructor
-     · intro h
-       have hZ' : (Z : ℝ) = 137 := by
-         unfold α_FS at h
-         linear_combination 137 * h
-       exact_mod_cast hZ'
-     · intro h
-       subst h
-       unfold α_FS
-       norm_num⟩
+    (∀ Z : ℕ, 0 < Z → (Z : ℝ) * α_FS = 1 ↔ Z = 137) := by
+  refine ⟨prime_137, mu_pow_137_eq_mu, ?_, fun Z _ => ?_⟩
+  · unfold α_FS; norm_num
+  · constructor
+    · intro h
+      have hZ' : (Z : ℝ) = 137 := by
+        unfold α_FS at h
+        linear_combination 137 * h
+      exact_mod_cast hZ'
+    · intro h
+      subst h
+      unfold α_FS
+      norm_num
 
 /-- **Phase-preservation closure summary**:
     The derivation chain from the Kernel to Z = 137 is fully dimensionless:
