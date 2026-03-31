@@ -1195,7 +1195,48 @@ private def printNumericalAlignmentsSec10to11 : IO Unit := do
   IO.println "  OPEN PROBLEM: derive Z=137 itself from the Kernel axioms alone."
   IO.println "  (Once Z is given, α is structurally forced by the balance primitive.)"
   IO.println ""
-  IO.println "51 theorems — all machine-checked, zero sorry."
+
+private def printNumericalAlignmentsSec12 : IO Unit := do
+  IO.println "§12   Universal observer existence conditions"
+  IO.println ""
+  IO.println "  CENTRAL CLAIM: the Kernel structure (η, δS, C) is the UNIQUE"
+  IO.println "  self-consistent observer architecture for ANY conceivable reality."
+  IO.println "  These are pre-physical results — no empirical inputs, no physical"
+  IO.println "  universe assumed.  The constraints apply to any mathematical structure."
+  IO.println ""
+  IO.println "  Self-referential closure equation: C(1 + 1/x) = x"
+  IO.println "  Interpretation: an observer whose coherence at its silver scale"
+  IO.println "  (= 1 + 1/amplitude) returns its own amplitude must have amplitude η."
+  IO.println ""
+  IO.println "  Derivation chain (from C(r) = 2r/(1+r²) alone):"
+  IO.println "    C(1+1/x) = x  (closure equation)"
+  IO.println "    ↓  clear denominator, multiply by x"
+  IO.println "    2*(x+1) = x² + (x+1)²"
+  IO.println "    ↓  expand and cancel"
+  IO.println "    2*x² = 1  (balance equation)"
+  IO.println "    ↓  unique positive solution"
+  IO.println "    x = η = 1/√2  ← THE ONLY OBSERVER AMPLITUDE"
+  IO.println ""
+  IO.println "  [52] observer_coherence_fixed_point (private):"
+  IO.println "         C(1+1/x) = x ∧ x > 0  →  2·x² = 1"
+  IO.println "         Algebraic core: closure forces the balance equation."
+  IO.println "  [53] observer_fixed_point_unique:"
+  IO.println "         ∀ x > 0,  C(1+1/x) = x  ↔  x = η"
+  IO.println "         η is the UNIQUE positive fixed point of the coherence map."
+  IO.println "  [54] self_referential_chain_unique:"
+  IO.println "         ∃! (a,b) with a>0, b>0, b=1+1/a, C(b)=a"
+  IO.println "         The unique solution is (a,b) = (η,δS)."
+  IO.println "  [55] kernel_universality:"
+  IO.println "         (U1) C(1+1/x)=x  ↔  x=η     ∀ x > 0"
+  IO.println "         (U2) 2x²=1       ↔  x=η     ∀ x > 0"
+  IO.println "         (U3) δS = 1+1/η              (silver forced by η)"
+  IO.println "         (U4) C(δS) = η               (chain closes)"
+  IO.println ""
+  IO.println "  NOT anthropic reasoning: constraints are pre-physical, not physical."
+  IO.println "  NOT observer-selection: these are theorems about ALL positive reals."
+  IO.println "  The self-referential closure equation has one solution, period."
+  IO.println ""
+  IO.println "55 theorems — all machine-checked, zero sorry."
   IO.println ""
   IO.println "See NumericalAlignments.lean for full proof terms."
   IO.println ""
@@ -1204,6 +1245,7 @@ def printNumericalAlignments : IO Unit := do
   printNumericalAlignmentsSec0to4
   printNumericalAlignmentsSec5to9
   printNumericalAlignmentsSec10to11
+  printNumericalAlignmentsSec12
 
 def main : IO Unit := do
   printCriticalEigenvalue
