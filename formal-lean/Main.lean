@@ -1236,7 +1236,40 @@ private def printNumericalAlignmentsSec12 : IO Unit := do
   IO.println "  NOT observer-selection: these are theorems about ALL positive reals."
   IO.println "  The self-referential closure equation has one solution, period."
   IO.println ""
-  IO.println "55 theorems — all machine-checked, zero sorry."
+
+private def printNumericalAlignmentsSec13 : IO Unit := do
+  IO.println "§13   Phase preservation and the primality of 137"
+  IO.println ""
+  IO.println "  137 mod 8 = 1.  That is the whole thing."
+  IO.println ""
+  IO.println "  Since μ⁸ = 1, the balance primitive has order 8 on the unit circle."
+  IO.println "  For any Z with Z ≡ 1 (mod 8):"
+  IO.println "    μ^Z = μ^(8·(Z/8)+1) = (μ⁸)^(Z/8) · μ = 1·μ = μ"
+  IO.println ""
+  IO.println "  Z=137 satisfies three simultaneous conditions:"
+  IO.println "    (P) 137 is prime          — irreducible coupling"
+  IO.println "    (M) 137 ≡ 1 (mod 8)       — phase preserved: μ¹³⁷ = μ"
+  IO.println "    (C) 137 · α_FS = 1         — unit closure: V_137 closes onto unit circle"
+  IO.println ""
+  IO.println "  Primes ≡ 1 (mod 8): 17, 41, 73, 89, 97, 113, 137, ..."
+  IO.println "  None of 17, 41, 73, 89, 97, 113 satisfies p·α_FS = 1 (since α_FS = 1/137)."
+  IO.println "  137 is the UNIQUE prime simultaneously satisfying (P), (M), and (C)."
+  IO.println ""
+  IO.println "  Derivation chain (fully dimensionless):"
+  IO.println "    μ (balance primitive)  →  μ⁸ = 1  →  Z ≡ 1 mod 8  →  μ^Z = μ"
+  IO.println "    Z prime  ∧  Z·α_FS = 1  →  Z = 137"
+  IO.println ""
+  IO.println "  [56] cong_137_mod8:  137 % 8 = 1              (by decide)"
+  IO.println "  [57] prime_137:      Nat.Prime 137             (by decide)"
+  IO.println "  [58] mu_pow_phase_preserved:"
+  IO.println "         Z % 8 = 1  →  μ^Z = μ"
+  IO.println "  [59] mu_pow_137_eq_mu:  μ^137 = μ             (corollary)"
+  IO.println "  [60] z137_prime_mod8_closure:"
+  IO.println "         Nat.Prime 137  ∧  μ^137 = μ  ∧  137·α_FS = 1"
+  IO.println "         ∧  (∀ Z > 0, Z·α_FS = 1  ↔  Z = 137)"
+  IO.println "  [61] z137_derivation_chain:  summary of the full chain"
+  IO.println ""
+  IO.println "61 theorems — all machine-checked, zero sorry."
   IO.println ""
   IO.println "See NumericalAlignments.lean for full proof terms."
   IO.println ""
@@ -1246,6 +1279,7 @@ def printNumericalAlignments : IO Unit := do
   printNumericalAlignmentsSec5to9
   printNumericalAlignmentsSec10to11
   printNumericalAlignmentsSec12
+  printNumericalAlignmentsSec13
 
 def main : IO Unit := do
   printCriticalEigenvalue

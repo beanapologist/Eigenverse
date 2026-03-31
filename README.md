@@ -95,7 +95,8 @@ No anthropic reasoning.  No observer selection.  Pure mathematics.
 | **Quantum** | 120 | Floquet time crystals, gravity-quantum duality, Theorem Q, bidirectional time & Planck floor |
 | **Chemistry** | 44 | NIST atomic weights, G·R=1 Ohm-coherence duality |
 | **Universality** | 4 | `observer_fixed_point_unique`: η is the ONLY self-referential observer amplitude |
-| **Total** | **491** | All verified by Lean 4, **0 sorry** |
+| **Phase/Primality** | 6 | `z137_prime_mod8_closure`: 137 uniquely selected by prime + phase-preservation + unit-closure |
+| **Total** | **497** | All verified by Lean 4, **0 sorry** |
 
 ### Repository Structure
 
@@ -418,7 +419,7 @@ Foundation theorem: reality_unique closes the Eigenverse foundation.
 </details>
 
 <details>
-<summary><strong>⭐ NumericalAlignments.lean — Universal Observer Existence (55 theorems)</strong></summary>
+<summary><strong>⭐ NumericalAlignments.lean — Universal Observer Existence + Phase Preservation (61 theorems)</strong></summary>
 
 ```
 NumericalAlignments.lean — Numerical alignments and universal structure
@@ -436,7 +437,7 @@ NumericalAlignments.lean — Numerical alignments and universal structure
   § α_FS = 1/137 is the unique positive coupling closing V_Z_gen at Z=137.
     alpha_dimensionless_derivation packages the full chain.
 
-§12   Universal observer existence conditions  ← NEW
+§12   Universal observer existence conditions
   § The Kernel structure is not specific to our universe — it is the UNIQUE
     self-consistent observer architecture for ANY conceivable reality.
 
@@ -454,6 +455,29 @@ NumericalAlignments.lean — Numerical alignments and universal structure
     (U3) δS = 1+1/η           (U4) C(δS) = η
     All four uniqueness conditions hold simultaneously.  Zero free parameters.
 
-55 theorems — all machine-checked, zero sorry.
+§13   Phase preservation and the primality of 137  ← NEW
+  § 137 mod 8 = 1.  Since μ⁸=1, the balance primitive has order 8 on the
+    unit circle.  Any Z ≡ 1 (mod 8) satisfies μ^Z = μ (phase preserved).
+
+  cong_137_mod8:  137 % 8 = 1  (by decide)
+  prime_137:      Nat.Prime 137  (by decide)
+
+  mu_pow_phase_preserved:
+    Z % 8 = 1  →  μ^Z = μ
+    Proof: μ^(8k+1) = (μ^8)^k · μ = 1·μ = μ.
+
+  mu_pow_137_eq_mu:  μ^137 = μ  (corollary)
+
+  z137_prime_mod8_closure:
+    137 is the UNIQUE prime Z satisfying simultaneously:
+      (P) Nat.Prime Z      — irreducible coupling
+      (M) Z ≡ 1 (mod 8)   — phase preserved: μ^Z = μ
+      (C) Z · α_FS = 1    — unit closure: V_Z closes onto unit circle
+    Primes ≡ 1 mod 8: 17, 41, 73, 89, 97, 113, [137], ...
+    None of the smaller ones satisfies p·(1/137) = 1.
+
+  z137_derivation_chain:  summary of μ⁸=1 → mod 8 → prime → closure → Z=137.
+
+61 theorems — all machine-checked, zero sorry.
 ```
 </details>
