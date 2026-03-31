@@ -1052,7 +1052,8 @@ def printBalanceHypothesis : IO Unit := do
   IO.println "See BalanceHypothesis.lean for full proof terms."
   IO.println ""
 
-def printNumericalAlignments : IO Unit := do
+-- Split into smaller helpers to avoid Lean 4 `maxRecDepth` in long do-blocks.
+private def printNumericalAlignmentsSec0to4 : IO Unit := do
   IO.println "==================================================="
   IO.println " NumericalAlignments.lean — Physical Constants and Mathematical Structures"
   IO.println "==================================================="
@@ -1103,6 +1104,8 @@ def printNumericalAlignments : IO Unit := do
   IO.println "  [21] alignment_nist_hydrogen_below_koide_carbon : aw_H < (2/3)·aw_C"
   IO.println "  [22] alignment_mass_ratio_dominates_alpha_inv   : 1/α_FS < protonElectronRatio"
   IO.println ""
+
+private def printNumericalAlignmentsSec5to9 : IO Unit := do
   IO.println "§5    Navier-Stokes turbulence consistency"
   IO.println ""
   IO.println "  [23] alignment_turbulence_rotation_unitary  : |μ| = 1"
@@ -1137,6 +1140,8 @@ def printNumericalAlignments : IO Unit := do
   IO.println "  [34] limit_theorem_Q_conditions_independent : Q conditions hold independently"
   IO.println "  [35] limit_alpha_ordering_holds_for_any_small_coupling : ordering holds for any ε<C(δS)"
   IO.println ""
+
+private def printNumericalAlignmentsSec10to11 : IO Unit := do
   IO.println "§10   V_Z quantization, rotation, and balance ray derivations"
   IO.println ""
   IO.println "  V_Z(Z) = Z·α_FS·μ  — Z-indexed phasor on the balance ray  arg=3π/4"
@@ -1194,6 +1199,11 @@ def printNumericalAlignments : IO Unit := do
   IO.println ""
   IO.println "See NumericalAlignments.lean for full proof terms."
   IO.println ""
+
+def printNumericalAlignments : IO Unit := do
+  printNumericalAlignmentsSec0to4
+  printNumericalAlignmentsSec5to9
+  printNumericalAlignmentsSec10to11
 
 def main : IO Unit := do
   printCriticalEigenvalue
