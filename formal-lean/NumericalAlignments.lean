@@ -1277,7 +1277,7 @@ theorem z137_prime_mod8_closure :
     (∀ Z : ℕ, 0 < Z → ((Z : ℝ) * α_FS = 1 ↔ Z = 137)) := by
   refine ⟨prime_137, mu_pow_137_eq_mu, ?_, ?_⟩
   · unfold α_FS; norm_num
-  · intro _
+  · intro Z _
     constructor
     · intro h
       have hZ' : (Z : ℝ) = 137 := by
