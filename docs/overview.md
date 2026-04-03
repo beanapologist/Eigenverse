@@ -76,6 +76,9 @@ src/                            # Lean modules organised by topic
 └── Eigenverse.lean             # Single-import entry point
 
 docs/                           # Documentation
+├── overview.md             # Module table, layout, design principles, quick start
+├── architecture.md         # Deeper architectural notes
+└── quantum-wiki.md         # Quantum Wiki: testing assumptions, experiments, misconceptions
 examples/                       # Worked demonstrations
 tests/                          # Cross-module consistency checks
 ```
