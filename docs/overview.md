@@ -40,7 +40,8 @@ to follow from the stated axioms — no hand-waving, no gaps.
 | **ForwardClassicalTime** | Forward-time frustration harvesting | 21 |
 | **Chemistry** | NIST atomic weights, isotopic abundances, mass conservation | 20 |
 | **NumericalAlignments** | Dimensionless derivations §0–§13; V_Z quantization; α from closure; universal observer uniqueness; μ¹³⁷=μ | 61 |
-| **Total** | | **552** |
+| **Cosmology** | Morris–Thorne wormhole metric; throat & flare-out; asymptotic flatness; Einstein–Rosen bridge | 20 |
+| **Total** | | **572** |
 
 ---
 

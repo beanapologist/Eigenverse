@@ -65,12 +65,13 @@ noncomputable section
 -- Definitions
 -- ════════════════════════════════════════════════════════════════════════════
 
-/-- The temporal metric coefficient e^{2Φ(r)} in the Morris–Thorne line element.
+/-- The positive temporal coefficient e^{2Φ(r)} appearing in the Morris–Thorne line element.
 
     The full temporal component of the metric is g_tt = −e^{2Φ(r)}, so the
-    redshift function Φ(r) controls gravitational time dilation.  For Φ(r) = 0
-    (tidal-force-free wormhole) this coefficient equals 1, meaning clocks run
-    at the same rate at every point. -/
+    redshift function Φ(r) controls gravitational time dilation.  This function
+    returns the positive factor e^{2Φ(r)} only; the negative sign is part of the
+    full metric tensor.  For Φ(r) = 0 (tidal-force-free wormhole) this coefficient
+    equals 1, meaning clocks run at the same rate at every point. -/
 noncomputable def mt_temporal_coeff (Φ : ℝ → ℝ) (r : ℝ) : ℝ := Real.exp (2 * Φ r)
 
 /-- The radial metric denominator 1 − b(r)/r in the Morris–Thorne line element.
