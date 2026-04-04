@@ -4,7 +4,7 @@
   Canonical repository: https://github.com/beanapologist/Eigenverse
 
   Import this single file to bring the entire Lean-verified Eigenverse into
-  scope.  Eigenverse currently contains **615 theorems** across seven domains,
+  scope.  Eigenverse currently contains **615 theorems** across six domains,
   all verified by the Lean 4 type-checker with zero `sorry` placeholders.
 
   The name "Eigenverse" reflects the central object that drives every structure
