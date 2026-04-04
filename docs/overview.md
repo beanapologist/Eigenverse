@@ -65,6 +65,7 @@ formal-lean/                    # Lean 4 source files (the proof engine)
 ├── ForwardClassicalTime.lean   # Forward frustration (21)
 ├── Chemistry.lean              # NIST atomic weights (20)
 ├── NumericalAlignments.lean    # Dimensionless derivations §0–§13 (61)
+├── Cosmology.lean              # Morris–Thorne wormholes (20)
 └── Main.lean                   # Executable entry-point
 
 src/                            # Lean modules organised by topic
@@ -73,6 +74,7 @@ src/                            # Lean modules organised by topic
 ├── physics/FundamentalConstants.lean
 ├── quantum/QuantumUniverse.lean
 ├── chemistry/AtomicUniverse.lean
+├── cosmology/Wormholes.lean    # Wormhole geometry
 └── Eigenverse.lean             # Single-import entry point
 
 docs/                           # Documentation
