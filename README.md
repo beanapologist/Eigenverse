@@ -97,8 +97,8 @@ No anthropic reasoning.  No observer selection.  Pure mathematics.
 | **KernelAxle + SilverCoherence + OhmTriality + ForwardClassicalTime** | 94 | η amplitude, C(δS)=√2/2, Ohm G·R=1, forward-time frustration |
 | **Chemistry** | 20 | NIST atomic weights, isotopic compositions, mass conservation |
 | **NumericalAlignments** | 61 | Dimensionless derivations, V_Z quantization, α from closure, universal observer uniqueness, μ¹³⁷=μ |
-| **Cosmology** | 20 | Morris–Thorne wormhole metric, throat & flare-out, asymptotic flatness, Einstein–Rosen bridge |
-| **Total** | **572** | All verified by Lean 4, **0 sorry** |
+| **Cosmology** | 34 | Morris–Thorne wormhole metric; §1–6 wormhole geometry; §7 cosmic energy budget (Planck 2018: Ω_Λ≈68.3%, Ω_dm≈26.8%, Ω_b≈4.9%) |
+| **Total** | **586** | All verified by Lean 4, **0 sorry** |
 
 ### Repository Structure
 
@@ -136,7 +136,7 @@ formal-lean/                    ← Lean 4 proof files (the proof engine)
 ├── Chemistry.lean              NIST atomic weights & isotopic compositions (20)
 │
 │  NUMERICAL ALIGNMENTS (added)
-├── Cosmology.lean              Morris–Thorne wormholes; throat, flare-out, asymptotic flatness (20)
+├── Cosmology.lean              Morris–Thorne wormholes; cosmic energy budget §1–§7 (34)
 ├── NumericalAlignments.lean    Dimensionless derivations §0–§13; V_Z quantization;
 │                               α from closure; universal observer uniqueness;
 │                               phase preservation μ¹³⁷=μ; primality of 137 (61)
@@ -161,7 +161,7 @@ tests/                      ← Cross-module consistency checks
 ```bash
 cd formal-lean/
 lake exe cache get   # download Mathlib cache (~5 min, avoids 1 h build)
-lake build           # verify all 572 theorems, 0 sorry
+lake build           # verify all 586 theorems, 0 sorry
 lake exe formalLean  # print theorem summary
 ```
 

@@ -152,6 +152,7 @@ Defines and proves:
 - Asymptotic flatness: b(r)/r → 0 and g_rr → 1 as r → ∞.
 - Toy wormhole (Phi = 0): angular coefficient b₀² + r² is positive and symmetric.
 - Einstein–Rosen bridge: Schwarzschild shape b(r) = 2M satisfies throat condition at r = 2M.
+- Cosmic energy budget (Planck 2018 ΛCDM): Ω_Λ=683/1000, Ω_dm=268/1000, Ω_b=49/1000; flatness Ω_Λ+Ω_dm+Ω_b=1; dark sector=95.1%; ordering Ω_b<Ω_dm<Ω_Λ.
 
 ---
 

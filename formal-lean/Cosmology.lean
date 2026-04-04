@@ -47,10 +47,11 @@
   4.  Asymptotic flatness
   5.  Toy wormhole metric (Φ = 0, angular coefficient b₀² + r²)
   6.  Einstein–Rosen bridge (Schwarzschild case b(r) = 2M)
+  7.  Cosmic energy budget (Planck 2018 ΛCDM best fit)
 
   Proof status
   ────────────
-  All 20 theorems have complete machine-checked proofs.
+  All 34 theorems have complete machine-checked proofs.
   No `sorry` placeholders remain.
 -/
 
@@ -346,5 +347,127 @@ theorem schwarzschild_throat_denom_zero (M : ℝ) (hM : M ≠ 0) :
     collapses to a point and the wormhole geometry degenerates. -/
 theorem einstein_rosen_throat_pos (M : ℝ) (hM : 0 < M) : 0 < 2 * M :=
   by linarith
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- §7  Cosmic energy budget (Planck 2018 ΛCDM best fit)
+-- The energy content of the observable universe divides into three components:
+--   • Dark energy (cosmological constant Λ):  Ω_Λ  ≈ 68.3 %  (683/1000)
+--   • Cold dark matter (non-baryonic):         Ω_dm ≈ 26.8 %  (268/1000)
+--   • Baryonic (ordinary) matter:              Ω_b  ≈  4.9 %  ( 49/1000)
+-- These are the Planck 2018 CMB best-fit values for a spatially flat universe.
+-- Flatness: Ω_total = Ω_Λ + Ω_dm + Ω_b = 1 (to this level of approximation).
+-- Source: Planck 2018 Results VI, A&A 641, A6 (2020), Table 2.
+-- ════════════════════════════════════════════════════════════════════════════
+
+/-- Dark energy fraction of the total cosmic energy density (Planck 2018 ΛCDM).
+
+    Ω_Λ = 683/1000 ≈ 68.3 %.  The cosmological constant Λ acts as a
+    homogeneous, isotropic vacuum energy that drives the accelerated expansion
+    of the universe first observed in 1998 (Riess et al.; Perlmutter et al.). -/
+noncomputable def omega_de : ℝ := 683 / 1000
+
+/-- Cold dark matter fraction of the total cosmic energy density (Planck 2018 ΛCDM).
+
+    Ω_dm = 268/1000 ≈ 26.8 %.  Dark matter is non-luminous, non-baryonic,
+    and interacts only gravitationally.  Its existence is inferred from galaxy
+    rotation curves, gravitational lensing, and large-scale structure. -/
+noncomputable def omega_dm : ℝ := 268 / 1000
+
+/-- Baryonic (ordinary) matter fraction of the total cosmic energy density
+    (Planck 2018 ΛCDM).
+
+    Ω_b = 49/1000 ≈ 4.9 %.  Baryonic matter comprises protons, neutrons, and
+    electrons — all atoms and molecules.  It is the only component that emits,
+    absorbs, or scatters light, yet it constitutes less than 5 % of the
+    cosmic energy budget. -/
+noncomputable def omega_b : ℝ := 49 / 1000
+
+/-- The dark energy fraction is strictly positive. -/
+theorem omega_de_pos : 0 < omega_de := by
+  show (0 : ℝ) < 683 / 1000; norm_num
+
+/-- The dark matter fraction is strictly positive. -/
+theorem omega_dm_pos : 0 < omega_dm := by
+  show (0 : ℝ) < 268 / 1000; norm_num
+
+/-- The baryonic matter fraction is strictly positive. -/
+theorem omega_b_pos : 0 < omega_b := by
+  show (0 : ℝ) < 49 / 1000; norm_num
+
+/-- The three energy components sum to 1: Ω_Λ + Ω_dm + Ω_b = 1.
+
+    This is the flatness condition for the ΛCDM universe: 683 + 268 + 49 = 1000.
+    A spatially flat universe has total energy density equal to the critical
+    density ρ_c = 3H₀²/(8πG), consistent with CMB measurements of the acoustic
+    horizon scale. -/
+theorem omega_sum_one : omega_de + omega_dm + omega_b = 1 := by
+  show (683 : ℝ) / 1000 + 268 / 1000 + 49 / 1000 = 1; norm_num
+
+/-- Dark energy is strictly less than 1 (it does not constitute the entire universe). -/
+theorem omega_de_lt_one : omega_de < 1 := by
+  show (683 : ℝ) / 1000 < 1; norm_num
+
+/-- Dark energy is the dominant component: Ω_dm < Ω_Λ.
+
+    Dark energy (≈ 68.3 %) exceeds dark matter (≈ 26.8 %).  This dominance
+    of Λ over matter is a relatively recent development in cosmic history:
+    matter–Λ equality occurred at redshift z ≈ 0.3. -/
+theorem dark_energy_dominant : omega_dm < omega_de := by
+  show (268 : ℝ) / 1000 < 683 / 1000; norm_num
+
+/-- Dark matter exceeds baryonic matter: Ω_b < Ω_dm.
+
+    Cold dark matter (≈ 26.8 %) is more than five times more abundant than
+    ordinary baryonic matter (≈ 4.9 %).  This ratio is constrained by Big Bang
+    nucleosynthesis, baryon acoustic oscillations, and CMB anisotropies. -/
+theorem dark_matter_gt_baryonic : omega_b < omega_dm := by
+  show (49 : ℝ) / 1000 < 268 / 1000; norm_num
+
+/-- Dark energy exceeds baryonic matter: Ω_b < Ω_Λ. -/
+theorem dark_energy_gt_baryonic : omega_b < omega_de := by
+  show (49 : ℝ) / 1000 < 683 / 1000; norm_num
+
+/-- Dark energy constitutes more than half the universe: Ω_Λ > 1/2.
+
+    The majority of the cosmic energy budget is dark energy.  This majority
+    is the engine of cosmic acceleration: the universe's expansion rate has
+    been increasing since z ≈ 0.7. -/
+theorem dark_energy_majority : (1 : ℝ) / 2 < omega_de := by
+  show (1 : ℝ) / 2 < 683 / 1000; norm_num
+
+/-- The dark sector (dark energy + dark matter) overwhelmingly dominates ordinary matter.
+
+    Ω_Λ + Ω_dm = 951/1000 ≈ 95.1 %, while Ω_b ≈ 4.9 %.  The universe is
+    "dark" in the sense that ≈ 95 % of its energy content is inaccessible to
+    electromagnetic observation. -/
+theorem dark_sector_gt_baryonic : omega_b < omega_de + omega_dm := by
+  show (49 : ℝ) / 1000 < 683 / 1000 + 268 / 1000; norm_num
+
+/-- The total dark sector fraction equals 951/1000 ≈ 95.1 %. -/
+theorem dark_sector_total : omega_de + omega_dm = 951 / 1000 := by
+  show (683 : ℝ) / 1000 + 268 / 1000 = 951 / 1000; norm_num
+
+/-- Strict energy ordering: baryonic matter < dark matter < dark energy.
+
+    This total ordering Ω_b < Ω_dm < Ω_Λ captures the hierarchy of the cosmic
+    energy budget: ordinary matter is the smallest component, dark matter is
+    intermediate, and dark energy is dominant. -/
+theorem cosmic_energy_ordering :
+    omega_b < omega_dm ∧ omega_dm < omega_de := by
+  exact ⟨dark_matter_gt_baryonic, dark_energy_dominant⟩
+
+/-- Baryonic matter is the smallest of the three components:
+    Ω_b < Ω_dm and Ω_b < Ω_Λ. -/
+theorem baryonic_smallest :
+    omega_b < omega_dm ∧ omega_b < omega_de :=
+  ⟨dark_matter_gt_baryonic, dark_energy_gt_baryonic⟩
+
+/-- Baryonic (ordinary) matter constitutes less than 10 % of the universe: Ω_b < 1/10.
+
+    At ≈ 4.9 %, all stars, planets, gas clouds, and atoms together amount to
+    less than a tenth of the cosmic energy budget.  The remaining ≥ 95 %
+    consists of dark matter and dark energy. -/
+theorem omega_b_lt_tenth : omega_b < 1 / 10 := by
+  show (49 : ℝ) / 1000 < 1 / 10; norm_num
 
 end

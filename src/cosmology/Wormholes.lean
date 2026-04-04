@@ -43,8 +43,18 @@
   Schwarzschild solution and is non-traversable.  Traversable wormholes require
   exotic matter violating the null energy condition (NEC).
 
-  Reference: Morris, M. S. & Thorne, K. S. (1988). Wormholes in spacetime and
-  their use for interstellar travel. *Am. J. Phys.* **56**, 395–412.
+  The cosmic energy budget section (§7) formalises the Planck 2018 ΛCDM composition:
+    • omega_de  = 683/1000 ≈ 68.3 %  (dark energy / cosmological constant Λ)
+    • omega_dm  = 268/1000 ≈ 26.8 %  (cold dark matter)
+    • omega_b   =  49/1000 ≈  4.9 %  (baryonic / ordinary matter)
+  Key results: Ω_Λ + Ω_dm + Ω_b = 1 (flatness); Ω_Λ > 1/2 (dark energy majority);
+  dark sector = 95.1 %; ordering Ω_b < Ω_dm < Ω_Λ.
+
+  References:
+  • Morris, M. S. & Thorne, K. S. (1988). Wormholes in spacetime and
+    their use for interstellar travel. *Am. J. Phys.* **56**, 395–412.
+  • Planck Collaboration (2020). Planck 2018 Results VI.
+    *A&A* **641**, A6. (Table 2, ΛCDM best fit)
 -/
 
 import FormalLean.Cosmology
