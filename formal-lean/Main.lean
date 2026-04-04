@@ -27,6 +27,7 @@ import Quantization
 import Chemistry
 import BalanceHypothesis
 import NumericalAlignments
+import Cosmology
 
 set_option maxRecDepth 2000 in
 def printCriticalEigenvalue : IO Unit := do
@@ -1281,6 +1282,103 @@ def printNumericalAlignments : IO Unit := do
   printNumericalAlignmentsSec12
   printNumericalAlignmentsSec13
 
+set_option maxRecDepth 2000 in
+def printCosmology : IO Unit := do
+  IO.println "════════════════════════════════════════════════════════════════════════"
+  IO.println " Cosmology — Wormhole Geometry & Cosmic Energy Budget"
+  IO.println "════════════════════════════════════════════════════════════════════════"
+  IO.println ""
+  IO.println "  Morris–Thorne traversable wormhole metric (Morris & Thorne 1988):"
+  IO.println "    ds² = −e^{2Φ} dt² + dr²/(1−b/r) + r²(dθ² + sin²θ dφ²)"
+  IO.println "  where Φ(r) = redshift function, b(r) = shape function, r₀ = throat radius."
+  IO.println "  Units: G = c = 1.  Einstein field equations: G_μν = 8π T_μν."
+  IO.println ""
+  IO.println "§1    Temporal metric component  e^{2Φ}"
+  IO.println ""
+  IO.println "  [1]  mt_temporal_pos          : 0 < e^{2Φ(r)}  for all Φ, r"
+  IO.println "  [2]  mt_zero_redshift_temporal : e^{2·0} = 1  (no time dilation)"
+  IO.println "  [3]  mt_temporal_ge_one        : Φ ≥ 0  →  e^{2Φ} ≥ 1"
+  IO.println ""
+  IO.println "§2    Throat geometry: metric denominators and g_rr"
+  IO.println ""
+  IO.println "  [4]  mt_throat_denom_zero    : b(r₀)=r₀ → 1−b(r₀)/r₀ = 0"
+  IO.println "                                  (coordinate singularity at throat)"
+  IO.println "  [5]  mt_radial_denom_pos     : r₀<r → 0 < 1−r₀/r  (no horizon)"
+  IO.println "  [6]  mt_grr_pos              : r₀<r → 0 < g_rr  (positive definite)"
+  IO.println "  [7]  mt_radial_denom_flat_space: b=0 → denom = 1  (flat Minkowski)"
+  IO.println ""
+  IO.println "§3    Flare-out condition for traversability"
+  IO.println ""
+  IO.println "  [8]  mt_constant_shape_hasDerivAt : HasDerivAt (fun _ => b₀) 0 r₀"
+  IO.println "  [9]  mt_constant_shape_deriv      : deriv (fun _ => b₀) r₀ = 0"
+  IO.println "  [10] mt_constant_flare_out        : b'(r₀) = 0 < 1  ← flare-out satisfied"
+  IO.println ""
+  IO.println "§4    Asymptotic flatness"
+  IO.println ""
+  IO.println "  [11] mt_asymptotic_flat          : ∃ R, r>R → r₀/r < ε  (b(r)/r → 0)"
+  IO.println "  [12] mt_grr_denom_approaches_one : ∃ R, r>R → |denom−1| < ε  (g_rr→1)"
+  IO.println "  [13] mt_shape_ratio_decreasing   : r₁<r₂ → r₀/r₂ < r₀/r₁"
+  IO.println ""
+  IO.println "§5    Toy wormhole metric (Φ = 0, angular coeff b₀² + r²)"
+  IO.println ""
+  IO.println "  [14] toy_angular_pos          : b₀>0 → 0 < b₀²+r²  (non-degenerate)"
+  IO.println "  [15] toy_angular_lower_bound  : b₀² ≤ b₀²+r²  (throat is minimum)"
+  IO.println "  [16] toy_angular_symmetric    : b₀²+r² = b₀²+(−r)²  (Z₂ symmetry)"
+  IO.println "  [17] toy_angular_monotone     : r₁²≤r₂² → b₀²+r₁²≤b₀²+r₂²  (flares out)"
+  IO.println ""
+  IO.println "§6    Einstein–Rosen bridge (Schwarzschild case b(r) = 2M)"
+  IO.println ""
+  IO.println "  [18] schwarzschild_throat_condition   : (fun _ => 2M)(2M) = 2M"
+  IO.println "  [19] schwarzschild_throat_denom_zero  : 1−2M/2M = 0  (horizon singularity)"
+  IO.println "  [20] einstein_rosen_throat_pos        : M>0 → 0 < 2M  (positive throat)"
+  IO.println ""
+  IO.println "§7    Cosmic energy budget (Planck 2018 ΛCDM best fit)"
+  IO.println ""
+  IO.println "  Data source: Planck 2018 Results VI, A&A 641, A6 (2020), Table 2."
+  IO.println "  Flat ΛCDM: Ω_Λ + Ω_dm + Ω_b = 1.  Components:"
+  IO.println "    omega_de  = 683/1000 ≈ 68.3 %   (dark energy / cosmological constant)"
+  IO.println "    omega_dm  = 268/1000 ≈ 26.8 %   (cold dark matter)"
+  IO.println "    omega_b   =  49/1000 ≈  4.9 %   (baryonic / ordinary matter)"
+  IO.println ""
+  IO.println "  [21] omega_de_pos            : 0 < omega_de  (dark energy > 0)"
+  IO.println "  [22] omega_dm_pos            : 0 < omega_dm  (dark matter > 0)"
+  IO.println "  [23] omega_b_pos             : 0 < omega_b   (baryonic > 0)"
+  IO.println "  [24] omega_sum_one           : omega_de + omega_dm + omega_b = 1"
+  IO.println "         ← FLATNESS CONDITION: Ω_total = 1"
+  IO.println "  [25] omega_de_lt_one         : omega_de < 1  (not the whole universe)"
+  IO.println "  [26] dark_energy_dominant    : omega_dm < omega_de  (68.3 > 26.8)"
+  IO.println "  [27] dark_matter_gt_baryonic : omega_b < omega_dm   (26.8 > 4.9)"
+  IO.println "  [28] dark_energy_gt_baryonic : omega_b < omega_de   (68.3 > 4.9)"
+  IO.println "  [29] dark_energy_majority    : 1/2 < omega_de       (Λ > 50 %)"
+  IO.println "         ← dark energy drives accelerated cosmic expansion"
+  IO.println "  [30] dark_sector_gt_baryonic : omega_b < omega_de + omega_dm"
+  IO.println "  [31] dark_sector_total       : omega_de + omega_dm = 951/1000  (95.1 %)"
+  IO.println "         ← 95 % of the universe is 'dark'"
+  IO.println "  [32] cosmic_energy_ordering  : omega_b < omega_dm ∧ omega_dm < omega_de"
+  IO.println "         ← full hierarchy: baryonic < dark matter < dark energy"
+  IO.println "  [33] baryonic_smallest       : omega_b < omega_dm ∧ omega_b < omega_de"
+  IO.println "  [34] omega_b_lt_tenth        : omega_b < 1/10  (ordinary matter < 10 %)"
+  IO.println "         ← all atoms/stars/planets = less than a tenth of the universe"
+  IO.println ""
+  IO.println "34 theorems — all machine-checked, zero sorry."
+  IO.println ""
+  IO.println "Key results (wormhole §1–§6):"
+  IO.println "  • Temporal component e^{2Φ} > 0 everywhere → no temporal event horizon."
+  IO.println "  • Throat at b(r₀)=r₀ is a removable coordinate singularity."
+  IO.println "  • Flare-out b'(r₀)<1 is satisfied by constant shape (b'=0<1)."
+  IO.println "  • Asymptotic flatness: g_rr → 1 and b(r)/r → 0 as r → ∞."
+  IO.println "  • Toy metric has positive-definite angular coefficient b₀²+r² > 0."
+  IO.println "  • Schwarzschild bridge: throat at r=2M, non-traversable event horizon."
+  IO.println ""
+  IO.println "Key results (cosmic budget §7):"
+  IO.println "  • Flatness: Ω_Λ + Ω_dm + Ω_b = 1 (683+268+49 = 1000)."
+  IO.println "  • Dark energy is majority: Ω_Λ ≈ 68.3 % > 50 %."
+  IO.println "  • Dark sector total: Ω_Λ + Ω_dm ≈ 95.1 %."
+  IO.println "  • Ordering: Ω_b < Ω_dm < Ω_Λ (baryonic < dark matter < dark energy)."
+  IO.println ""
+  IO.println "See Cosmology.lean for full proof terms."
+  IO.println ""
+
 def main : IO Unit := do
   printCriticalEigenvalue
   printTimeCrystal
@@ -1298,3 +1396,4 @@ def main : IO Unit := do
   printChemistry
   printBalanceHypothesis
   printNumericalAlignments
+  printCosmology

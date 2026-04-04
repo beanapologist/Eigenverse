@@ -4,7 +4,7 @@
   Canonical repository: https://github.com/beanapologist/Eigenverse
 
   Import this single file to bring the entire Lean-verified Eigenverse into
-  scope.  Eigenverse currently contains **450 theorems** across five domains,
+  scope.  Eigenverse currently contains **586 theorems** across six domains,
   all verified by the Lean 4 type-checker with zero `sorry` placeholders.
 
   The name "Eigenverse" reflects the central object that drives every structure
@@ -31,6 +31,8 @@
   │                   bidirectional time, Planck floor              │
   │  Chemistry      Chemistry, OhmTriality                           │
   │                 → NIST atomic weights, G·R=1 duality             │
+  │  Cosmology      Cosmology                                        │
+  │                 → Morris–Thorne wormholes, cosmic energy budget   │
   └──────────────────────────────────────────────────────────────────┘
 
   Note: The crypto-application modules (PumpFunBot, EthereumTradingBot,
@@ -56,3 +58,4 @@ import FormalLean.ForwardClassicalTime
 import FormalLean.BidirectionalTime
 import FormalLean.Chemistry
 import FormalLean.OhmTriality
+import FormalLean.Cosmology

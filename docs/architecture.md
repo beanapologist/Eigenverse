@@ -49,6 +49,7 @@ Mathlib
   └─ SilverCoherence     (standalone)
   └─ KernelAxle          (standalone)
   └─ ForwardClassicalTime (standalone)
+  └─ Cosmology           (standalone)
 ```
 
 > **Not in Eigenverse:** `PumpFunBot`, `EthereumTradingBot`,
@@ -140,6 +141,18 @@ sub-unit bound on planck_frustration, bidirectional double quantum).
 ### `Chemistry.lean`
 NIST 2016 standard atomic weights; isotopic abundances for H, He, C, N, O;
 weighted-average mass theorem; 20 theorems, 0 sorry.
+
+### `Cosmology.lean`
+Morris–Thorne traversable wormhole geometry (Morris & Thorne 1988).
+Defines and proves:
+- Temporal metric component e^{2Φ}: always positive; equals 1 for Φ = 0 (tidal-force-free).
+- Throat geometry: 1 − b(r)/r vanishes at throat (b(r₀) = r₀); is positive for r > r₀.
+- Radial metric component g_rr = (1−b/r)⁻¹: positive and finite away from throat.
+- Flare-out condition b′(r₀) < 1: satisfied by constant shape function (b′ = 0).
+- Asymptotic flatness: b(r)/r → 0 and g_rr → 1 as r → ∞.
+- Toy wormhole (Phi = 0): angular coefficient b₀² + r² is positive and symmetric.
+- Einstein–Rosen bridge: Schwarzschild shape b(r) = 2M satisfies throat condition at r = 2M.
+- Cosmic energy budget (Planck 2018 ΛCDM): Ω_Λ=683/1000, Ω_dm=268/1000, Ω_b=49/1000; flatness Ω_Λ+Ω_dm+Ω_b=1; dark sector=95.1%; ordering Ω_b<Ω_dm<Ω_Λ.
 
 ---
 
