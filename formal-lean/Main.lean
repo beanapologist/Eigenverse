@@ -1388,7 +1388,8 @@ def printParticles : IO Unit := do
   IO.println ""
   IO.println "  Structures: Electron, Proton, Quark  (mass, charge, spin / colorCharge)"
   IO.println "  All masses in MeV/c².  Charges in units of elementary charge e."
-  IO.println "  Data sources: CODATA 2018 (lepton/proton masses), PDG 2020 (quark masses)."
+  IO.println "  Data sources: CODATA 2018 (lepton/proton masses), PDG 2020 (quark masses).
+  Quark masses use MS-bar scheme at μ=2 GeV (light quarks) / μ=m_q (heavy quarks)."
   IO.println ""
   IO.println "§1    Particle structures"
   IO.println ""

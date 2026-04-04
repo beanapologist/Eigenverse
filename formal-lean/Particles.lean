@@ -10,6 +10,12 @@
   All masses are given in MeV/c² (megaelectronvolt per speed-of-light squared).
   Charges are given in units of the elementary charge e (e = 1 in natural units).
 
+  Quark mass note: quark current masses are given in the MS-bar renormalization
+  scheme at the scale μ = 2 GeV for light quarks (u, d, s) and at μ = m_q for
+  heavy quarks (c, b, t), following PDG 2020 convention.  These are central
+  values; the full uncertainties are listed in the PDG Review of Particle Physics
+  (Prog. Theor. Exp. Phys. 2020, 083C01, Table 1.1).
+
   Structures
   ──────────
   Three record types bundle the fundamental properties of each particle kind:

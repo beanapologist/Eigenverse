@@ -602,6 +602,8 @@ NumericalAlignments.lean — Dimensionless self-referential derivations
   Structures: Electron, Proton, Quark  (mass, charge, spin / colorCharge)
   All masses in MeV/c².  Charges in units of elementary charge e.
   Data sources: CODATA 2018 (lepton/proton masses), PDG 2020 (quark masses).
+  Quark masses: MS-bar scheme at μ=2 GeV (light quarks u,d,s) / μ=m_q (heavy quarks c,b,t).
+  Central values only; see PDG 2020 Table 1.1 for full uncertainties.
 
 §2    Electron properties  (CODATA 2018)
 

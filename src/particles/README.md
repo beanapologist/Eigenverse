@@ -175,17 +175,24 @@ all proofs on every push to the repository.
 
 All constants follow CODATA 2018 and PDG 2020 recommendations.
 
-| Constant | Symbol | Value | Unit | Source |
+**Quark mass scheme**: quark current masses are given in the
+[MS-bar renormalization scheme](https://pdg.lbl.gov/2020/tables/rpp2020-sum-quarks.pdf):
+- Light quarks (u, d, s): evaluated at μ = 2 GeV.
+- Heavy quarks (c, b, t): evaluated at the quark mass scale μ = m_q.
+
+All values are PDG 2020 central values; see PDG Table 1.1 for full uncertainties.
+
+| Constant | Symbol | Value | Unit | Source / Scheme |
 |---|---|---|---|---|
-| Electron mass | m_e | 0.51099895 | MeV/c² | CODATA 2018 |
-| Proton mass | m_p | 938.272 | MeV/c² | CODATA 2018 |
+| Electron mass | m_e | 51099895/100000000 ≈ 0.511 | MeV/c² | CODATA 2018 |
+| Proton mass | m_p | 938272/1000 = 938.272 | MeV/c² | CODATA 2018 |
 | Elementary charge | e | 1 (natural units) | — | convention |
-| Up quark mass | m_u | 2.16 | MeV/c² | PDG 2020 |
-| Down quark mass | m_d | 4.67 | MeV/c² | PDG 2020 |
-| Strange quark mass | m_s | 93.4 | MeV/c² | PDG 2020 |
-| Charm quark mass | m_c | 1270 | MeV/c² | PDG 2020 |
-| Bottom quark mass | m_b | 4180 | MeV/c² | PDG 2020 |
-| Top quark mass | m_t | 172760 | MeV/c² | PDG 2020 |
+| Up quark mass | m_u | 2.16 | MeV/c² | PDG 2020, MS-bar at 2 GeV |
+| Down quark mass | m_d | 4.67 | MeV/c² | PDG 2020, MS-bar at 2 GeV |
+| Strange quark mass | m_s | 93.4 | MeV/c² | PDG 2020, MS-bar at 2 GeV |
+| Charm quark mass | m_c | 1270 | MeV/c² | PDG 2020, MS-bar at m_c |
+| Bottom quark mass | m_b | 4180 | MeV/c² | PDG 2020, MS-bar at m_b |
+| Top quark mass | m_t | 172760 | MeV/c² | PDG 2020, MS-bar at m_t |
 
 ---
 
