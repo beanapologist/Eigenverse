@@ -34,6 +34,20 @@
   ── Check 6: Zero-sorry audit ───────────────────────────────────────────────
   No module in formal-lean/ contains a `sorry`.  This is enforced by the
   CI workflow (.github/workflows/lean-proof-check.yml).
+
+  ── Check 7: Particle charge conservation ────────────────────────────────────
+  Particles.proton_charge_from_quarks: 2·q_up + q_down = q_proton = 1
+  Particles.neutron_charge_neutral: q_up + 2·q_down = 0
+  Both follow from q_up = 2/3 and q_down = -1/3 by norm_num.
+
+  ── Check 8: Electron–proton charge cancel ───────────────────────────────────
+  Particles.electron_proton_charge_cancel: q_electron + q_proton = 0
+  Also aliased as Particles.hydrogen_atom_neutral.
+
+  ── Check 9: Particle mass hierarchy ─────────────────────────────────────────
+  Particles.proton_heavier_than_electron: m_electron < m_proton
+  Consistent with ParticleMass.protonElectronRatio = 1836:
+  m_proton / m_electron ≈ 938.272 / 0.511 ≈ 1836  (verified separately).
 -/
 
 -- Cross-module consistency is enforced at build time; no runtime checks needed.
