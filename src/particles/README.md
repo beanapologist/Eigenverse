@@ -29,7 +29,7 @@ each particle family.
 
 ```lean
 structure Electron where
-  mass   : ℝ   -- rest mass in MeV/c²  (CODATA 2018: 0.51099895)
+  mass   : ℝ   -- rest mass in MeV/c²  (CODATA 2018: 51099895/100000000 ≈ 0.511 MeV/c²)
   charge : ℝ   -- electric charge in units of e  (value: −1)
   spin   : ℝ   -- spin quantum number in units of ℏ/2  (value: 1 = spin-½)
 ```

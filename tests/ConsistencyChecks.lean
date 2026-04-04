@@ -33,7 +33,7 @@
 
   ── Check 6: Zero-sorry audit ───────────────────────────────────────────────
   No module in formal-lean/ contains a `sorry`.  This is enforced by the
-  CI workflow (.github/workflows/lean-proof-check.yml).
+  CI workflow (.github/workflows/lean-proofs.yml).
 
   ── Check 7: Particle charge conservation ────────────────────────────────────
   Particles.proton_charge_from_quarks: 2·q_up + q_down = q_proton = 1
