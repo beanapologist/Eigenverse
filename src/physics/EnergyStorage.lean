@@ -14,7 +14,7 @@
                          threshold; doubling σ provides safety margin.
     • Overpotential      30 % reduction (50 mV → 35 mV) via flux homogenization.
     • Durability         4× cycling improvement: 500 h → 2000+ h.
-    • Sustainability     Na is 1,180× more abundant than Li (23,600 vs 20 ppm);
+    • Sustainability     Na is >1,000× more abundant than Li (23,600 vs 20 ppm);
                          210 Wh/kg practical energy density exceeds 150 Wh/kg
                          viability threshold; no critical minerals.
 

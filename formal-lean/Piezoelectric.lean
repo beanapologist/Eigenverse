@@ -401,10 +401,13 @@ noncomputable def Li_crustal_ppm : ℝ := 20
 
 /-- Theoretical specific energy of the hard-carbon / PBA Na-ion cell: 300 Wh/kg.
 
-    Derived from the cathode-limited matched capacity (hard carbon delivers
-    ~300 mAh/g; PBA cathode ~150 mAh/g at ~3.4 V; cell energy density
-    bounded by the lower of the two per the matched-capacity design rule).
-    Value rounded to 300 Wh/kg as a conservative theoretical target. -/
+    Representative theoretical target for a full-cell Na-ion design (hard carbon
+    anode + Prussian Blue Analog cathode + NASICON electrolyte).  The full-cell
+    energy density at the electrode-pair level (accounting for both electrode
+    masses) is significantly lower than single-electrode figures; 300 Wh/kg is
+    the conservative theoretical ceiling used by Na-ion developers (e.g., the
+    CATL and HiNa targets).  Published experimental Na-ion full cells
+    currently achieve 150–200 Wh/kg; 300 Wh/kg is the near-term stretch goal. -/
 noncomputable def specific_energy_Na_ion : ℝ := 300  -- Wh/kg
 
 /-- Practical efficiency fraction for piezoelectric-enhanced Na-ion cells: 70 %.
@@ -435,8 +438,9 @@ theorem Na_more_abundant_than_Li : Li_crustal_ppm < Na_crustal_ppm := by
 /-- Sodium is over 1,000 times more abundant than lithium in Earth's crust:
         1000 · Li_crustal_ppm ≤ Na_crustal_ppm  (20,000 ≤ 23,600).
 
-    This factor-of-1,180 abundance advantage means sodium supply cannot be
-    depleted or geographically controlled at any realistic deployment scale,
+    This over-1,000× abundance advantage (the actual ratio is 23,600/20 = 1,180,
+    but the theorem proves the weaker bound ≥1,000×) means sodium supply cannot
+    be depleted or geographically controlled at any realistic deployment scale,
     making Na-ion chemistry fundamentally more sustainable than lithium-ion. -/
 theorem Na_thousand_times_more_abundant :
     1000 * Li_crustal_ppm ≤ Na_crustal_ppm := by
