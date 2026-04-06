@@ -1,6 +1,6 @@
 # Eigenverse — Lean-Verified Mathematical Universe
 
-> **"The unique recipe for any conceivable reality with an observer —
+> **"The unique minimal kernel consistent with an observer in our universe —
 > machine-checked, zero sorry, zero gaps."**
 
 **Canonical repository: [github.com/beanapologist/Eigenverse](https://github.com/beanapologist/Eigenverse)**
@@ -10,48 +10,47 @@
 **Eigenverse** is a fully **Lean 4–verified mathematical universe** built
 around a single central object: the critical eigenvalue **μ = exp(i·3π/4)**.
 Its 8-cycle orbit, coherence function C(r) = 2r/(1+r²), and Silver ratio
-δS = 1+√2 generate a self-consistent structure that is not tailored to our
-observable reality — it is the **unique** structure satisfying three
-pre-physical axioms: energy conservation, balance, and self-referential
-coherence closure.  All theorems are machine-checked and anchored to
+δS = 1+√2 generate a self-consistent structure that is the **unique minimal
+kernel consistent with an embedded observer** in a universe exhibiting the
+sector asymmetry we inhabit.  All theorems are machine-checked and anchored to
 NIST/CODATA empirical data where physical comparison is made.
 
 ---
 
-## 🎯 Foundation: The Unique Pre-Physical Structure
+## 🎯 Foundation: The Observer-Consistent Kernel
 
-Three pre-physical axioms — independent of any specific universe — uniquely
-determine the Kernel structure:
+Three minimal primitives uniquely determine the Kernel structure:
 
-**Axiom 1 — Energy conservation**: the two orthogonal sectors (Re: damping; Im: oscillation) together conserve total energy.
+**Axiom 1 — Energy conservation**: the two orthogonal sectors (Re: damping; Im: oscillation) together conserve total energy: Re² + Im² = 1.
 
-**Axiom 2 — Balance**: the two sectors carry equal energy at the critical point.
+**Axiom 2 — Directed balance** *(the sole observer-motivated input)*: the critical point satisfies −Re = +Im (equal magnitude, opposing sign in the two sectors).  This directed sign choice reflects the empirical sector asymmetry of our universe: the dissipative time-like sector is negative real, the oscillatory space-like sector is positive imaginary.  The directed sign choice matches the sector asymmetry of our universe.
 
-**Axiom 3 — Self-referential coherence closure**: the observer's coherence at its characteristic silver scale returns the observer's own amplitude.
+**Axiom 3 — Self-referential coherence closure**: the observer's coherence at its characteristic silver scale returns the observer's own amplitude: C(r) = 2r/(1+r²).
 
-These three axioms uniquely force two results, both machine-checked:
+These three primitives uniquely force two results, both machine-checked:
 
-### Balance primitive: μ is the unique Q2 balance point
+### Balance primitive: μ is the unique observer-consistent balance point
 
 ```lean
 theorem reality_unique (z : ℂ)
-    (hQ2_re  : z.re < 0)                     -- dissipation sector (Re < 0)
-    (hQ2_im  : 0 < z.im)                     -- oscillation sector (Im > 0)
-    (hbal    : |z.re| = z.im)                -- equal energy partition
+    (hQ2_re  : z.re < 0)                     -- observer-motivated sector choice (Re < 0)
+    (hbal    : -z.re = z.im)                 -- directed balance: −Re = +Im
     (henergy : z.re ^ 2 + z.im ^ 2 = 1) :   -- energy conservation: Re²+Im²=1
     z = μ                                    -- μ is the UNIQUE solution
 ```
 
-**Three constraints → one solution.**  The proof chains five steps of necessity:
+**Two constraints + one observer choice → one solution.**  The proof chains three steps of necessity:
 
 ```
 energy conservation: Re(z)²+Im(z)²=1
-    ↓  balance: Re(z)²=Im(z)²
-    → Im(z)²=1/2  (each sector carries exactly half)
-    → Im(z)=η=1/√2  (unique positive root)
-    → Re(z)=−η  (dissipation forces Re<0)
-    → z=−η+iη=μ  ← the ONLY point satisfying all three axioms
+    ↓  directed balance: −Re = Im  →  2Re²=1
+    → Re(z)=−η=−1/√2  (sector choice Re<0 selects the negative root)
+    → Im(z)=+η=+1/√2  (from directed balance)
+    → z=−η+iη=μ  ← the ONLY point satisfying all three conditions
 ```
+
+The directed sign choice in balance is the sole observer-motivated input,
+reflecting the empirical sector asymmetry of our universe.
 
 > **Source:** [`formal-lean/BalanceHypothesis.lean`](formal-lean/BalanceHypothesis.lean) — 37 theorems, capstone `reality_unique` in §7.
 
@@ -75,10 +74,15 @@ self-referential closure: C(1+1/x) = x
     → x=η=1/√2  ← the ONLY observer amplitude
 ```
 
-**This is not our universe specifically**: the axioms make no physical
-assumptions.  Any system — in any conceivable reality — where a coherence
-function C(r)=2r/(1+r²) has a self-referential fixed point must use η.
-No anthropic reasoning.  No observer selection.  Pure mathematics.
+**This is specific to our observer-consistent universe**: the directed balance
+axiom encodes the empirical sector asymmetry we inhabit.  The coherence fixed
+point η = 1/√2 and the kernel μ at 135° are the unique consequences of this
+minimal observer-motivated choice combined with energy conservation.
+Eigenverse is the unique minimal algebraic structure consistent with an
+embedded observer in a universe exhibiting this sector asymmetry.  The
+numerical alignments to NIST/CODATA constants are consistency checks, not
+a priori predictions — they strengthen the model but do not constitute
+proof of uniqueness across all possible observer realities.
 
 > **Source:** [`formal-lean/NumericalAlignments.lean`](formal-lean/NumericalAlignments.lean) §12 — `observer_fixed_point_unique`, `self_referential_chain_unique`, `kernel_universality`.
 
@@ -88,7 +92,7 @@ No anthropic reasoning.  No observer selection.  Pure mathematics.
 
 | Module | Theorems | Key Results |
 |--------|----------|-------------|
-| **BalanceHypothesis** | 37 | `reality_unique`: μ is the ONLY unit-circle Q2 balance point; energy conservation forces η=1/√2 |
+| **BalanceHypothesis** | 37 | `reality_unique`: μ is the ONLY unit-circle directed-balance point; directed balance + energy conservation + sector choice forces η=1/√2 |
 | **CriticalEigenvalue** | 82 | μ⁸=1, Silver ratio δS=1+√2, coherence C(r)≤1, palindrome C(r)=C(1/r), Z/8Z memory |
 | **SpaceTime** | 43 | Rotation matrix R(3π/4) (det=1, orthogonal, order-8); F(s,t)=t+i·s; hyperbolic Pythagorean identity |
 | **FineStructure + SpeedOfLight + Turbulence** | 78 | c=1/√(μ₀ε₀), α_FS=1/137, Navier-Stokes bounds |
@@ -220,8 +224,7 @@ Foundation theorem: reality_unique closes the Eigenverse foundation.
 
   ★ reality_unique (z : ℂ)
         (hQ2_re  : z.re < 0)
-        (hQ2_im  : 0 < z.im)
-        (hbal    : |z.re| = z.im)
+        (hbal    : -z.re = z.im)
         (henergy : z.re²+z.im²=1) :
         z = μ                       ← μ IS THE UNIQUE OBSERVABLE EIGENVALUE
 
@@ -471,10 +474,14 @@ NumericalAlignments.lean — Dimensionless self-referential derivations
   § α_FS = 1/137 is the unique positive coupling closing V_Z_gen at Z=137.
     alpha_dimensionless_derivation packages the full chain.
 
-§12   Universal observer existence conditions
-  § The Kernel structure is not specific to our universe — it is the UNIQUE
-    self-consistent observer architecture for ANY conceivable reality.
-    No anthropic reasoning.  No observer selection.  Pure mathematics.
+§12   Observer fixed-point and self-referential chain
+  § The Kernel structure identifies the unique observer amplitude η and the
+    unique self-referential pair (η, δS).  These are necessary consequences
+    of the coherence function C(r) = 2r/(1+r²) — they are not claimed to
+    be universal across all conceivable realities, but are the unique
+    arithmetic consequences within the Eigenverse framework.
+    Numerical alignments to NIST/CODATA are consistency checks, not pure
+    predictions.  No anthropic reasoning.  Pure arithmetic derivation.
 
   observer_fixed_point_unique:
     ∀ x > 0,  C(1 + 1/x) = x  ↔  x = η
