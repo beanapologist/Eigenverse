@@ -23,7 +23,7 @@ Three minimal primitives uniquely determine the Kernel structure:
 
 **Axiom 1 — Energy conservation**: the two orthogonal sectors (Re: damping; Im: oscillation) together conserve total energy: Re² + Im² = 1.
 
-**Axiom 2 — Directed balance** *(observer-motivated sector encoding)*: the critical point satisfies −Re = +Im (equal magnitude, opposing sign in the two sectors).  Combined with the sector selection Re < 0, this encodes the empirical asymmetry of our universe: the dissipative time-like sector is negative real, the oscillatory space-like sector is positive imaginary.  These two observer-motivated inputs together pin down the unique Q2 solution.
+**Axiom 2 — Directed balance** *(observer-motivated sector encoding)*: the critical point satisfies −Re = +Im (equal magnitude, opposing sign in the two sectors).  The sector selection Re < 0 further identifies the dissipative time-like sector as negative real.  Together, these two observer-motivated inputs encode the empirical sector asymmetry of our universe and pin down the unique Q2 solution.
 
 **Axiom 3 — Self-referential coherence closure**: the observer's coherence at its characteristic silver scale returns the observer's own amplitude: C(r) = 2r/(1+r²).
 
