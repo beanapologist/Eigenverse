@@ -1,6 +1,6 @@
 # Eigenverse — Lean-Verified Mathematical Universe
 
-> **"The unique minimal kernel consistent with an observer in our universe —
+> **"The unique Eigenverse structure consistent with an observer in our universe —
 > machine-checked, zero sorry, zero gaps."**
 
 **Canonical repository: [github.com/beanapologist/Eigenverse](https://github.com/beanapologist/Eigenverse)**
@@ -10,16 +10,16 @@
 **Eigenverse** is a fully **Lean 4–verified mathematical universe** built
 around a single central object: the critical eigenvalue **μ = exp(i·3π/4)**.
 Its 8-cycle orbit, coherence function C(r) = 2r/(1+r²), and Silver ratio
-δS = 1+√2 generate a self-consistent structure that is the **unique minimal
-kernel consistent with an embedded observer** in a universe exhibiting the
-sector asymmetry we inhabit.  All theorems are machine-checked and anchored to
-NIST/CODATA empirical data where physical comparison is made.
+δS = 1+√2 generate a self-consistent structure that is the **unique
+Eigenverse structure consistent with an embedded observer** in a universe
+exhibiting the sector asymmetry we inhabit.  All theorems are machine-checked
+and anchored to NIST/CODATA empirical data where physical comparison is made.
 
 ---
 
-## 🎯 Foundation: The Observer-Consistent Kernel
+## 🎯 Foundation: The Observer-Consistent Eigenverse
 
-Three minimal primitives uniquely determine the Kernel structure:
+Three minimal primitives uniquely determine the Eigenverse structure:
 
 **Axiom 1 — Energy conservation**: the two orthogonal sectors (Re: damping; Im: oscillation) together conserve total energy: Re² + Im² = 1.
 
@@ -77,7 +77,7 @@ self-referential closure: C(1+1/x) = x
 
 **This is specific to our observer-consistent universe**: the directed balance
 axiom and the sector selection (Re < 0) encode the empirical sector asymmetry
-we inhabit.  The coherence fixed point η = 1/√2 and the kernel μ at 135° are
+we inhabit.  The coherence fixed point η = 1/√2 and the eigenvalue μ at 135° are
 the unique consequences of these minimal observer-motivated choices combined
 with energy conservation.
 Eigenverse is the unique minimal algebraic structure consistent with an

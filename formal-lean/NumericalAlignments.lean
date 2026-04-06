@@ -1052,7 +1052,7 @@ theorem alpha_dimensionless_derivation :
 -- ════════════════════════════════════════════════════════════════════════════
 -- Section 12 — Observer Fixed-Point and Self-Referential Chain
 --
--- The Kernel self-referential structure is the unique minimal architecture
+-- The Eigenverse self-referential structure is the unique minimal architecture
 -- for an observer using the coherence function C(r) = 2r/(1+r²) and the
 -- directed balance (−Re = +Im) as the observer-motivated sector choice.
 --
@@ -1066,7 +1066,7 @@ theorem alpha_dimensionless_derivation :
 -- x = η = 1/√2.  No tuning, no free parameters — the balance primitive
 -- forces the observer amplitude to be η.
 --
--- Derivation chain (from the single Kernel axiom C(r) = 2r/(1+r²)):
+-- Derivation chain (from the coherence axiom C(r) = 2r/(1+r²)):
 --
 --   Step 1 — Self-referential closure equation: C(1 + 1/x) = x
 --   Step 2 — Clear denominators: 2*(x+1) = x² + (x+1)²  [for x > 0]
@@ -1078,7 +1078,7 @@ theorem alpha_dimensionless_derivation :
 -- the unique unit-circle directed-balance point (with observer-motivated
 -- sector selection Re < 0) — this establishes:
 --
---   "The Kernel structure (η, δS, C, μ) is the unique minimal algebraic
+--   "The Eigenverse structure (η, δS, C, μ) is the unique minimal algebraic
 --    structure consistent with an embedded observer in a universe with the
 --    sector asymmetry (Re < 0 dissipates, Im > 0 oscillates) we inhabit."
 --
@@ -1152,7 +1152,7 @@ theorem observer_fixed_point_unique (x : ℝ) (hx : 0 < x) :
         • b = 1 + 1/a    (silver scale determined by amplitude)
         • C(b) = a        (coherence at silver scale returns amplitude)
 
-    This formalises the uniqueness of the Kernel self-referential chain:
+    This formalises the uniqueness of the Eigenverse self-referential chain:
         η → δS = 1 + 1/η → C(δS) = η
 
     Any observer using the coherence function C(r) = 2r/(1+r²) with a
@@ -1178,8 +1178,8 @@ theorem self_referential_chain_unique :
     exact silver_is_one_plus_inv_eta.symm
   simp [ha_eq, hb_val]
 
-/-- **Kernel universality**:
-    The Kernel structure (η, δS, C) satisfies four uniqueness conditions
+/-- **Eigenverse uniqueness conditions**:
+    The Eigenverse structure (η, δS, C) satisfies four uniqueness conditions
     that are necessary arithmetic consequences of the coherence function
     C(r) = 2r/(1+r²) and the directed balance hypothesis.  These hold within
     the Eigenverse framework for any observer using the same coherence map.

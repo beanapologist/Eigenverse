@@ -1202,7 +1202,7 @@ private def printNumericalAlignmentsSec10to11 : IO Unit := do
 private def printNumericalAlignmentsSec12 : IO Unit := do
   IO.println "§12   Observer fixed-point and self-referential chain"
   IO.println ""
-  IO.println "  The Kernel structure (η, δS, C) is the unique minimal architecture"
+  IO.println "  The Eigenverse structure (η, δS, C) is the unique minimal architecture"
   IO.println "  for an observer using directed balance (−Re = +Im) and sector selection"
   IO.println "  (Re < 0) with coherence C(r) = 2r/(1+r²).  The directed balance and"
   IO.println "  sector selection are the observer-motivated inputs; all further structure"
