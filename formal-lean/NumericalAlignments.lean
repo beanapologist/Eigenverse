@@ -1059,7 +1059,8 @@ theorem alpha_dimensionless_derivation :
 -- An "observer" here means a system whose coherence at its characteristic
 -- silver scale returns its own amplitude: C(1 + 1/x) = x.  This is the
 -- minimal formal definition of self-referential closure.  The directed
--- balance is the sole observer-motivated input encoding sector asymmetry.
+-- balance and sector selection are the two observer-motivated inputs
+-- encoding sector asymmetry.
 --
 -- The main result is that this equation has exactly ONE positive solution:
 -- x = η = 1/√2.  No tuning, no free parameters — the balance primitive
@@ -1082,8 +1083,9 @@ theorem alpha_dimensionless_derivation :
 --    sector asymmetry (Re < 0 dissipates, Im > 0 oscillates) we inhabit."
 --
 -- The numerical alignments to NIST/CODATA constants are consistency checks,
--- not a priori predictions.  The directed balance is the sole observer-
--- motivated input; all further structure follows as arithmetic necessity.
+-- not a priori predictions.  The directed balance and sector selection are
+-- the observer-motivated inputs; all further structure follows as
+-- arithmetic necessity.
 -- ════════════════════════════════════════════════════════════════════════════
 
 /-- **Algebraic core of observer uniqueness**:
@@ -1192,9 +1194,10 @@ theorem self_referential_chain_unique :
          C(δS) = η
 
     Together these say: the pair (η, δS) and the chain η → δS → η are
-    the unique arithmetic consequences of the directed balance and coherence
-    closure.  The directed balance (−Re = +Im) is the sole observer-motivated
-    input; everything else follows as mathematical necessity. -/
+    the unique arithmetic consequences of the directed balance, sector
+    selection, and coherence closure.  The directed balance and sector
+    selection are the observer-motivated inputs; everything else follows
+    as mathematical necessity. -/
 theorem kernel_universality :
     -- (U1) self-referential coherence fixed point is unique: η
     (∀ x : ℝ, 0 < x → (C (1 + 1 / x) = x ↔ x = η)) ∧

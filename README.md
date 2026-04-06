@@ -23,7 +23,7 @@ Three minimal primitives uniquely determine the Kernel structure:
 
 **Axiom 1 — Energy conservation**: the two orthogonal sectors (Re: damping; Im: oscillation) together conserve total energy: Re² + Im² = 1.
 
-**Axiom 2 — Directed balance** *(the sole observer-motivated input)*: the critical point satisfies −Re = +Im (equal magnitude, opposing sign in the two sectors).  This directed sign choice reflects the empirical sector asymmetry of our universe: the dissipative time-like sector is negative real, the oscillatory space-like sector is positive imaginary.  The directed sign choice matches the sector asymmetry of our universe.
+**Axiom 2 — Directed balance** *(observer-motivated sector encoding)*: the critical point satisfies −Re = +Im (equal magnitude, opposing sign in the two sectors).  Combined with the sector selection Re < 0, this encodes the empirical asymmetry of our universe: the dissipative time-like sector is negative real, the oscillatory space-like sector is positive imaginary.  These two observer-motivated inputs together pin down the unique Q2 solution.
 
 **Axiom 3 — Self-referential coherence closure**: the observer's coherence at its characteristic silver scale returns the observer's own amplitude: C(r) = 2r/(1+r²).
 
@@ -49,8 +49,9 @@ energy conservation: Re(z)²+Im(z)²=1
     → z=−η+iη=μ  ← the ONLY point satisfying all three conditions
 ```
 
-The directed sign choice in balance is the sole observer-motivated input,
-reflecting the empirical sector asymmetry of our universe.
+The directed balance equation and sector selection (Re < 0) are the
+observer-motivated inputs, together reflecting the empirical sector
+asymmetry of our universe.
 
 > **Source:** [`formal-lean/BalanceHypothesis.lean`](formal-lean/BalanceHypothesis.lean) — 37 theorems, capstone `reality_unique` in §7.
 
@@ -75,9 +76,10 @@ self-referential closure: C(1+1/x) = x
 ```
 
 **This is specific to our observer-consistent universe**: the directed balance
-axiom encodes the empirical sector asymmetry we inhabit.  The coherence fixed
-point η = 1/√2 and the kernel μ at 135° are the unique consequences of this
-minimal observer-motivated choice combined with energy conservation.
+axiom and the sector selection (Re < 0) encode the empirical sector asymmetry
+we inhabit.  The coherence fixed point η = 1/√2 and the kernel μ at 135° are
+the unique consequences of these minimal observer-motivated choices combined
+with energy conservation.
 Eigenverse is the unique minimal algebraic structure consistent with an
 embedded observer in a universe exhibiting this sector asymmetry.  The
 numerical alignments to NIST/CODATA constants are consistency checks, not

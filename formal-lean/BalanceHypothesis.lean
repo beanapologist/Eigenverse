@@ -9,9 +9,10 @@
   ║       −Re(μ) = Im(μ) = η = 1/√2 ≈ 0.7071,                           ║
   ║   where the balance equation 2η² = 1 forces the unique solution.       ║
   ║                                                                          ║
-  ║   The directed sign choice −Re = +Im is the sole observer-motivated    ║
-  ║   input: it reflects the empirical sector asymmetry of our universe     ║
-  ║   (dissipative time-like sector Re < 0; oscillatory space-like Im > 0).║
+  ║   Two observer-motivated inputs pin down the sector:                    ║
+  ║     (1) Directed balance −Re = +Im (equal magnitude, opposite sign).   ║
+  ║     (2) Sector selection Re < 0 (dissipative/time-like sector).        ║
+  ║   Together they reflect the empirical asymmetry of our universe.        ║
   ║                                                                          ║
   ║   Physical interpretation (see GravityQuantumDuality):                  ║
   ║     • Negative real axis  →  gravity / time / dissipation               ║
@@ -502,7 +503,7 @@ theorem conservation_forces_eta (z : ℂ)
     (hbal    : -z.re = z.im)
     (hre_neg : z.re < 0) :
     z.im = η := by
-  -- z.im > 0: directed balance + sector selection (z.re < 0) → -z.re > 0 → z.im > 0
+  -- z.im > 0: directed balance (-z.re = z.im) + sector selection (z.re < 0) → -z.re > 0 → z.im > 0
   have him_pos : 0 < z.im := by linarith
   -- z.re² = z.im²: squaring the directed balance gives (-z.re)² = z.im², i.e. z.re² = z.im²
   have h2 : 2 * z.im ^ 2 = 1 := by
@@ -557,19 +558,18 @@ theorem energy_conservation_forces_reality :
         (Balance)  −Re(z) = Im(z)           — directed balance (equal magnitude, opposite sign)
         (Energy)   Re(z)² + Im(z)² = 1      — energy conservation
 
-    The directed sign choice in the balance hypothesis is the sole
-    observer-motivated input: it reflects the empirical sector asymmetry
-    of our universe (Re < 0 dissipates time; Im > 0 oscillates space).
-    Once this minimal observer-consistent choice is made, μ emerges uniquely.
+    The directed balance equation and sector selection are the two
+    observer-motivated inputs: together they reflect the empirical sector
+    asymmetry of our universe (Re < 0 dissipates time; Im > 0 oscillates
+    space).  Once this minimal observer-consistent choice is made, μ emerges
+    uniquely.  Note that `0 < z.im` follows from these two conditions and is
+    no longer listed as a separate hypothesis.
 
     Proof outline:
       1. From Energy + directed balance + sector selection:
          `conservation_forces_eta` gives Im(z) = η.
       2. From directed balance: −Re(z) = Im(z) = η, so Re(z) = −η.
-      3. Hence z = −η + i·η = μ.
-
-    Note: `0 < z.im` is now derivable from `hbal` and `hQ2_re` and is no
-    longer listed as a separate hypothesis. -/
+      3. Hence z = −η + i·η = μ. -/
 theorem reality_unique (z : ℂ)
     (hQ2_re  : z.re < 0)
     (hbal    : -z.re = z.im)
