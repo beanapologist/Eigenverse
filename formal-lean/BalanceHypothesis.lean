@@ -5,13 +5,14 @@
   ╔══════════════════════════════════════════════════════════════════════════╗
   ║ The Balance Hypothesis                                                   ║
   ║                                                                          ║
-  ║   The critical eigenvalue μ = −η + iη satisfies the balance condition   ║
-  ║       |Re(μ)| = Im(μ) = η = 1/√2 ≈ 0.7071,                           ║
+  ║   The critical eigenvalue μ = −η + iη satisfies the directed balance   ║
+  ║       −Re(μ) = Im(μ) = η = 1/√2 ≈ 0.7071,                           ║
   ║   where the balance equation 2η² = 1 forces the unique solution.       ║
   ║                                                                          ║
-  ║   This says that the damping (negative real) and oscillation (positive  ║
-  ║   imaginary) components of μ are equal in magnitude — perfect balance   ║
-  ║   between dissipation and coherence in the complex plane.               ║
+  ║   Two observer-motivated inputs pin down the sector:                    ║
+  ║     (1) Directed balance −Re = +Im (equal magnitude, opposite sign).   ║
+  ║     (2) Sector selection Re < 0 (dissipative/time-like sector).        ║
+  ║   Together they reflect the empirical asymmetry of our universe.        ║
   ║                                                                          ║
   ║   Physical interpretation (see GravityQuantumDuality):                  ║
   ║     • Negative real axis  →  gravity / time / dissipation               ║
@@ -33,8 +34,8 @@
   We test the balance hypothesis in six independent ways:
 
   1. PRIMITIVE BALANCE (§1):
-       Prove |Re(μ)| = Im(μ) = η exactly (machine-checked).
-       This is the direct algebraic statement of the hypothesis.
+       Prove −Re(μ) = Im(μ) = η exactly (machine-checked).
+       This is the direct algebraic statement of the directed balance hypothesis.
 
   2. CRITICAL CONSTANT (§2):
        Prove η = 1/√2 is the unique positive solution to 2x² = 1.
@@ -61,21 +62,23 @@
 
   7. ENERGY CONSERVATION (§7):
        The unit-circle condition |μ|² = 1 is energy conservation: Re(μ)² +
-       Im(μ)² = 1 at every phase of the 8-cycle.  The balance condition
-       |Re(μ)| = Im(μ) is the unique equal-partition solution under this
+       Im(μ)² = 1 at every phase of the 8-cycle.  The directed balance
+       −Re(μ) = Im(μ) is the unique equal-partition solution under this
        constraint: each reservoir holds exactly 1/2.  The Lean theorem
        `conservation_forces_eta` proves that ANY unit-circle point satisfying
-       the balance condition must have Im(z) = η.  THIS is why the hypothesis
-       maps to reality: conservation + equal partition → η = 1/√2 → F(η,−η) = μ.
+       the directed balance AND sector selection (Re < 0) must have Im(z) = η.
+       THIS is why the hypothesis maps to reality: conservation + directed
+       balance → η = 1/√2 → F(η,−η) = μ.
        The capstone theorem `reality_unique` closes the foundation: μ is the
-       ONLY complex number that is simultaneously Q2, balanced, and energy-
-       conserving — uniqueness is machine-checked, not just exemplified.
+       ONLY complex number that is simultaneously sector-selected (Re < 0),
+       directed-balanced (−Re = Im), and energy-conserving — uniqueness is
+       machine-checked, not just exemplified.
 
   All seven tests pass: machine-checked proofs, zero sorry placeholders.
 
   Sections
   ────────
-  1.  Balance primitive:  |Re(μ)| = Im(μ) = η
+  1.  Balance primitive:  −Re(μ) = Im(μ) = η  (directed balance)
   2.  Critical constant:  2η² = 1 and uniqueness
   3.  Observable equilibria at the integer and μ scales
   4.  Imbalance function and zero deviation
@@ -97,9 +100,10 @@ open Complex Real
 noncomputable section
 
 -- ════════════════════════════════════════════════════════════════════════════
--- §1  Balance Primitive: |Re(μ)| = Im(μ) = η
--- The core of the hypothesis: at the critical eigenvalue μ the negative real
--- component and the positive imaginary component are equal in magnitude.
+-- §1  Balance Primitive: −Re(μ) = Im(μ) = η  (directed balance)
+-- The core of the hypothesis: at the critical eigenvalue μ the directed
+-- balance −Re(μ) = Im(μ) holds, reflecting the observer-motivated sector
+-- asymmetry (dissipative Re < 0; oscillatory Im > 0).
 -- ════════════════════════════════════════════════════════════════════════════
 
 /-- The real part of the critical eigenvalue equals the negative of the
@@ -485,50 +489,39 @@ theorem mu_pow_energy_conserved (n : ℕ) : (μ ^ n).re ^ 2 + (μ ^ n).im ^ 2 = 
 /-- **The conservation law forces the balance**.
 
     If a complex number z satisfies |z|² = 1 (energy conservation) AND
-    |Re(z)| = Im(z) (balance condition), then each component must square
-    to exactly 1/2.
+    −Re(z) = Im(z) (directed balance, observer-motivated sector choice), AND
+    z is in the dissipative sector (Re(z) < 0), then Im(z) must equal η.
 
-    The balance condition is NOT an independent assumption — it is the
-    unique solution compatible with equal-partition redistribution under
-    the conservation constraint.
+    The directed balance is the sole observer-motivated input: it encodes
+    the empirical sector asymmetry (Re < 0 dissipates, Im > 0 oscillates).
 
-    Proof: |Re z|² + Im(z)² = 1 and |Re z| = Im(z) imply 2·Im(z)² = 1,
+    Proof: from −z.re = z.im (hbal) and z.re < 0 (hre_neg), Im(z) > 0.
+    Squaring hbal gives z.re² = z.im², and energy gives 2·Im(z)² = 1,
     so Im(z) = η (balance_unique_pos). -/
 theorem conservation_forces_eta (z : ℂ)
-    (hcons : z.re ^ 2 + z.im ^ 2 = 1)
-    (hbal  : |z.re| = z.im) :
+    (hcons   : z.re ^ 2 + z.im ^ 2 = 1)
+    (hbal    : -z.re = z.im)
+    (hre_neg : z.re < 0) :
     z.im = η := by
-  -- z.im > 0: if z.im = 0 then hbal gives |z.re| = 0 so z.re = 0,
-  -- but then hcons gives 0 = 1, contradiction.
-  have him_pos : 0 < z.im := by
-    have hnn := abs_nonneg z.re
-    -- Suppose z.im ≤ 0; since |z.re| = z.im ≥ 0 we get z.im = 0,
-    -- then |z.re| = 0 implies z.re = 0, and hcons gives 0 = 1.
-    by_contra h
-    push_neg at h
-    have him_zero : z.im = 0 := le_antisymm h (hbal ▸ hnn)
-    have hre_zero : |z.re| = 0 := by rw [hbal, him_zero]
-    simp [abs_eq_zero] at hre_zero
-    rw [hre_zero, him_zero] at hcons
-    norm_num at hcons
+  -- z.im > 0: directed balance (-z.re = z.im) + sector selection (z.re < 0) → -z.re > 0 → z.im > 0
+  have him_pos : 0 < z.im := by linarith
+  -- z.re² = z.im²: squaring the directed balance gives (-z.re)² = z.im², i.e. z.re² = z.im²
   have h2 : 2 * z.im ^ 2 = 1 := by
-    -- Square both sides of hbal: z.re² = z.im²  (since |z.re|² = z.re²)
-    have hsq : z.re ^ 2 = z.im ^ 2 := by
-      have h : z.re ^ 2 = |z.re| ^ 2 := by
-        rcases abs_cases z.re with ⟨heq, _⟩ | ⟨heq, _⟩ <;> simp [heq, neg_sq]
-      rw [h, hbal]
+    have hre_eq : z.re = -z.im := by linarith
+    have hsq : z.re ^ 2 = z.im ^ 2 := by rw [hre_eq]; ring
     linarith
   exact balance_unique_pos z.im him_pos h2
 
 /-- **Summary — why it maps to reality**: the critical eigenvalue μ is the
-    unique unit-circle point satisfying the balance condition, and the balance
-    condition is itself forced by equal energy partition under conservation.
+    unique unit-circle point satisfying the directed balance condition, and the
+    directed balance is the sole observer-motivated input encoding sector
+    asymmetry.
 
     The chain of necessity:
 
         energy conserved  (|μ|² = 1)
             ↓
-        components share energy equally  (|Re| = Im)
+        directed balance (−Re = Im) + sector selection (Re < 0)
             ↓
         each component carries exactly η² = 1/2
             ↓
@@ -538,10 +531,9 @@ theorem conservation_forces_eta (z : ℂ)
 
     Physical reading: gravity (Re < 0) and quantum energy (Im > 0) are
     always in perfect competition, their magnitudes locked at η = 1/√2 by
-    the conservation of total spectral energy.  The universe sits at the
-    balance point not by accident but because it is the only point that
-    simultaneously conserves energy AND distributes it equally between the
-    two orthogonal sectors. -/
+    the conservation of total spectral energy.  The directed sign choice
+    (−Re = +Im) is the sole observer-motivated input, reflecting the
+    empirical sector asymmetry of our universe. -/
 theorem energy_conservation_forces_reality :
     -- Step 1: energy conserved
     μ.re ^ 2 + μ.im ^ 2 = 1 ∧
@@ -560,36 +552,34 @@ theorem energy_conservation_forces_reality :
    mu_is_observable_equilibrium⟩
 
 /-- **Uniqueness of μ** — the capstone result.
-    μ is the ONLY complex number simultaneously satisfying all three
-    fundamental constraints:
+    μ is the ONLY complex number simultaneously satisfying:
 
-        (Q2)     Re(z) < 0  ∧  Im(z) > 0     — second quadrant
-        (Balance)  |Re(z)| = Im(z)             — equal magnitude
-        (Energy)   Re(z)² + Im(z)² = 1         — conservation law
+        (Sector)   Re(z) < 0                — observer-motivated sector choice
+        (Balance)  −Re(z) = Im(z)           — directed balance (equal magnitude, opposite sign)
+        (Energy)   Re(z)² + Im(z)² = 1      — energy conservation
+
+    The directed balance equation and sector selection are the two
+    observer-motivated inputs: together they reflect the empirical sector
+    asymmetry of our universe (Re < 0 dissipates time; Im > 0 oscillates
+    space).  Once this minimal observer-consistent choice is made, μ emerges
+    uniquely.  Note that `0 < z.im` follows from these two conditions and is
+    no longer listed as a separate hypothesis.
 
     Proof outline:
-      1. From Energy + Balance:  `conservation_forces_eta` gives Im(z) = η.
-      2. From Balance:           |Re(z)| = Im(z) = η, so Re(z) = ±η.
-      3. From Q2 (Re(z) < 0):   Re(z) = −η.
-      4. Hence z = −η + i·η = μ.
-
-    Nothing else can be "the balance point" — it is not a choice but a
-    mathematical necessity imposed by the three constraints together. -/
+      1. From Energy + directed balance + sector selection:
+         `conservation_forces_eta` gives Im(z) = η.
+      2. From directed balance: −Re(z) = Im(z) = η, so Re(z) = −η.
+      3. Hence z = −η + i·η = μ. -/
 theorem reality_unique (z : ℂ)
-    (hQ2_re   : z.re < 0)
-    (_hQ2_im  : 0 < z.im)
-    (hbal     : |z.re| = z.im)
-    (henergy  : z.re ^ 2 + z.im ^ 2 = 1) :
+    (hQ2_re  : z.re < 0)
+    (hbal    : -z.re = z.im)
+    (henergy : z.re ^ 2 + z.im ^ 2 = 1) :
     z = μ := by
-  -- Step 1: Im(z) = η  (energy + balance → conservation_forces_eta)
-  have him : z.im = η := conservation_forces_eta z henergy hbal
-  -- Step 2: |Re(z)| = η  (substituting Im(z) = η into balance)
-  have habs_re : |z.re| = η := by rw [hbal, him]
-  -- Step 3: Re(z) = −η  (Q2 says Re(z) < 0, so |Re(z)| = −Re(z))
-  have hre : z.re = -η := by
-    have h : -z.re = η := by rw [← abs_of_neg hQ2_re, habs_re]
-    linarith
-  -- Step 4: z = μ  (component-wise equality)
+  -- Step 1: Im(z) = η  (energy + directed balance + sector selection)
+  have him : z.im = η := conservation_forces_eta z henergy hbal hQ2_re
+  -- Step 2: Re(z) = −η  (from directed balance: −z.re = z.im = η)
+  have hre : z.re = -η := by linarith
+  -- Step 3: z = μ  (component-wise equality)
   apply Complex.ext
   · rw [hre, mu_re_is_neg_eta]
   · rw [him, mu_im_is_eta]

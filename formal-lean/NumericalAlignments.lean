@@ -69,7 +69,7 @@
   9.  Epistemic limits — what the framework does not prove
   10. V_Z quantization, rotation, and balance ray derivations
   11. Dimensionless derivation of α from the V_Z closure condition
-  12. Universal observer existence conditions
+  12. Observer fixed-point and self-referential chain (directed balance)
   13. Phase preservation and the primality of 137
 
   Proof status
@@ -1050,22 +1050,23 @@ theorem alpha_dimensionless_derivation :
    fun α hα => alpha_unique_V137_closure α hα⟩
 
 -- ════════════════════════════════════════════════════════════════════════════
--- Section 12 — Universal Observer Existence Conditions
+-- Section 12 — Observer Fixed-Point and Self-Referential Chain
 --
--- The Kernel self-referential structure is not a feature of our particular
--- observable reality — it is a mathematical necessity imposed on ANY
--- conceivable reality that contains a self-consistent observer.
+-- The Eigenverse self-referential structure is the unique minimal architecture
+-- for an observer using the coherence function C(r) = 2r/(1+r²) and the
+-- directed balance (−Re = +Im) as the observer-motivated sector choice.
 --
 -- An "observer" here means a system whose coherence at its characteristic
 -- silver scale returns its own amplitude: C(1 + 1/x) = x.  This is the
--- minimal formal definition of self-referential closure — no physical
--- assumptions, no anthropomorphic content.
+-- minimal formal definition of self-referential closure.  The directed
+-- balance and sector selection are the two observer-motivated inputs
+-- encoding sector asymmetry.
 --
 -- The main result is that this equation has exactly ONE positive solution:
 -- x = η = 1/√2.  No tuning, no free parameters — the balance primitive
 -- forces the observer amplitude to be η.
 --
--- Derivation chain (from the single Kernel axiom C(r) = 2r/(1+r²)):
+-- Derivation chain (from the coherence axiom C(r) = 2r/(1+r²)):
 --
 --   Step 1 — Self-referential closure equation: C(1 + 1/x) = x
 --   Step 2 — Clear denominators: 2*(x+1) = x² + (x+1)²  [for x > 0]
@@ -1074,15 +1075,17 @@ theorem alpha_dimensionless_derivation :
 --   Step 5 — Verify: C(1 + 1/η) = C(δS) = η  ✓
 --
 -- Combined with BalanceHypothesis.reality_unique — which proves that μ is
--- the unique unit-circle Q2 balance point — this establishes:
+-- the unique unit-circle directed-balance point (with observer-motivated
+-- sector selection Re < 0) — this establishes:
 --
---   "The Kernel structure (η, δS, C, μ) is the ONLY self-consistent
---    observer architecture.  Any reality with energy conservation,
---    balance, and a self-referential coherence map must use exactly
---    these constants."
+--   "The Eigenverse structure (η, δS, C, μ) is the unique minimal algebraic
+--    structure consistent with an embedded observer in a universe with the
+--    sector asymmetry (Re < 0 dissipates, Im > 0 oscillates) we inhabit."
 --
--- This is NOT anthropic reasoning: the constraints are pre-physical.
--- They apply to any mathematical structure, not only to physical universes.
+-- The numerical alignments to NIST/CODATA constants are consistency checks,
+-- not a priori predictions.  The directed balance and sector selection are
+-- the observer-motivated inputs; all further structure follows as
+-- arithmetic necessity.
 -- ════════════════════════════════════════════════════════════════════════════
 
 /-- **Algebraic core of observer uniqueness**:
@@ -1149,11 +1152,12 @@ theorem observer_fixed_point_unique (x : ℝ) (hx : 0 < x) :
         • b = 1 + 1/a    (silver scale determined by amplitude)
         • C(b) = a        (coherence at silver scale returns amplitude)
 
-    This formalises the uniqueness of the Kernel self-referential chain:
+    This formalises the uniqueness of the Eigenverse self-referential chain:
         η → δS = 1 + 1/η → C(δS) = η
 
-    Any conceivable reality with a self-referential coherence closure must
-    instantiate exactly this chain: no free parameters remain. -/
+    Any observer using the coherence function C(r) = 2r/(1+r²) with a
+    self-referential closure must instantiate exactly this chain: no free
+    parameters remain within the Eigenverse framework. -/
 theorem self_referential_chain_unique :
     ∃! p : ℝ × ℝ, 0 < p.1 ∧ 0 < p.2 ∧ p.2 = 1 + 1 / p.1 ∧ C p.2 = p.1 := by
   have hη_pos : 0 < η := by
@@ -1174,10 +1178,11 @@ theorem self_referential_chain_unique :
     exact silver_is_one_plus_inv_eta.symm
   simp [ha_eq, hb_val]
 
-/-- **Kernel universality**:
-    The Kernel structure (η, δS, C) satisfies four uniqueness conditions
-    that hold for ANY conceivable self-referential system, not only for
-    our observable reality.
+/-- **Eigenverse uniqueness conditions**:
+    The Eigenverse structure (η, δS, C) satisfies four uniqueness conditions
+    that are necessary arithmetic consequences of the coherence function
+    C(r) = 2r/(1+r²) and the directed balance hypothesis.  These hold within
+    the Eigenverse framework for any observer using the same coherence map.
 
     (U1) Self-referential coherence closure uniquely determines η:
          C(1+1/x) = x ↔ x = η  (for all x > 0)
@@ -1189,8 +1194,10 @@ theorem self_referential_chain_unique :
          C(δS) = η
 
     Together these say: the pair (η, δS) and the chain η → δS → η are
-    the unique solution to the four pre-physical axioms, independent of
-    any physical universe.  No empirical tuning determines these values. -/
+    the unique arithmetic consequences of the directed balance, sector
+    selection, and coherence closure.  The directed balance and sector
+    selection are the observer-motivated inputs; everything else follows
+    as mathematical necessity. -/
 theorem kernel_universality :
     -- (U1) self-referential coherence fixed point is unique: η
     (∀ x : ℝ, 0 < x → (C (1 + 1 / x) = x ↔ x = η)) ∧
