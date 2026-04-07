@@ -32,7 +32,7 @@ from manim import (
     GrowArrow,
     DrawBorderThenFill,
     # Directions
-    UP, DOWN, LEFT, RIGHT,
+    UP, DOWN, LEFT, RIGHT, ORIGIN,
     UR, UL, DR,
     # Colours
     YELLOW, GOLD, BLUE_B,
