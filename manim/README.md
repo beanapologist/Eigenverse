@@ -47,7 +47,7 @@ output files into `manim/results/` to keep them alongside the project.
 | `-ql` | 480p 15 fps  | Fast local preview |
 | `-qm` | 720p 30 fps  | Medium quality     |
 | `-qh` | 1080p 60 fps | Final render       |
-| `-qk` | 2160p 60 fps | 4 K render         |
+| `-qk` | 2160p 60 fps | 4K render          |
 
 ## GitHub Actions
 
