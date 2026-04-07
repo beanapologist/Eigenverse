@@ -490,7 +490,7 @@ class EigenverseIntro(Scene):
             (COHERENCE_COLOR, r"C(\delta_S) = \tfrac{\sqrt{2}}{2}",
              "Coherence at silver scale"),
             (BLUE_B,        r"\mu^{137} = \mu",
-             r"Phase preservation (137 prime)"),
+             r"137 ≡ 1 (mod 8), phase preserved"),
             (RED_B,         r"\alpha_{\mathrm{FS}} \approx \tfrac{1}{137}",
              "Fine structure constant"),
         ]
