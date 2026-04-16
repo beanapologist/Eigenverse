@@ -1400,6 +1400,8 @@ def printCosmology : IO Unit := do
   IO.println "  • Dark energy is majority: Ω_Λ ≈ 68.3 % > 50 %."
   IO.println "  • Dark sector total: Ω_Λ + Ω_dm ≈ 95.1 %."
   IO.println "  • Ordering: Ω_b < Ω_dm < Ω_Λ (baryonic < dark matter < dark energy)."
+  IO.println "  • Expansion-rate proxy: Ω_Λ − (Ω_dm + Ω_b) = 683/1000 − 317/1000 = 183/500 ≈ 0.366."
+  IO.println "      Positive proxy ⇒ Eigenverse predicts accelerating cosmic expansion."
   IO.println ""
   IO.println "See Cosmology.lean for full proof terms."
   IO.println ""

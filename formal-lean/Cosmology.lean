@@ -382,6 +382,16 @@ noncomputable def omega_dm : ℝ := 268 / 1000
     cosmic energy budget. -/
 noncomputable def omega_b : ℝ := 49 / 1000
 
+/-- Total matter fraction (dark + baryonic) in flat ΛCDM:
+    Ω_m = Ω_dm + Ω_b = 317/1000 ≈ 31.7 %. -/
+noncomputable def omega_m : ℝ := omega_dm + omega_b
+
+/-- Dimensionless expansion-rate proxy from the measured cosmic budget:
+    Ω_Λ - Ω_m.
+
+    In a Λ-dominated universe, a positive value predicts accelerated expansion. -/
+noncomputable def expansion_rate_proxy : ℝ := omega_de - omega_m
+
 /-- The dark energy fraction is strictly positive. -/
 theorem omega_de_pos : 0 < omega_de := by
   show (0 : ℝ) < 683 / 1000; norm_num
