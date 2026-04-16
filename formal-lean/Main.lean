@@ -1287,6 +1287,32 @@ def printNumericalAlignments : IO Unit := do
   printNumericalAlignmentsSec12
   printNumericalAlignmentsSec13
 
+private def printEmpiricalSelfMeasurement : IO Unit := do
+  IO.println "==================================================="
+  IO.println " Eigenverse Empirical Self-Measurement"
+  IO.println "==================================================="
+  IO.println ""
+  IO.println "  Prompt: force Eigenverse to measure itself against measured reality."
+  IO.println ""
+  IO.println "  [M1] Fine-structure constant"
+  IO.println "       model α_FS = 1/137 = 0.0072992700729927005"
+  IO.println "       CODATA 2018 α ≈ 0.0072973525693"
+  IO.println "       |Δα| ≈ 1.9175036927×10⁻⁶   (relative ≈ 0.0262767%)"
+  IO.println ""
+  IO.println "  [M2] V_Z closure at Z = 137 using measured α"
+  IO.println "       137·α_CODATA ≈ 0.9997373019941"
+  IO.println "       miss from exact unit closure ≈ 0.0002626980059"
+  IO.println "       (exact closure occurs for the rational approximation α_FS = 1/137)."
+  IO.println ""
+  IO.println "  [M3] Proton/electron mass ratio"
+  IO.println "       model R = 1836"
+  IO.println "       CODATA 2018 R ≈ 1836.15267343"
+  IO.println "       |ΔR| ≈ 0.15267343   (relative ≈ 0.00831485%)"
+  IO.println ""
+  IO.println "  Empirical readout: close numerical agreement, with the strongest mismatch"
+  IO.println "  concentrated in the known α_FS rationalization step."
+  IO.println ""
+
 set_option maxRecDepth 2000 in
 def printCosmology : IO Unit := do
   IO.println "════════════════════════════════════════════════════════════════════════"
@@ -1401,4 +1427,5 @@ def main : IO Unit := do
   printChemistry
   printBalanceHypothesis
   printNumericalAlignments
+  printEmpiricalSelfMeasurement
   printCosmology
