@@ -1287,6 +1287,26 @@ def printNumericalAlignments : IO Unit := do
   printNumericalAlignmentsSec12
   printNumericalAlignmentsSec13
 
+private def printEmpiricalSelfMeasurement : IO Unit := do
+  IO.println "==================================================="
+  IO.println " Eigenverse Empirical Self-Measurement"
+  IO.println "==================================================="
+  IO.println ""
+  IO.println "  Step A — Eigenverse measures itself first (no external reality metrics)."
+  IO.println ""
+  IO.println "  [S1] model α_FS = 1/137 ≈ 0.007299270073"
+  IO.println "  [S2] model V_Z closure at Z=137: 137*α_FS = 1 (exact)"
+  IO.println "  [S3] model proton/electron ratio R = 1836"
+  IO.println ""
+  IO.println "  Step B — then compare what fell out to measured references."
+  IO.println ""
+  IO.println "  [C1] CODATA 2018 α ≈ 0.00729735"
+  IO.println "  [C2] 137*α_CODATA ≈ 0.999737  (deviation from exact closure ≈ 2.63e-4)"
+  IO.println "  [C3] CODATA 2018 R ≈ 1836.15267"
+  IO.println ""
+  IO.println "  Readout: self-measurement first, empirical comparison second."
+  IO.println ""
+
 set_option maxRecDepth 2000 in
 def printCosmology : IO Unit := do
   IO.println "════════════════════════════════════════════════════════════════════════"
@@ -1401,4 +1421,5 @@ def main : IO Unit := do
   printChemistry
   printBalanceHypothesis
   printNumericalAlignments
+  printEmpiricalSelfMeasurement
   printCosmology
