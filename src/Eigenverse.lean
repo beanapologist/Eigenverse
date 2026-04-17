@@ -4,7 +4,7 @@
   Canonical repository: https://github.com/beanapologist/Eigenverse
 
   Import this single file to bring the entire Lean-verified Eigenverse into
-  scope.  Eigenverse currently contains **586 theorems** across six domains,
+  scope.  Eigenverse currently contains **615 theorems** across six domains,
   all verified by the Lean 4 type-checker with zero `sorry` placeholders.
 
   The name "Eigenverse" reflects the central object that drives every structure
@@ -22,8 +22,9 @@
   │                 → rotation matrices, unit circle S¹, hyperbolic  │
   │                   Pythagorean identity, F(s,t) space-time map    │
   │  Physics        SpeedOfLight, FineStructure, ParticleMass,       │
-  │                 SpaceTime, Turbulence                             │
-  │                 → c=1/√(μ₀ε₀), α_FS, Koide, Lorentz, NS         │
+  │                 SpaceTime, Turbulence, Piezoelectric              │
+  │                 → c=1/√(μ₀ε₀), α_FS, Koide, Lorentz, NS,       │
+  │                   piezoelectric dendrite suppression, EV energy  │
   │  Quantum        TimeCrystal, GravityQuantumDuality,              │
   │                 Quantization, ForwardClassicalTime,              │
   │                 BidirectionalTime                                │
@@ -59,3 +60,4 @@ import FormalLean.BidirectionalTime
 import FormalLean.Chemistry
 import FormalLean.OhmTriality
 import FormalLean.Cosmology
+import FormalLean.Piezoelectric
