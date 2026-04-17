@@ -392,6 +392,44 @@ noncomputable def omega_m : ℝ := omega_dm + omega_b
     In a Λ-dominated universe, a positive value predicts accelerated expansion. -/
 noncomputable def expansion_rate_proxy : ℝ := omega_de - omega_m
 
+/-- In the Planck-2018 budget used here, the expansion-rate proxy is 183/500. -/
+theorem expansion_rate_proxy_value : expansion_rate_proxy = 183 / 500 := by
+  simp [expansion_rate_proxy, omega_m, omega_de, omega_dm, omega_b]
+  norm_num
+
+/-- The expansion-rate proxy is positive in the current epoch. -/
+theorem expansion_rate_proxy_pos : 0 < expansion_rate_proxy := by
+  rw [expansion_rate_proxy_value]
+  norm_num
+
+/-- Normalized time model for the expansion-rate trend from origin to present.
+
+    `t = 0` represents the origin, `t = 1` represents the present epoch. -/
+noncomputable def expansion_rate_at (t : ℝ) : ℝ :=
+  (2 * t - 1) * expansion_rate_proxy
+
+/-- At the origin (`t=0`), the model gives the negative of the present proxy. -/
+theorem expansion_rate_at_origin : expansion_rate_at 0 = -expansion_rate_proxy := by
+  simp [expansion_rate_at]
+
+/-- Midpoint transition (`t=1/2`) gives zero in the normalized model. -/
+theorem expansion_rate_at_midpoint : expansion_rate_at ((1 : ℝ) / 2) = 0 := by
+  simp [expansion_rate_at]
+
+/-- At present (`t=1`), the model recovers the current expansion-rate proxy. -/
+theorem expansion_rate_at_present : expansion_rate_at 1 = expansion_rate_proxy := by
+  simp [expansion_rate_at]
+
+/-- Quarter-time sample value in the normalized expansion-rate model. -/
+theorem expansion_rate_at_quarter : expansion_rate_at ((1 : ℝ) / 4) = -(183 / 1000 : ℝ) := by
+  rw [expansion_rate_at, expansion_rate_proxy_value]
+  norm_num
+
+/-- Three-quarter-time sample value in the normalized expansion-rate model. -/
+theorem expansion_rate_at_three_quarters : expansion_rate_at ((3 : ℝ) / 4) = (183 / 1000 : ℝ) := by
+  rw [expansion_rate_at, expansion_rate_proxy_value]
+  norm_num
+
 /-- The dark energy fraction is strictly positive. -/
 theorem omega_de_pos : 0 < omega_de := by
   show (0 : ℝ) < 683 / 1000; norm_num
