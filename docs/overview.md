@@ -45,7 +45,7 @@ to follow from the stated axioms — no hand-waving, no gaps.
 
 Additionally, `formal-lean/NonEmbeddedObserver.lean` provides a compact
 observer abstraction and a formally specified coherence gate for
-**positive real / negative imaginary** complex states, with an optional
+**positive-real/negative-imaginary** complex states, with an optional
 temporal-coherence (`breaksTime`) exploration.
 
 ---

@@ -24,7 +24,8 @@ The observer only evaluates entities of its own world. -/
 structure NonEmbeddedObserver (World : Type u) where
   evaluate : World → ℂ
 
-/-- Coherence in the target sector: positive real part, negative imaginary part. -/
+/-- Coherence in the target sector: positive real part, negative imaginary part.
+`PRNI` abbreviates **Positive Real / Negative Imaginary**. -/
 def coherentPRNI (z : ℂ) : Prop := 0 < z.re ∧ z.im < 0
 
 /-- Observer coherence for a specific world entity. -/
@@ -63,8 +64,9 @@ theorem coherenceFromParts_true_iff (r i : ℝ) :
     coherenceFromParts r i = true ↔ 0 < r ∧ i < 0 := by
   simp [coherenceFromParts, coherenceTest, point, coherentPRNI]
 
-/-- The observer evaluation is independent of any external label when the world
-representation is unchanged. -/
+/-- The observer evaluation is independent of external representation:
+if two external values `e₁ e₂ : Env` embed to the same world entity, the
+observer coherence judgment is identical. -/
 theorem observer_independent_of_external
     {World : Type u} (O : NonEmbeddedObserver World)
     {Env : Type v} (embed : Env → World) (e₁ e₂ : Env)
@@ -81,6 +83,10 @@ same world state. -/
 def breaksTime {World : Type u} (trajectory : ℝ → World) : Prop :=
   ∃ t₁ t₂ : ℝ, t₁ < t₂ ∧ trajectory t₁ = trajectory t₂
 
+/-- Alias for `breaksTime` emphasizing the state-repetition interpretation. -/
+def hasRepeatingStates {World : Type u} (trajectory : ℝ → World) : Prop :=
+  breaksTime trajectory
+
 theorem constantTrajectory_breaksTime {World : Type u} (w : World) :
     breaksTime (fun _ : ℝ => w) := by
   refine ⟨0, 1, by norm_num, rfl⟩
@@ -90,7 +96,7 @@ theorem constantTrajectory_temporallyCoherent
     (hw : observerCoherent O w) :
     temporallyCoherent O (fun _ : ℝ => w) := by
   intro t
-  simpa [temporallyCoherent] using hw
+  simpa using hw
 
 /-- Focused checks for the positive-real / negative-imaginary coherence gate. -/
 example : coherentPRNI (point 1 (-1)) := by
@@ -101,4 +107,3 @@ example : coherenceFromParts 1 (-1) = true := by
 
 example : coherenceFromParts (-1) 1 = false := by
   simp [coherenceFromParts, coherenceTest, point, coherentPRNI]
-
