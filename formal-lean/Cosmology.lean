@@ -418,7 +418,8 @@ theorem expansion_rate_at_midpoint : expansion_rate_at ((1 : ℝ) / 2) = 0 := by
 
 /-- At present (`t=1`), the model recovers the current expansion-rate proxy. -/
 theorem expansion_rate_at_present : expansion_rate_at 1 = expansion_rate_proxy := by
-  simp [expansion_rate_at]
+  rw [expansion_rate_at]
+  ring
 
 /-- Quarter-time value equals negative half of the present proxy. -/
 theorem expansion_rate_at_quarter_half_proxy :
