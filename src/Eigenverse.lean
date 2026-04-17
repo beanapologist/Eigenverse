@@ -59,3 +59,4 @@ import FormalLean.BidirectionalTime
 import FormalLean.Chemistry
 import FormalLean.OhmTriality
 import FormalLean.Cosmology
+import FormalLean.NonEmbeddedObserver

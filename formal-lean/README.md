@@ -25,6 +25,7 @@ formal-lean/
 ├── KernelAxle.lean         # 20 theorems: the axle μ — gear ratio 3:8, cross-section, engine loop
 ├── ForwardClassicalTime.lean # 21 theorems on frustration harvesting in classical forward time
 ├── SpeedOfLight.lean       # 19 theorems: c=1/√(μ₀ε₀); structural iso with η; fine structure bridge
+├── NonEmbeddedObserver.lean # Non-embedded observer model + positive-real/negative-imag coherence gate
 └── README.md              # This file
 ```
 
