@@ -420,13 +420,15 @@ theorem expansion_rate_at_midpoint : expansion_rate_at ((1 : ℝ) / 2) = 0 := by
 theorem expansion_rate_at_present : expansion_rate_at 1 = expansion_rate_proxy := by
   simp [expansion_rate_at]
 
-/-- Quarter-time sample value in the normalized expansion-rate model. -/
-theorem expansion_rate_at_quarter : expansion_rate_at ((1 : ℝ) / 4) = -(183 / 1000 : ℝ) := by
+/-- Quarter-time value equals negative half of the present proxy. -/
+theorem expansion_rate_at_quarter_half_proxy :
+    expansion_rate_at ((1 : ℝ) / 4) = -(expansion_rate_proxy / 2) := by
   rw [expansion_rate_at, expansion_rate_proxy_value]
   norm_num
 
-/-- Three-quarter-time sample value in the normalized expansion-rate model. -/
-theorem expansion_rate_at_three_quarters : expansion_rate_at ((3 : ℝ) / 4) = (183 / 1000 : ℝ) := by
+/-- Three-quarter-time value equals half of the present proxy. -/
+theorem expansion_rate_at_three_quarters_half_proxy :
+    expansion_rate_at ((3 : ℝ) / 4) = expansion_rate_proxy / 2 := by
   rw [expansion_rate_at, expansion_rate_proxy_value]
   norm_num
 
