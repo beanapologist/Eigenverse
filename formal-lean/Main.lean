@@ -28,6 +28,7 @@ import Chemistry
 import BalanceHypothesis
 import NumericalAlignments
 import Cosmology
+import Particles
 
 set_option maxRecDepth 2000 in
 def printCriticalEigenvalue : IO Unit := do
@@ -1420,6 +1421,91 @@ def printCosmology : IO Unit := do
   IO.println "See Cosmology.lean for full proof terms."
   IO.println ""
 
+set_option maxRecDepth 2000 in
+def printParticles : IO Unit := do
+  IO.println "════════════════════════════════════════════════════════════════════════"
+  IO.println " Particles — Elementary Particle Properties"
+  IO.println "════════════════════════════════════════════════════════════════════════"
+  IO.println ""
+  IO.println "  Structures: Electron, Proton, Quark  (mass, charge, spin / colorCharge)"
+  IO.println "  All masses in MeV/c².  Charges in units of elementary charge e."
+  IO.println "  Data sources: CODATA 2018 (lepton/proton masses), PDG 2020 (quark masses).
+  Quark masses use MS-bar scheme at μ=2 GeV (light quarks) / μ=m_q (heavy quarks)."
+  IO.println ""
+  IO.println "§1    Particle structures"
+  IO.println ""
+  IO.println "  Electron  { mass : ℝ, charge : ℝ, spin : ℝ }"
+  IO.println "  Proton    { mass : ℝ, charge : ℝ, spin : ℝ }"
+  IO.println "  Quark     { mass : ℝ, charge : ℝ, colorCharge : Fin 3 }"
+  IO.println ""
+  IO.println "§2    Electron properties  (CODATA 2018)"
+  IO.println ""
+  IO.println "  m_electron = 51099895/100000000 MeV/c²  ≈ 0.511 MeV/c²"
+  IO.println "  q_electron = −1  (one unit of negative charge)"
+  IO.println "  spin_electron = 1  (spin-½ in units of ℏ/2)"
+  IO.println ""
+  IO.println "  [1]  electron_mass_pos   : 0 < m_electron"
+  IO.println "  [2]  electron_charge_neg : q_electron < 0"
+  IO.println "  [3]  electron_spin_one   : spin_electron = 1  (spin-½)"
+  IO.println "  [4]  electron_spin_pos   : 0 < spin_electron"
+  IO.println ""
+  IO.println "§3    Proton properties  (CODATA 2018)"
+  IO.println ""
+  IO.println "  m_proton = 938272/1000 MeV/c²  ≈ 938.272 MeV/c²"
+  IO.println "  q_proton = +1  (one unit of positive charge)"
+  IO.println "  spin_proton = 1  (spin-½ in units of ℏ/2)"
+  IO.println ""
+  IO.println "  [5]  proton_mass_pos              : 0 < m_proton"
+  IO.println "  [6]  proton_charge_pos            : 0 < q_proton"
+  IO.println "  [7]  proton_heavier_than_electron : m_electron < m_proton  (ratio ≈ 1836)"
+  IO.println "  [8]  electron_proton_charge_cancel: q_electron + q_proton = 0"
+  IO.println ""
+  IO.println "§4    Quark flavors  (PDG 2020)"
+  IO.println ""
+  IO.println "  Up-type quarks (u,c,t): charge = +2/3"
+  IO.println "  Down-type quarks (d,s,b): charge = −1/3"
+  IO.println ""
+  IO.println "  Masses (MeV/c²): m_u=2.16, m_d=4.67, m_s=93.4, m_c=1270, m_b=4180, m_t=172760"
+  IO.println ""
+  IO.println "  [9]  quark_up_charge_pos    : 0 < q_up  (up-type: +2/3)"
+  IO.println "  [10] quark_down_charge_neg  : q_down < 0  (down-type: −1/3)"
+  IO.println "  [11] quark_up_charge_gt_down: q_down < q_up  (−1/3 < +2/3)"
+  IO.println "  [12] quark_masses_pos       : all six quark masses > 0"
+  IO.println "  [13] quark_mass_hierarchy   : m_u < m_d < m_s < m_c < m_b < m_t"
+  IO.println "         ← five-order-of-magnitude span across three generations"
+  IO.println ""
+  IO.println "§5    Baryon composition and charge conservation"
+  IO.println ""
+  IO.println "  Proton  p = uud:  charge = 2·(2/3) + (−1/3) = 1  ← positive integer"
+  IO.println "  Neutron n = udd:  charge = (2/3) + 2·(−1/3) = 0  ← electrically neutral"
+  IO.println ""
+  IO.println "  [14] proton_charge_from_quarks   : 2·q_up + q_down = q_proton  (uud)"
+  IO.println "  [15] neutron_charge_neutral       : q_up + 2·q_down = 0        (udd)"
+  IO.println "  [16] proton_decay_charge_conserved: q_p = 0 + (−q_e) + 0  (β⁺ decay)"
+  IO.println "         ← charge conserved in p → n + e⁺ + ν_e"
+  IO.println ""
+  IO.println "§6    Hydrogen atom formation"
+  IO.println ""
+  IO.println "  H = e⁻ + p⁺:  one electron + one proton bound by Coulomb force."
+  IO.println "  Mass ≈ 938.783 MeV/c²; binding energy −13.6 eV ≈ 0 at this scale."
+  IO.println ""
+  IO.println "  [17] hydrogen_atom_neutral      : q_electron + q_proton = 0  (neutral)"
+  IO.println "  [18] hydrogen_mass_pos          : 0 < m_electron + m_proton"
+  IO.println "  [19] electron_lt_half_proton_mass: m_electron < m_proton/2  (p dominates)"
+  IO.println "  [20] hydrogen_heavier_than_proton: m_proton < m_electron + m_proton"
+  IO.println ""
+  IO.println "20 theorems — all machine-checked, zero sorry."
+  IO.println ""
+  IO.println "Key results:"
+  IO.println "  • Electron is lightest charged particle (0.511 MeV/c²), proton ≈ 1836× heavier."
+  IO.println "  • Quark masses span five orders of magnitude: 2.16 MeV/c² (up) to 172760 MeV/c² (top)."
+  IO.println "  • Proton charge +1 = 2·(+2/3) + (−1/3) reconstructed exactly from uud quarks."
+  IO.println "  • Neutron charge 0 = (+2/3) + 2·(−1/3) reconstructed exactly from udd quarks."
+  IO.println "  • Hydrogen atom is neutral: Q_e + Q_p = 0; mass dominated by proton."
+  IO.println ""
+  IO.println "See Particles.lean for full proof terms."
+  IO.println ""
+
 def main : IO Unit := do
   printCriticalEigenvalue
   printTimeCrystal
@@ -1439,3 +1525,4 @@ def main : IO Unit := do
   printNumericalAlignments
   printEmpiricalSelfMeasurement
   printCosmology
+  printParticles

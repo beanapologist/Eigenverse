@@ -13,7 +13,7 @@ different layers relate to each other.
 ┌─────────────────────────────────────────────────────────────────────┐
 │  Consumer layer  (src/)                                             │
 │  Topic-organised entry points: algebra/, geometry/, physics/,       │
-│  quantum/, chemistry/, Eigenverse.lean                              │
+│  quantum/, chemistry/, cosmology/, particles/, Eigenverse.lean      │
 ├─────────────────────────────────────────────────────────────────────┤
 │  Proof layer  (formal-lean/)                                        │
 │  Individual *.lean files, one per domain.  These are the files      │
@@ -50,6 +50,7 @@ Mathlib
   └─ KernelAxle          (standalone)
   └─ ForwardClassicalTime (standalone)
   └─ Cosmology           (standalone)
+  └─ Particles           (standalone — imports only Mathlib.Data.Real.Basic)
 ```
 
 > **Not in Eigenverse:** `PumpFunBot`, `EthereumTradingBot`,
@@ -153,6 +154,18 @@ Defines and proves:
 - Toy wormhole (Phi = 0): angular coefficient b₀² + r² is positive and symmetric.
 - Einstein–Rosen bridge: Schwarzschild shape b(r) = 2M satisfies throat condition at r = 2M.
 - Cosmic energy budget (Planck 2018 ΛCDM): Ω_Λ=683/1000, Ω_dm=268/1000, Ω_b=49/1000; flatness Ω_Λ+Ω_dm+Ω_b=1; dark sector=95.1%; ordering Ω_b<Ω_dm<Ω_Λ.
+
+### `Particles.lean`
+Elementary particle properties for electrons, protons, and all six quark flavors (PDG 2020 / CODATA 2018).
+Defines and proves:
+- Record structures `Electron { mass, charge, spin }`, `Proton { mass, charge, spin }`, and `Quark { mass, charge, colorCharge : Fin 3 }`.
+- Electron: mass 51099895/100000000 MeV/c² > 0; charge −1 < 0; spin quantum number = 1 (spin-½).
+- Proton: mass 938272/1000 MeV/c² > 0; charge +1 > 0; heavier than electron (ratio ≈ 1836).
+- Quark charges: up-type = +2/3 > 0; down-type = −1/3 < 0; up > down.
+- Quark mass hierarchy: m_u < m_d < m_s < m_c < m_b < m_t (2.16 → 172760 MeV/c², 5 orders).
+- Baryon composition: proton = uud (charge 2·(2/3)+(−1/3)=+1); neutron = udd (charge 0).
+- Charge conservation in β⁺ decay: Q_p = 0 + (−Q_e) + 0.
+- Hydrogen atom: neutrality Q_e + Q_p = 0; positive mass; proton dominates (m_e < m_p/2).
 
 ---
 
