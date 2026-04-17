@@ -32,9 +32,9 @@ require mathlib from git
 /-- Library containing the core Kernel formalizations. -/
 lean_lib «FormalLean» where
   roots := #[`CriticalEigenvalue, `TimeCrystal, `SpaceTime, `Turbulence, `FineStructure,
-             `ParticleMass, `OhmTriality, `SilverCoherence, `KernelAxle, `ForwardClassicalTime,
-             `SpeedOfLight, `GravityQuantumDuality, `Quantization, `Chemistry, `BidirectionalTime,
-             `BalanceHypothesis, `NumericalAlignments, `Cosmology]
+              `ParticleMass, `OhmTriality, `SilverCoherence, `KernelAxle, `ForwardClassicalTime,
+              `SpeedOfLight, `GravityQuantumDuality, `Quantization, `Chemistry, `BidirectionalTime,
+              `BalanceHypothesis, `NumericalAlignments, `Cosmology, `NonEmbeddedObserver]
 
 /-- Executable entry point that prints a summary of verified theorems. -/
 @[default_target]

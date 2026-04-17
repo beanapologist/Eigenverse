@@ -43,6 +43,11 @@ to follow from the stated axioms — no hand-waving, no gaps.
 | **Cosmology** | Morris–Thorne wormhole metric; §1–6 wormhole geometry; §7 cosmic energy budget (Planck 2018: Ω_Λ=68.3%, Ω_dm=26.8%, Ω_b=4.9%) | 34 |
 | **Total** | | **586** |
 
+Additionally, `formal-lean/NonEmbeddedObserver.lean` provides a compact
+observer abstraction and a formally specified coherence gate for
+**positive real / negative imaginary** complex states, with an optional
+temporal-coherence (`breaksTime`) exploration.
+
 ---
 
 ## Repository Layout
