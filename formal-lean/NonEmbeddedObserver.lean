@@ -74,29 +74,101 @@ theorem observer_independent_of_external
     observerCoherent O (embed e₁) ↔ observerCoherent O (embed e₂) := by
   simpa [observerCoherent, h]
 
-/-- A trajectory is temporally coherent when every time-slice is coherent. -/
-def temporallyCoherent {World : Type u} (O : NonEmbeddedObserver World) (trajectory : ℝ → World) : Prop :=
-  ∀ t : ℝ, observerCoherent O (trajectory t)
+/-- A trajectory is temporally coherent when every time-slice is coherent.
+`Time` is intentionally polymorphic: this notion only needs an index set, not
+an order or metric. This checks pointwise coherence only; see
+`breaksTimeOrdered` for an order-sensitive repetition witness. -/
+def temporallyCoherent {Time : Type v} {World : Type u}
+    (O : NonEmbeddedObserver World) (trajectory : Time → World) : Prop :=
+  ∀ t : Time, observerCoherent O (trajectory t)
 
 /-- Optional exploratory notion: "breaking time" means distinct times map to the
-same world state. -/
-def breaksTime {World : Type u} (trajectory : ℝ → World) : Prop :=
-  ∃ t₁ t₂ : ℝ, t₁ < t₂ ∧ trajectory t₁ = trajectory t₂
+same world state.
+
+This is the symmetry-based (order-free) variant: it captures repeated states
+at two different labels even when no temporal order is assumed. -/
+def breaksTime {Time : Type v} {World : Type u} (trajectory : Time → World) : Prop :=
+  ∃ t₁ t₂ : Time, t₁ ≠ t₂ ∧ trajectory t₁ = trajectory t₂
+
+/-- Ordered variant of temporal break when `Time` is ordered: the witness
+exhibits `t₁ < t₂` with equal trajectory values. -/
+def breaksTimeOrdered {Time : Type v} [Preorder Time] {World : Type u}
+    (trajectory : Time → World) : Prop :=
+  ∃ t₁ t₂ : Time, t₁ < t₂ ∧ trajectory t₁ = trajectory t₂
+
+/-- Any ordered temporal break implies the symmetric `breaksTime` witness. -/
+theorem breaksTimeOrdered_implies_breaksTime
+    {Time : Type v} [Preorder Time] {World : Type u} (trajectory : Time → World) :
+    breaksTimeOrdered trajectory → breaksTime trajectory := by
+  intro h
+  rcases h with ⟨t₁, t₂, hlt, heq⟩
+  exact ⟨t₁, t₂, ne_of_lt hlt, heq⟩
 
 /-- Alias for `breaksTime` emphasizing the state-repetition interpretation. -/
-def hasRepeatingStates {World : Type u} (trajectory : ℝ → World) : Prop :=
+def hasRepeatingStates {Time : Type v} {World : Type u} (trajectory : Time → World) : Prop :=
   breaksTime trajectory
 
-theorem constantTrajectory_breaksTime {World : Type u} (w : World) :
-    breaksTime (fun _ : ℝ => w) := by
-  refine ⟨0, 1, by norm_num, rfl⟩
+theorem constantTrajectory_breaksTime {Time : Type v} {World : Type u}
+    [Nontrivial Time] (w : World) :
+    breaksTime (fun _ : Time => w) := by
+  rcases exists_pair_ne Time with ⟨t₁, t₂, hne⟩
+  exact ⟨t₁, t₂, hne, rfl⟩
 
 theorem constantTrajectory_temporallyCoherent
-    {World : Type u} (O : NonEmbeddedObserver World) (w : World)
+    {Time : Type v} {World : Type u}
+    (O : NonEmbeddedObserver World) (w : World)
     (hw : observerCoherent O w) :
-    temporallyCoherent O (fun _ : ℝ => w) := by
+    temporallyCoherent O (fun _ : Time => w) := by
   intro t
   simpa using hw
+
+/-- An abstract Grover trajectory over a state space:
+iterated application of `G` exactly `n` times from initial state `s₀`. -/
+def GroverTrajectory {State : Type u} (G : State → State) (s₀ : State) : ℕ → State :=
+  fun n => Function.iterate G n s₀
+
+/-- If two distinct Grover iteration counts produce the same state, the
+trajectory satisfies `breaksTime`. -/
+theorem grover_breaks_time {State : Type u} (G : State → State) (s₀ : State)
+    (h_repeat : ∃ t₁ t₂ : ℕ, t₁ ≠ t₂ ∧
+      Function.iterate G t₁ s₀ = Function.iterate G t₂ s₀) :
+    breaksTime (GroverTrajectory G s₀) := by
+  simpa [GroverTrajectory] using h_repeat
+
+/-- Under a break witness and an observer-guided predecessor choice principle,
+the observer can define an inverse-step selector that lands in coherent states.
+
+Outside the coherent domain, the selector is intentionally the identity map:
+the theorem's specification only constrains coherent inputs. The break witness
+is kept as an explicit precondition indicating the branch-selection regime where
+this inversion principle is intended to apply. -/
+theorem non_embedded_observer_inverts_grover
+    {State : Type u}
+    (obs : NonEmbeddedObserver State)
+    (G : State → State)
+    (s₀ : State)
+    (h_break : breaksTime (GroverTrajectory G s₀))
+    (h_choose :
+      breaksTime (GroverTrajectory G s₀) →
+      ∀ s : State, observerCoherent obs s →
+        ∃ s_prev : State, G s_prev = s ∧ observerCoherent obs s_prev) :
+    ∃ Ginv : State → State,
+      ∀ s : State, observerCoherent obs s →
+        G (Ginv s) = s ∧ observerCoherent obs (Ginv s) := by
+  classical
+  let Ginv : State → State := fun s =>
+    -- Outside the coherent domain we return the identity mapping (`s ↦ s`).
+    -- This keeps the function total without introducing arbitrary default data.
+    if hs : observerCoherent obs s then Classical.choose (h_choose h_break s hs)
+    else s  -- identity fallback outside the coherent domain
+  refine ⟨Ginv, ?_⟩
+  intro s hs
+  have hdef : Ginv s = Classical.choose (h_choose h_break s hs) := by
+    simp [Ginv, hs]
+  have hspec := Classical.choose_spec (h_choose h_break s hs)
+  constructor
+  · simpa [hdef] using hspec.1
+  · simpa [hdef] using hspec.2
 
 /-- Focused checks for the positive-real / negative-imaginary coherence gate. -/
 example : coherentPRNI (point 1 (-1)) := by
