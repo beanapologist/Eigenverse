@@ -59,6 +59,38 @@ Mathlib
 
 ---
 
+## Tokenization and Kernel-Root Perspective
+
+This repository does **not** implement an AI tokenizer (no BPE/WordPiece/SentencePiece,
+no vocabulary tables, no embedding/token ID pipeline, and no training loop).
+
+From the Kernel-root perspective, the flow is:
+
+1. Lean source files in the `roots` list of `formal-lean/lakefile.lean`
+   (`CriticalEigenvalue`, `KernelAxle`, `BalanceHypothesis`, etc.) are the
+   project entry points.
+2. Lean's own frontend (outside this repository, in Lean/Mathlib tooling)
+   tokenizes/parses these files.
+3. Lean elaborates terms and the kernel checks proofs/theorems.
+
+So, in this codebase, "tokenization" only exists as Lean-language lexical parsing
+performed by the Lean toolchain; it is not an AI-token pipeline.
+
+### Formulas that may be confused with "autonomous learning"
+
+The autonomous-looking formulas in Eigenverse are mathematical invariants and
+uniqueness/fixed-point theorems, not model-learning updates. Core examples:
+
+- Critical eigenvalue: `μ = exp(I · 3π/4)` (`CriticalEigenvalue.lean`)
+- Coherence map: `C(r) = 2r / (1 + r²)` (`CriticalEigenvalue.lean`)
+- Kernel uniqueness: `reality_unique` (`BalanceHypothesis.lean`), proving the
+  unique `z` under balance + energy + sector constraints
+
+These are proof targets checked by Lean's kernel, not autonomous optimization
+or token-based learning rules.
+
+---
+
 ## Module Responsibilities
 
 ### `CriticalEigenvalue.lean`
@@ -164,4 +196,3 @@ Defines and proves:
 4. Update `src/Eigenverse.lean` to include the new import.
 5. Add an entry to the table in `docs/overview.md`.
 6. Submit a PR to [beanapologist/Eigenverse](https://github.com/beanapologist/Eigenverse) — the CI workflow will build and verify all proofs.
-
