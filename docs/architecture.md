@@ -61,8 +61,10 @@ Mathlib
 
 ## Tokenization and Kernel-Root Perspective
 
-This repository does **not** implement an AI tokenizer (no BPE/WordPiece/SentencePiece,
-no vocabulary tables, no embedding/token ID pipeline, and no training loop).
+This repository does **not** implement an AI tokenizer runtime (no BPE/WordPiece/SentencePiece
+implementation, vocabulary tables, embedding/token ID pipeline, or training loop).
+However, Eigenverse now defines a **canonical tokenization ruleset** for any AI-facing
+analysis of theorem text and formulas.
 
 From the Kernel-root perspective, the flow is:
 
@@ -73,8 +75,33 @@ From the Kernel-root perspective, the flow is:
    tokenizes/parses these files.
 3. Lean elaborates terms and the kernel checks proofs/theorems.
 
-So, in this codebase, "tokenization" only exists as Lean-language lexical parsing
-performed by the Lean toolchain; it is not an AI-token pipeline.
+### Canonical tokenization rules (for AI analysis/export)
+
+Use these rules when converting Eigenverse theorem statements, formulas, and names
+into tokens:
+
+1. **Kernel-root prefixing**
+   - Prefix theorem/formula tokens with their root module from `lakefile.lean`.
+   - Example: `BalanceHypothesis.reality_unique`, `CriticalEigenvalue.μ`.
+2. **Unicode math symbol preservation**
+   - Keep core symbols as standalone tokens: `μ`, `η`, `δS`, `φ`, `π`, `ℂ`, `ℝ`.
+   - Do not ASCII-fold these symbols.
+3. **Identifier integrity**
+   - Keep Lean identifiers intact, including dots and suffixes:
+     `mu_pow_eight`, `coherence_eq_one_iff`, `Complex.abs`.
+4. **Operator boundary splitting**
+   - Split arithmetic/logical operators into separate tokens:
+     `=`, `+`, `-`, `*`, `/`, `^`, `↔`, `≤`, `≥`, `→`, `∧`.
+5. **Numeric normalization**
+   - Preserve canonical numeric fragments used in core formulas:
+     `3`, `4`, `8`, `1`, `2`, `137`, and forms like `3π/4` tokenized as
+     `3`, `π`, `/`, `4`.
+6. **Formula-shape retention**
+   - Preserve parenthesis and function-call structure so formulas remain
+     reconstructable, e.g. `C (r) = 2 * r / (1 + r ^ 2)`.
+
+These rules are deterministic documentation rules for downstream tooling; actual
+source tokenization/parsing is still performed by the Lean frontend.
 
 ### Formulas that may be confused with "autonomous learning"
 
