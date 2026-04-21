@@ -39,7 +39,11 @@
 -- Cross-module consistency is enforced at build time; no runtime checks needed.
 -- This file documents the invariants checked during `lake build`.
 
+import CriticalEigenvalue
 import SpaceTime
+
+-- Legacy monomial emergence check: μ satisfies x^8 - 1 = 0.
+#check mu_monomial_emerges
 
 -- OV-shape emergence check: unit coherence zeroes the quantum-quantum block.
 #check B_r_unit_coherence_ov_block
