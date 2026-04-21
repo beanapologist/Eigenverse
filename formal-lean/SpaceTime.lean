@@ -502,8 +502,11 @@ theorem B_r_unit_coherence_ov_block (s t s' t' : ℝ) :
     B_r 1 s t s' t' =
       (F s t).re * (F s' t').re
         + ((F s t).re * (F s' t').im + (F s t).im * (F s' t').re) := by
-  -- At r = 1, C 1 = 1, so the coefficient (1 - C 1) of the QQ term is zero.
-  unfold B_r C
+  have hC1 : C (1 : ℝ) = 1 := by
+    unfold C
+    norm_num
+  unfold B_r
+  rw [hC1]
   ring
 
 end
