@@ -132,6 +132,10 @@ theorem mu_pow_eight : μ ^ 8 = 1 := by
   rw [h, Complex.exp_nat_mul, Complex.exp_two_pi_mul_I]
   simp
 
+/-- A monomial relation emerges from the Eigenverse eigenvalue: μ^8 - 1 = 0. -/
+theorem mu_monomial_emerges : μ ^ 8 - 1 = 0 := by
+  exact sub_eq_zero.mpr mu_pow_eight
+
 -- ════════════════════════════════════════════════════════════════════════════
 -- Section 3 — Distinctness of the eight powers of μ
 -- Ref: docs/master_derivations.pdf §2.3

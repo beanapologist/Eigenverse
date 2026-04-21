@@ -39,4 +39,7 @@
 -- Cross-module consistency is enforced at build time; no runtime checks needed.
 -- This file documents the invariants checked during `lake build`.
 
-#check @id  -- placeholder to keep the file parseable before build
+import CriticalEigenvalue
+
+-- Monomial emergence check: μ satisfies x^8 - 1 = 0.
+#check mu_monomial_emerges
