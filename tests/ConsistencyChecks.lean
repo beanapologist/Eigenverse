@@ -42,7 +42,7 @@
 import CriticalEigenvalue
 import SpaceTime
 
--- Legacy monomial emergence check: μ satisfies x^8 - 1 = 0.
+-- Monomial emergence check: μ satisfies x^8 - 1 = 0.
 #check mu_monomial_emerges
 
 -- OV-shape emergence check: unit coherence zeroes the quantum-quantum block.

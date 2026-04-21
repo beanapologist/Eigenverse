@@ -486,7 +486,7 @@ theorem iSpace_floquetPhase_unit (s : ℝ) :
   exact floquetPhase_abs_one s
 
 /-- Kernel-derived bilinear form on the observer plane (t,s), parameterized by
-    coherence scale `r`.
+    coherence scale `r`, using `F(s,t)=t+i·s` and `C(r)=2r/(1+r²)`.
 
     The quantum-quantum coefficient is `(1 - C(r))`; at unit coherence `r = 1`
     this coefficient vanishes, producing an Oil-and-Vinegar block shape. -/
