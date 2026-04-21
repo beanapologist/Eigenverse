@@ -490,7 +490,8 @@ theorem iSpace_floquetPhase_unit (s : ℝ) :
     `F_eq_reality`) and coherence `C : ℝ → ℝ` (from `CriticalEigenvalue`).
 
     The quantum-quantum coefficient is `(1 - C(r))`; at unit coherence `r = 1`
-    this coefficient vanishes, producing an Oil-and-Vinegar block shape. -/
+    this coefficient (the multiplier of `(F s t).im * (F s' t').im`) vanishes,
+    producing an Oil-and-Vinegar block shape. -/
 def B_r (r s t s' t' : ℝ) : ℝ :=
   (F s t).re * (F s' t').re
     + C r * ((F s t).re * (F s' t').im + (F s t).im * (F s' t').re)
