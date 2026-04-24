@@ -28,6 +28,7 @@ import Chemistry
 import BalanceHypothesis
 import NumericalAlignments
 import Cosmology
+import Entropy
 
 set_option maxRecDepth 2000 in
 def printCriticalEigenvalue : IO Unit := do
@@ -1420,6 +1421,60 @@ def printCosmology : IO Unit := do
   IO.println "See Cosmology.lean for full proof terms."
   IO.println ""
 
+set_option maxRecDepth 2000 in
+def printEntropy : IO Unit := do
+  IO.println "════════════════════════════════════════════════════════════════════════"
+  IO.println " Entropy — Entropy-Coherence Duality"
+  IO.println "════════════════════════════════════════════════════════════════════════"
+  IO.println ""
+  IO.println "  The kernel entropy S(r) = −log(C(r)) measures the information-theoretic"
+  IO.println "  distance from maximum coherence.  Under the Lyapunov substitution"
+  IO.println "  r = exp(l), it becomes H(l) = log(cosh l)."
+  IO.println ""
+  IO.println "  Key identity: F_fwd(l) = 1 − exp(−H(l))  (frustration-entropy duality)"
+  IO.println "  Silver scale: S(δS) = H(log δS) = log(2)/2  (binary entropy unit)"
+  IO.println ""
+  IO.println "§1    Kernel entropy  S(r) = −log(C(r))"
+  IO.println ""
+  IO.println "  [1]  entropy_nonneg        : S(r) ≥ 0  for r > 0"
+  IO.println "  [2]  entropy_zero_at_one   : S(1) = 0  (zero entropy at equilibrium)"
+  IO.println "  [3]  entropy_pos           : r ≠ 1 → S(r) > 0  (strict away from eq.)"
+  IO.println "  [4]  entropy_symm          : S(r) = S(1/r)  (palindrome symmetry)"
+  IO.println "  [5]  entropy_zero_iff      : S(r) = 0 ↔ r = 1"
+  IO.println ""
+  IO.println "§2    Lyapunov entropy  H(l) = log(cosh l)"
+  IO.println ""
+  IO.println "  [6]  lyapunov_entropy_nonneg  : H(l) ≥ 0"
+  IO.println "  [7]  lyapunov_entropy_zero    : H(0) = 0"
+  IO.println "  [8]  lyapunov_entropy_pos     : l ≠ 0 → H(l) > 0"
+  IO.println "  [9]  lyapunov_entropy_even    : H(l) = H(−l)  (even symmetry)"
+  IO.println ""
+  IO.println "§3    Lyapunov–kernel entropy duality"
+  IO.println ""
+  IO.println "  [10] entropy_lyapunov_eq   : S(exp l) = H(l)  (duality)"
+  IO.println "  [11] lyapunov_eq_entropy   : H(l) = S(exp l)  (dual form)"
+  IO.println ""
+  IO.println "§4    Entropy–frustration identity"
+  IO.println ""
+  IO.println "  [12] sech_eq_exp_neg_entropy         : sech(l) = exp(−H(l))"
+  IO.println "  [13] entropy_frustration_identity    : F_fwd(l) = 1 − exp(−H(l))"
+  IO.println "  [14] frustration_zero_iff_entropy_zero : F_fwd(l)=0 ↔ H(l)=0"
+  IO.println "  [15] bidirectional_entropy_decomp    : F_bi(lf,lb) = Σ (1−exp(−H))"
+  IO.println ""
+  IO.println "§5    Entropy at special Eigenverse scales"
+  IO.println ""
+  IO.println "  [16] entropy_at_delta_S              : S(δS) = log(2)/2"
+  IO.println "  [17] lyapunov_entropy_at_log_delta_S : H(log δS) = log(2)/2"
+  IO.println "         (cosh(log δS) = √2, so H(log δS) = log(√2) = log(2)/2)"
+  IO.println "  [18] entropy_delta_S_eq_lyapunov     : S(δS) = H(log δS)"
+  IO.println "  [19] entropy_coherence_dual          : S(r)=0 ↔ C(r)=1"
+  IO.println "  [20] entropy_at_mu_norm              : S(|μ|) = 0  (μ on unit circle)"
+  IO.println ""
+  IO.println "20 theorems — all machine-checked, zero sorry."
+  IO.println ""
+  IO.println "See Entropy.lean for full proof terms."
+  IO.println ""
+
 def main : IO Unit := do
   printCriticalEigenvalue
   printTimeCrystal
@@ -1439,3 +1494,4 @@ def main : IO Unit := do
   printNumericalAlignments
   printEmpiricalSelfMeasurement
   printCosmology
+  printEntropy

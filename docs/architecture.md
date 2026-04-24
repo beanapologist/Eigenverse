@@ -13,7 +13,7 @@ different layers relate to each other.
 ┌─────────────────────────────────────────────────────────────────────┐
 │  Consumer layer  (src/)                                             │
 │  Topic-organised entry points: algebra/, geometry/, physics/,       │
-│  quantum/, chemistry/, Eigenverse.lean                              │
+│  quantum/, chemistry/, thermodynamics/, Eigenverse.lean             │
 ├─────────────────────────────────────────────────────────────────────┤
 │  Proof layer  (formal-lean/)                                        │
 │  Individual *.lean files, one per domain.  These are the files      │
@@ -44,6 +44,7 @@ Mathlib
                  ├─ GravityQuantumDuality
                  ├─ Chemistry
                  └─ BidirectionalTime
+                      └─ Entropy
        └─ Quantization (imports TimeCrystal + FineStructure)
   └─ CriticalEigenvalue  (standalone)
   └─ SilverCoherence     (standalone)
@@ -154,6 +155,16 @@ Defines and proves:
 - Einstein–Rosen bridge: Schwarzschild shape b(r) = 2M satisfies throat condition at r = 2M.
 - Cosmic energy budget (Planck 2018 ΛCDM): Ω_Λ=683/1000, Ω_dm=268/1000, Ω_b=49/1000; flatness Ω_Λ+Ω_dm+Ω_b=1; dark sector=95.1%; ordering Ω_b<Ω_dm<Ω_Λ.
 
+### `Entropy.lean`
+Entropy-coherence duality: information-theoretic entropy associated with the
+coherence function C(r) = 2r/(1+r²).  Defines and proves:
+- Kernel entropy S(r) = −log(C(r)): non-negative, zero exactly at r=1, palindrome symmetric.
+- Lyapunov entropy H(l) = log(cosh l): equals S(exp l), non-negative, zero at l=0, even.
+- Entropy–frustration identity: F_fwd(l) = 1 − exp(−H(l)).
+- Zero-entropy characterisation: S(r)=0 ↔ C(r)=1 ↔ r=1.
+- Silver-scale entropy: S(δS) = H(log δS) = log(2)/2.
+- μ-orbit entropy: S(|μ|) = 0 (unit circle carries zero entropy).
+
 ---
 
 ## Adding a New Module
@@ -164,4 +175,3 @@ Defines and proves:
 4. Update `src/Eigenverse.lean` to include the new import.
 5. Add an entry to the table in `docs/overview.md`.
 6. Submit a PR to [beanapologist/Eigenverse](https://github.com/beanapologist/Eigenverse) — the CI workflow will build and verify all proofs.
-
