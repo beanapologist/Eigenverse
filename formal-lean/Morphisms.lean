@@ -15,7 +15,7 @@
   ║       It descends to a well-defined map on the quotient ℝ>0 / {r~1/r}.  ║
   ║                                                                          ║
   ║   2.  PALINDROME ODD MORPHISM                                            ║
-  ║       Res : ℝ>0 → ℝ is anti-invariant under r ↦ 1/r: Res(1/r) = −Res.  ║
+  ║       Res : ℝ>0 → ℝ is anti-invariant under r ↦ 1/r: Res(1/r) = −Res(r). ║
   ║       C and Res form a dual even/odd pair about the fixed point r = 1.  ║
   ║                                                                          ║
   ║   3.  LYAPUNOV BRIDGE MORPHISM                                           ║
@@ -230,8 +230,7 @@ theorem reality_morphism_zero : reality 0 0 = 0 := by
     balance primitive μ as the image of the fundamental observer coordinates. -/
 theorem reality_morphism_mu_embedding :
     reality η (-η) = μ := by
-  -- F is defined as def F s t := reality s t, so F η (−η) = reality η (−η)
-  show F η (-η) = μ
+  -- SpaceTime defines F s t := reality s t, so F and reality are definitionally equal
   exact mu_is_observable_equilibrium
 
 end

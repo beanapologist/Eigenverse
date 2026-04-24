@@ -45,7 +45,7 @@
 -- Morphisms.mu_isometry_morphism relies on CriticalEigenvalue.mu_abs_one (|μ|=1).
 -- Morphisms.orbit_morphism_period relies on CriticalEigenvalue.mu_z8z_period.
 -- Morphisms.reality_morphism_mu_embedding relies on SpaceTime.reality and
--- CriticalEigenvalue.mu_eq_cart (F(η,−η) = μ).
+-- BalanceHypothesis.mu_is_observable_equilibrium (F(η,−η) = μ).
 
 -- ── Check 8: Morphism range consistency ──────────────────────────────────────
 -- Morphisms.coherence_morphism_range: 0 < C(r) ∧ C(r) ≤ 1 must agree with
