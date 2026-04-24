@@ -41,7 +41,8 @@ to follow from the stated axioms — no hand-waving, no gaps.
 | **Chemistry** | NIST atomic weights, isotopic abundances, mass conservation | 20 |
 | **NumericalAlignments** | Dimensionless derivations §0–§13; V_Z quantization; α from closure; universal observer uniqueness; μ¹³⁷=μ | 61 |
 | **Cosmology** | Morris–Thorne wormhole metric; §1–6 wormhole geometry; §7 cosmic energy budget (Planck 2018: Ω_Λ=68.3%, Ω_dm=26.8%, Ω_b=4.9%) | 34 |
-| **Total** | | **586** |
+| **Morphisms** | Coherence/palindrome even-odd pair; Lyapunov bridge C∘exp=sech; μ-isometry; orbit homomorphism; reality ℝ-bilinear map | 20 |
+| **Total** | | **606** |
 
 ---
 
@@ -67,10 +68,12 @@ formal-lean/                    # Lean 4 source files (the proof engine)
 ├── Chemistry.lean              # NIST atomic weights (20)
 ├── NumericalAlignments.lean    # Dimensionless derivations §0–§13 (61)
 ├── Cosmology.lean              # Morris–Thorne wormholes + cosmic energy budget (34)
+├── Morphisms.lean              # Six morphism families: C/Res even-odd, Lyapunov bridge, μ-isometry, orbit, reality (20)
 └── Main.lean                   # Executable entry-point
 
 src/                            # Lean modules organised by topic
 ├── algebra/Eigenvalue.lean
+├── algebra/Morphisms.lean      # Six morphism families
 ├── geometry/GeometricStructures.lean
 ├── physics/FundamentalConstants.lean
 ├── quantum/QuantumUniverse.lean
@@ -105,7 +108,7 @@ tests/                          # Cross-module consistency checks
 ```bash
 cd formal-lean/
 lake exe cache get   # download pre-built Mathlib cache (~5 min)
-lake build           # verify all 552 theorems, 0 sorry
+lake build           # verify all 606 theorems, 0 sorry
 lake exe formalLean  # print summary of verified theorems
 ```
 

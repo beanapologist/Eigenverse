@@ -28,6 +28,7 @@ import Chemistry
 import BalanceHypothesis
 import NumericalAlignments
 import Cosmology
+import Morphisms
 
 set_option maxRecDepth 2000 in
 def printCriticalEigenvalue : IO Unit := do
@@ -1420,6 +1421,83 @@ def printCosmology : IO Unit := do
   IO.println "See Cosmology.lean for full proof terms."
   IO.println ""
 
+private def printMorphisms : IO Unit := do
+  IO.println "════════════════════════════════════════════════════════════════════════"
+  IO.println " Morphisms — Structure-Preserving Maps in Eigenverse"
+  IO.println "════════════════════════════════════════════════════════════════════════"
+  IO.println ""
+  IO.println "  Six families of morphisms tie together every domain in Eigenverse."
+  IO.println "  All maps preserve the structure of the underlying mathematical objects."
+  IO.println ""
+  IO.println "§1    Coherence even morphism  (inversion symmetry, range, fixed point)"
+  IO.println ""
+  IO.println "  [1]  coherence_inversion_morphism  : C(r) = C(1/r)  ∀r > 0"
+  IO.println "         C is invariant under the inversion r ↦ 1/r."
+  IO.println "  [2]  coherence_morphism_range      : 0 < C(r) ∧ C(r) ≤ 1  ∀r > 0"
+  IO.println "         C maps ℝ>0 strictly into (0, 1]."
+  IO.println "  [3]  coherence_morphism_maximum    : C(r) = 1 ↔ r = 1  ∀r ≥ 0"
+  IO.println "         The kernel r = 1 is the unique maximum."
+  IO.println "  [4]  coherence_kernel_fixed_point  : C(1) = 1 ∧ 1 = 1/1"
+  IO.println "         r = 1 is a fixed point of both C and inversion."
+  IO.println ""
+  IO.println "§2    Palindrome odd morphism  (anti-symmetry, dual pair, common fixed point)"
+  IO.println ""
+  IO.println "  [5]  palindrome_inversion_morphism : Res(1/r) = −Res(r)  ∀r > 0"
+  IO.println "         Palindrome residual is anti-invariant under inversion."
+  IO.println "  [6]  coherence_palindrome_morphism_duality : C(r)=C(1/r) ∧ Res(1/r)=−Res(r)"
+  IO.println "         C is even, Res is odd — a dual even/odd pair."
+  IO.println "  [7]  morphisms_common_fixed_point  : C(1) = 1 ∧ Res(1) = 0"
+  IO.println "         r = 1 is the common fixed point of both dual morphisms."
+  IO.println ""
+  IO.println "§3    Lyapunov bridge morphism  (C ∘ exp = sech)"
+  IO.println ""
+  IO.println "  [8]  lyapunov_bridge_morphism  : C(exp λ) = (cosh λ)⁻¹ = sech λ"
+  IO.println "         exp intertwines coherence and hyperbolic secant."
+  IO.println "  [9]  lyapunov_bridge_unity     : C(exp 0) = 1"
+  IO.println "         Bridge preserves the neutral element: exp(0)=1, C(1)=sech(0)=1."
+  IO.println "  [10] lyapunov_bridge_bounded   : 0 < C(exp λ) ∧ C(exp λ) ≤ 1"
+  IO.println "         Bridge maps into the coherence range (0, 1]."
+  IO.println ""
+  IO.println "§4    μ-isometry morphism  (|μ·z| = |z|, order-8 closure)"
+  IO.println ""
+  IO.println "  [11] mu_isometry_morphism        : |μ · z| = |z|  ∀z ∈ ℂ"
+  IO.println "         Multiplication by μ is a unitary (norm-preserving) endomorphism."
+  IO.println "  [12] mu_orbit_closure            : μ^8 · z = z  ∀z ∈ ℂ"
+  IO.println "         The μ-endomorphism has order 8: applying it 8 times = identity."
+  IO.println "  [13] mu_pow_isometry_morphism    : |μⁿ · z| = |z|  ∀n ∈ ℕ, z ∈ ℂ"
+  IO.println "         Every power of μ is also an isometry."
+  IO.println ""
+  IO.println "§5    Orbit multiplicative morphism  (n ↦ μⁿ is a homomorphism)"
+  IO.println ""
+  IO.println "  [14] orbit_morphism_multiplicative : μ^(a+b) = μ^a · μ^b"
+  IO.println "         The orbit map is a monoid homomorphism (ℕ,+) → (ℂˣ,·)."
+  IO.println "  [15] orbit_morphism_identity     : μ^0 = 1"
+  IO.println "         The orbit map preserves the identity element."
+  IO.println "  [16] orbit_morphism_period       : μ^(j+8) = μ^j  ∀j ∈ ℕ"
+  IO.println "         The orbit morphism factors through ℤ/8ℤ (period 8)."
+  IO.println ""
+  IO.println "§6    Reality additive morphism  (F is ℝ-bilinear: ℝ² → ℂ)"
+  IO.println ""
+  IO.println "  [17] reality_morphism_additive   : F(s₁+s₂, t₁+t₂) = F(s₁,t₁) + F(s₂,t₂)"
+  IO.println "         Reality map is additive — a group homomorphism (ℝ², +) → (ℂ, +)."
+  IO.println "  [18] reality_morphism_homogeneous : F(c·s, c·t) = c·F(s,t)"
+  IO.println "         Reality map scales linearly — homogeneous over ℝ."
+  IO.println "  [19] reality_morphism_zero       : F(0, 0) = 0"
+  IO.println "         The origin maps to the origin — zero element preserved."
+  IO.println "  [20] reality_morphism_mu_embedding : F(η, −η) = μ"
+  IO.println "         The critical eigenvalue is the image of the balance point (η, −η)."
+  IO.println "         The reality morphism embeds μ as the fundamental observer coordinate."
+  IO.println ""
+  IO.println "20 theorems — all machine-checked, zero sorry."
+  IO.println ""
+  IO.println "Morphism skeleton:"
+  IO.println "  C ∘ exp = sech    bridges §1 (coherence) and §3 (Lyapunov)."
+  IO.println "  μ = exp(I·3π/4)   links §4 (isometry) and §5 (orbit)."
+  IO.println "  F(η, −η) = μ      connects §6 (reality) and §4 (isometry)."
+  IO.println ""
+  IO.println "See Morphisms.lean for full proof terms."
+  IO.println ""
+
 def main : IO Unit := do
   printCriticalEigenvalue
   printTimeCrystal
@@ -1439,3 +1517,4 @@ def main : IO Unit := do
   printNumericalAlignments
   printEmpiricalSelfMeasurement
   printCosmology
+  printMorphisms

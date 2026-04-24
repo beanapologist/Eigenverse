@@ -39,4 +39,18 @@
 -- Cross-module consistency is enforced at build time; no runtime checks needed.
 -- This file documents the invariants checked during `lake build`.
 
+-- ── Check 7: Morphism coherence consistency ──────────────────────────────────
+-- Morphisms.coherence_inversion_morphism relies on CriticalEigenvalue.coherence_symm.
+-- Morphisms.lyapunov_bridge_morphism relies on CriticalEigenvalue.lyapunov_coherence_sech.
+-- Morphisms.mu_isometry_morphism relies on CriticalEigenvalue.mu_abs_one (|μ|=1).
+-- Morphisms.orbit_morphism_period relies on CriticalEigenvalue.mu_z8z_period.
+-- Morphisms.reality_morphism_mu_embedding relies on SpaceTime.reality and
+-- CriticalEigenvalue.mu_eq_cart (F(η,−η) = μ).
+
+-- ── Check 8: Morphism range consistency ──────────────────────────────────────
+-- Morphisms.coherence_morphism_range: 0 < C(r) ∧ C(r) ≤ 1 must agree with
+-- CriticalEigenvalue.coherence_pos and coherence_le_one.
+-- Morphisms.lyapunov_bridge_bounded: 0 < C(exp λ) ∧ C(exp λ) ≤ 1 must be
+-- consistent with coherence_pos applied to exp λ > 0.
+
 #check @id  -- placeholder to keep the file parseable before build
