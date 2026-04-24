@@ -34,6 +34,14 @@
   ── Check 6: Zero-sorry audit ───────────────────────────────────────────────
   No module in formal-lean/ contains a `sorry`.  This is enforced by the
   CI workflow (.github/workflows/lean-proof-check.yml).
+
+  ── Check 7: Entropy-coherence consistency ──────────────────────────────────
+  Entropy.entropy_zero_at_one must agree with CriticalEigenvalue.coherence_eq_one_iff:
+    kernelEntropy 1 = 0  ↔  C 1 = 1.
+  Entropy.entropy_at_delta_S = log(2)/2 must agree with
+  Entropy.lyapunov_entropy_at_log_delta_S = log(2)/2 (both via silver_coherence).
+  The frustration-entropy identity must be consistent with ForwardClassicalTime:
+    F_fwd(l) = 1 − exp(−H(l))  aligns with  F_fwd(l) = 1 − sech(l).
 -/
 
 -- Cross-module consistency is enforced at build time; no runtime checks needed.

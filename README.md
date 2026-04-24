@@ -104,7 +104,8 @@ proof of uniqueness across all possible observer realities.
 | **Chemistry** | 20 | NIST atomic weights, isotopic compositions, mass conservation |
 | **NumericalAlignments** | 61 | Dimensionless derivations, V_Z quantization, α from closure, universal observer uniqueness, μ¹³⁷=μ |
 | **Cosmology** | 34 | Morris–Thorne wormhole metric; §1–6 wormhole geometry; §7 cosmic energy budget (Planck 2018: Ω_Λ≈68.3%, Ω_dm≈26.8%, Ω_b≈4.9%) |
-| **Total** | **586** | All verified by Lean 4, **0 sorry** |
+| **Entropy** | 20 | `entropy_frustration_identity`: F_fwd(l)=1−exp(−H(l)); S(δS)=log(2)/2; entropy-coherence duality |
+| **Total** | **606** | All verified by Lean 4, **0 sorry** |
 
 ### Repository Structure
 
@@ -141,11 +142,16 @@ formal-lean/                    ← Lean 4 proof files (the proof engine)
 │  CHEMISTRY
 ├── Chemistry.lean              NIST atomic weights & isotopic compositions (20)
 │
-│  NUMERICAL ALIGNMENTS (added)
+│  NUMERICAL ALIGNMENTS & COSMOLOGY
 ├── Cosmology.lean              Morris–Thorne wormholes; cosmic energy budget §1–§7 (34)
 ├── NumericalAlignments.lean    Dimensionless derivations §0–§13; V_Z quantization;
 │                               α from closure; universal observer uniqueness;
 │                               phase preservation μ¹³⁷=μ; primality of 137 (61)
+│
+│  THERMODYNAMICS
+├── Entropy.lean                S(r)=−log(C(r)); H(l)=log(cosh l);
+│                               frustration-entropy identity F_fwd=1−exp(−H);
+│                               S(δS)=log(2)/2; entropy-coherence duality (20)
 │
 └── Main.lean                   Executable entry-point (prints all theorems)
 
@@ -155,6 +161,7 @@ src/                        ← Lean modules organised by topic (imports formal-
 ├── physics/FundamentalConstants.lean   c, α, masses, spacetime
 ├── quantum/QuantumUniverse.lean        Time crystals, duality, Theorem Q
 ├── chemistry/AtomicUniverse.lean       NIST atomic weights, Ohm-coherence
+├── thermodynamics/EntropyModule.lean   Entropy-coherence duality
 └── Eigenverse.lean                     Single-import entry point
 
 docs/                       ← Documentation (overview, architecture)
