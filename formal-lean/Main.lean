@@ -31,6 +31,7 @@ import Cosmology
 import Morphisms
 import OilVinegar
 import SignVerify
+import MultiMessage
 
 set_option maxRecDepth 2000 in
 def printCriticalEigenvalue : IO Unit := do
