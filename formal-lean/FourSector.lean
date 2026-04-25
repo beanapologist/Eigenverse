@@ -245,6 +245,56 @@ theorem hidden_freedom :
     norm_num at h2η
   exact ⟨s₁, s₂, hcoh₁, hcoh₂, hobs₁, hobs₂, hne⟩
 
+/-- **Oil subspace parametrization** — the oil subspace is uncountably infinite.
+
+    For every `a ∈ (0, 1)`, there exists a Coherent FourState `s` satisfying
+    `observe s = μ` and `s.q4.re = a`.  Because distinct values of `a`
+    produce states with distinct `q4.re`, the assignment `a ↦ s` is injective
+    and the oil subspace contains an uncountable continuous family.
+
+    Construction: fix `q1 = η + iη`, `q2 = μ`, `q3 = −η − iη` (each with
+    normSq = 1), and let `q4 = (a, −√(1−a²))`.  Since `0 < a < 1` we have
+    `1 − a² ∈ (0, 1)`, so `√(1−a²) > 0` and `q4 ∈ Q4`.  Moreover
+    `normSq q4 = a² + (1−a²) = 1`, so the total normSq is `1+1+1+1 = 4`.
+
+    In summary: the oil subspace `{s : FourState | Coherent s ∧ observe s = μ}`
+    contains an uncountable family, parametrized by the open arc of the
+    unit circle in Q4 (Re ∈ (0, 1)).  The answer to "how big?" is:
+    **uncountably infinite** — a continuous 5-real-parameter family subject to
+    one normSq constraint, or concretely at least as large as (0, 1) ⊂ ℝ. -/
+theorem oil_subspace_parametric (a : ℝ) (ha_pos : 0 < a) (ha_lt : a < 1) :
+    ∃ s : FourState, Coherent s ∧ observe s = μ ∧ s.q4.re = a := by
+  -- b = √(1 − a²) is the (positive) imaginary magnitude of the Q4 component
+  set b := Real.sqrt (1 - a ^ 2) with hb_def
+  have hb_arg : 0 < 1 - a ^ 2 := by nlinarith
+  have hb_pos : 0 < b := sqrt_pos.mpr hb_arg
+  have hb_sq  : b ^ 2 = 1 - a ^ 2 := by
+    rw [hb_def]; exact Real.sq_sqrt (le_of_lt hb_arg)
+  -- Quadrant membership
+  have hη_neg : -(η : ℝ) < 0 := by linarith [eta_pos]
+  have hq1_mem : Sector.Q1.contains (⟨η, η⟩ : ℂ)  := ⟨eta_pos, eta_pos⟩
+  have hq2_mem : Sector.Q2.contains μ               := ⟨mu_re_neg, mu_im_pos⟩
+  have hq3_mem : Sector.Q3.contains (⟨-η, -η⟩ : ℂ) := ⟨hη_neg, hη_neg⟩
+  have hq4_mem : Sector.Q4.contains (⟨a, -b⟩ : ℂ)  := ⟨ha_pos, by linarith⟩
+  -- Construct the witness
+  let s : FourState :=
+    { q1 := ⟨η, η⟩,  q2 := μ,  q3 := ⟨-η, -η⟩,  q4 := ⟨a, -b⟩,
+      hq1 := hq1_mem, hq2 := hq2_mem, hq3 := hq3_mem, hq4 := hq4_mem }
+  -- normSq computations
+  have hnSq_q1 : Complex.normSq (⟨η, η⟩ : ℂ) = 1 := by
+    rw [Complex.normSq_apply]; exact balance_from_unit_circle
+  have hnSq_q2 : Complex.normSq μ = 1 := normSq_mu
+  have hnSq_q3 : Complex.normSq (⟨-η, -η⟩ : ℂ) = 1 := by
+    rw [Complex.normSq_apply]; simp only [neg_sq]; exact balance_from_unit_circle
+  have hnSq_q4 : Complex.normSq (⟨a, -b⟩ : ℂ) = 1 := by
+    rw [Complex.normSq_apply]; simp only [neg_sq]; linarith [hb_sq]
+  -- Coherent: total normSq = 4
+  have hcoh : Coherent s := by
+    show Complex.normSq (⟨η, η⟩ : ℂ) + Complex.normSq μ +
+         Complex.normSq (⟨-η, -η⟩ : ℂ) + Complex.normSq (⟨a, -b⟩ : ℂ) = 4
+    linarith [hnSq_q1, hnSq_q2, hnSq_q3, hnSq_q4]
+  exact ⟨s, hcoh, rfl, rfl⟩
+
 -- ════════════════════════════════════════════════════════════════════════════
 -- §6  Hardness Conjecture
 -- Recovering the full FourState from its observe value is conjectured to be
