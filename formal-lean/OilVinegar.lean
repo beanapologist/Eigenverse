@@ -722,4 +722,3 @@ theorem fs_euf_cma_summary :
    quantum_resilient_quadratic,
    fun n p hp => lanchester_modular_gfp n p hp⟩
 
-end -- noncomputable section
