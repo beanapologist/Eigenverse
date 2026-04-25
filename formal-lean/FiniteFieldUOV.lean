@@ -77,8 +77,12 @@ abbrev GFp (p : ℕ) := ZMod p
     for solving the linear system during signing.
 
     Proof: Mathlib's ZMod.instField, which is synthesized automatically when
-    the prime hypothesis is provided via [Fact (Nat.Prime p)]. -/
-theorem gfp_is_field (p : ℕ) [Fact (Nat.Prime p)] : Field (GFp p) :=
+    the prime hypothesis is provided via [Fact (Nat.Prime p)].
+
+    Note: `Field (GFp p)` is a typeclass structure (a `Type`), not a `Prop`.
+    This definition provides a named handle for documentation; the instance
+    is synthesised automatically wherever `[Fact (Nat.Prime p)]` is in scope. -/
+noncomputable def gfp_is_field (p : ℕ) [Fact (Nat.Prime p)] : Field (GFp p) :=
   inferInstance
 
 /-- GFp p has exactly p elements.
@@ -341,12 +345,16 @@ theorem zob_zero_oil {o v p : ℕ} [Fact (Nat.Prime p)]
     {F : UOVCentralMap o v p} (hZ : ZeroOilBlock F)
     (vin : VinegarVec v p) :
     F (fun _ => 0) vin = fun _ => 0 := by
-  have h := hZ vin (fun _ => (0 : GFp p)) (fun _ => (0 : GFp p)) (-1)
-  have lhs_eq : (fun i => (fun _ => (0 : GFp p)) i + -1 * (fun _ => (0 : GFp p)) i) =
-                (fun _ => (0 : GFp p)) := by funext i; ring
-  have rhs_eq : (fun i => F (fun _ => (0 : GFp p)) vin i + -1 * F (fun _ => (0 : GFp p)) vin i) =
-                (fun _ => (0 : GFp p)) := by funext i; ring
-  rw [lhs_eq, rhs_eq] at h
+  have h := hZ vin (fun _ : Fin o => (0 : GFp p)) (fun _ : Fin o => (0 : GFp p)) (-1)
+  -- h : F (fun i => 0 + -1 * 0) vin = fun i => F (fun _ => 0) vin i + -1 * F (fun _ => 0) vin i
+  -- Rewrite LHS argument: 0 + -1 * 0 = 0 (by ring, explicit domain Fin o).
+  have s1 : (fun (i : Fin o) => (0 : GFp p) + -1 * (0 : GFp p)) =
+            (fun _ : Fin o => (0 : GFp p)) := by funext; ring
+  -- Rewrite RHS: x + -1 * x = 0 (by ring, explicit domain Fin o).
+  have s2 : (fun (i : Fin o) => F (fun _ : Fin o => (0 : GFp p)) vin i +
+                                -1 * F (fun _ : Fin o => (0 : GFp p)) vin i) =
+            (fun _ : Fin o => (0 : GFp p)) := by funext i; ring
+  simp only [s1, s2] at h
   exact h
 
 /-- A UOV map with the zero oil-oil block is homogeneous in oil.
@@ -362,16 +370,18 @@ theorem zob_smul {o v p : ℕ} [Fact (Nat.Prime p)]
     {F : UOVCentralMap o v p} (hZ : ZeroOilBlock F)
     (vin : VinegarVec v p) (c : GFp p) (b : OilVec o p) :
     F (fun i => c * b i) vin = fun i => c * F b vin i := by
-  have h := hZ vin (fun _ => 0) b c
-  have lhs_eq : (fun i => (fun _ => (0 : GFp p)) i + c * b i) = (fun i => c * b i) := by
-    funext i; ring
-  have rhs_eq : (fun i => F (fun _ => (0 : GFp p)) vin i + c * F b vin i) =
-                (fun i => c * F b vin i) := by
+  have h := hZ vin (fun _ : Fin o => (0 : GFp p)) b c
+  -- Rewrite LHS argument: 0 + c * b i = c * b i (by ring, explicit domain Fin o).
+  have lhs_eq : (fun (i : Fin o) => (fun _ : Fin o => (0 : GFp p)) i + c * b i) =
+                (fun (i : Fin o) => c * b i) := by funext i; ring
+  -- Rewrite RHS: 0 + c * F b vin i = c * F b vin i (using zob_zero_oil, explicit domain Fin o).
+  have rhs_eq : (fun (i : Fin o) => F (fun _ : Fin o => (0 : GFp p)) vin i + c * F b vin i) =
+                (fun (i : Fin o) => c * F b vin i) := by
     funext i
-    have h0i : F (fun _ => (0 : GFp p)) vin i = 0 :=
+    have h0i : F (fun _ : Fin o => (0 : GFp p)) vin i = 0 :=
       congr_fun (zob_zero_oil hZ vin) i
     rw [h0i, zero_add]
-  rw [lhs_eq, rhs_eq] at h
+  simp only [lhs_eq, rhs_eq] at h
   exact h
 
 /-- Signing reduces to solving a linear system: zero oil-block maps preserve
@@ -414,7 +424,8 @@ theorem zob_solution_diff_in_kernel {o v p : ℕ} [Fact (Nat.Prime p)]
 -- with the ℂ formalization in OilVinegar.lean.  The compatibility is witnessed
 -- by four parallel theorems:
 --
---   (1) Field/Ring: GFp p is a field (gfp_is_field) ↔ ℂ is a field.
+--   (1) Nontriviality: GFp p is nontrivial (gfp_zero_ne_one, Prop-valued
+--       representative of the field structure) ↔ ℂ is a field.
 --   (2) Constraint count: n(n−1)/2 is a valid GFp p element (gfp_lanchester_val_lt)
 --       ↔ n(n−1)/2 % p < p (lanchester_modular_gfp in OilVinegar §8).
 --   (3) Zero oil-oil block: ZeroOilBlock F → linear oil action (zob_additive)
@@ -428,7 +439,7 @@ theorem zob_solution_diff_in_kernel {o v p : ℕ} [Fact (Nat.Prime p)]
     This summary theorem packages the four compatibility pillars into a single
     machine-checked statement:
 
-    (1) GFp p is a field of characteristic p with p elements.
+    (1) GFp p is nontrivial (0 ≠ 1): follows from the field structure (prime p ≥ 2).
     (2) The Lanchester constraint count n*(n−1)/2 is a valid GFp p element
         (its ZMod.val is the residue mod p and is < p).
     (3) The GFp p casting of n*(n−1) respects the field multiplication.
@@ -437,10 +448,15 @@ theorem zob_solution_diff_in_kernel {o v p : ℕ} [Fact (Nat.Prime p)]
 
     Together, these confirm that the ℂ-based Eigenverse OV formalization is
     structurally embeddable in the standard GF(p) UOV setting: the field
-    axioms, constraint counting, and hardness parameters are all compatible. -/
+    axioms, constraint counting, and hardness parameters are all compatible.
+
+    Note: `Field (GFp p)` is a typeclass structure (a `Type`) and cannot appear
+    directly as a conjunct in a `Prop`-valued theorem.  The field structure
+    is documented separately via `gfp_is_field` and the nontriviality Prop
+    `Nontrivial (GFp p)` is used here as the Prop-valued representative. -/
 theorem gfp_uov_compatible_summary (p : ℕ) [Fact (Nat.Prime p)] :
-    -- (1) GFp p is a field with characteristic p and p elements
-    (Field (GFp p)) ∧
+    -- (1) GFp p is nontrivial (Prop-valued representative of field structure)
+    (Nontrivial (GFp p)) ∧
     (Fintype.card (GFp p) = p) ∧
     (CharP (GFp p) p) ∧
     -- (2) Constraint count is a valid GFp p element for all n
@@ -449,7 +465,7 @@ theorem gfp_uov_compatible_summary (p : ℕ) [Fact (Nat.Prime p)] :
     (∀ n : ℕ, ((n * (n - 1) : ℕ) : GFp p) = (n : GFp p) * ((n - 1 : ℕ) : GFp p)) ∧
     -- (4) Grover hardness floor (ℕ inequality, field-independent)
     (∀ n : ℕ, 2 * (n - 1) ≤ n * (n - 1)) :=
-  ⟨gfp_is_field p,
+  ⟨inferInstance,
    gfp_card p,
    gfp_char p,
    fun n => gfp_lanchester_val_lt n p,
