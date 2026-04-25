@@ -35,7 +35,7 @@ lean_lib «FormalLean» where
              `ParticleMass, `OhmTriality, `SilverCoherence, `KernelAxle, `ForwardClassicalTime,
              `SpeedOfLight, `GravityQuantumDuality, `Quantization, `Chemistry, `BidirectionalTime,
              `BalanceHypothesis, `NumericalAlignments, `Cosmology, `Morphisms, `OilVinegar,
-             `FourSector, `Observer, `SignVerify, `MultiMessage]
+             `FourSector, `Observer, `SignVerify, `MultiMessage, `FiniteFieldUOV]
 
 /-- Executable entry point that prints a summary of verified theorems. -/
 @[default_target]
