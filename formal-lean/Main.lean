@@ -32,6 +32,7 @@ import Morphisms
 import OilVinegar
 import SignVerify
 import MultiMessage
+import FiniteFieldUOV
 
 set_option maxRecDepth 2000 in
 def printCriticalEigenvalue : IO Unit := do
@@ -1674,6 +1675,84 @@ def printSignVerify : IO Unit := do
   IO.println "See SignVerify.lean for full proof terms."
   IO.println ""
 
+def printFiniteFieldUOV : IO Unit := do
+  IO.println "==================================================="
+  IO.println " FiniteFieldUOV — UOV over GF(p) = ZMod p"
+  IO.println "==================================================="
+  IO.println ""
+  IO.println "Formalizes UOV over the finite field GF(p) = ZMod p."
+  IO.println "Connects the ℂ formalization (OilVinegar.lean) to the"
+  IO.println "standard GF(p) cryptographic setting via Mathlib's ZMod."
+  IO.println ""
+  IO.println "§1    GF(p) field structure via ZMod p"
+  IO.println ""
+  IO.println "  [1] gfp_is_field         : Field (GFp p)                        for prime p"
+  IO.println "        GFp p carries a field structure (Mathlib ZMod.instField)."
+  IO.println "  [2] gfp_card             : Fintype.card (GFp p) = p             for prime p"
+  IO.println "        GFp p has exactly p elements."
+  IO.println "  [3] gfp_char             : CharP (GFp p) p                      for prime p"
+  IO.println "        GFp p has characteristic p."
+  IO.println "  [4] gfp_prime_cast_zero  : (p : GFp p) = 0                     for prime p"
+  IO.println "        p additions of 1 collapse to 0 in GFp p."
+  IO.println "  [5] gfp_zero_ne_one      : (0 : GFp p) ≠ 1                     for prime p"
+  IO.println "        GFp p is nontrivial (prime ensures at least 2 elements)."
+  IO.println ""
+  IO.println "§2    Variable vectors: oil and vinegar over GFp p"
+  IO.println ""
+  IO.println "  [6] oil_vec_add_comm_group : AddCommGroup (OilVec o p)"
+  IO.println "        Oil vectors form an abelian group under pointwise addition."
+  IO.println "  [7] oil_vec_module         : Module (GFp p) (OilVec o p)        for prime p"
+  IO.println "        Oil vectors form a GFp p-module (scalar multiplication)."
+  IO.println ""
+  IO.println "§3    Casting from ℕ: constraint count in GFp p"
+  IO.println ""
+  IO.println "  [8]  gfp_cast_mul            : ((m*n : ℕ) : GFp p) = ↑m * ↑n"
+  IO.println "         Products cast via the ring homomorphism Nat.cast."
+  IO.println "  [9]  gfp_cast_add            : ((m+n : ℕ) : GFp p) = ↑m + ↑n"
+  IO.println "         Sums cast via the ring homomorphism Nat.cast."
+  IO.println "  [10] gfp_val_natCast         : ((a : ℕ) : GFp p).val = a % p"
+  IO.println "         The ZMod.val representative of a : ℕ is a % p."
+  IO.println "  [11] gfp_constraint_count_val: ((n*(n−1)/2 : ℕ) : GFp p).val = n*(n−1)/2 % p"
+  IO.println "         Constraint count representative equals the ℕ residue mod p."
+  IO.println "  [12] gfp_lanchester_val_lt   : ((n*(n−1)/2 : ℕ) : GFp p).val < p"
+  IO.println "         Constraint count is a valid GFp p element (val < p)."
+  IO.println "         GFp p-lift of lanchester_modular_gfp (OilVinegar §8)."
+  IO.println "  [13] gfp_lanchester_product_rule : ((n*(n−1) : ℕ) : GFp p) = ↑n * ↑(n−1)"
+  IO.println "         Modular product rule: count computable within GFp p."
+  IO.println ""
+  IO.println "§4    Quadratic central map with zero oil-oil block"
+  IO.println ""
+  IO.println "  [14] zob_additive        : ZeroOilBlock F → F(a+b,v) = F(a,v)+F(b,v)"
+  IO.println "         Zero oil block implies additivity in oil for fixed vinegar."
+  IO.println "  [15] zob_zero_oil        : ZeroOilBlock F → F(0,v) = 0"
+  IO.println "         Zero oil block implies zero oil input maps to zero output."
+  IO.println "  [16] zob_smul            : ZeroOilBlock F → F(c*a,v) = c*F(a,v)"
+  IO.println "         Zero oil block implies homogeneity: F is GFp p-linear in oil."
+  IO.println "  [17] zob_solution_diff_in_kernel"
+  IO.println "         F(x,v)=msg ∧ F(y,v)=msg → F(x−y,v)=0"
+  IO.println "         Distinct solutions differ by kernel elements (affine coset)."
+  IO.println ""
+  IO.println "§5    Structural compatibility summary"
+  IO.println ""
+  IO.println "  [18] gfp_uov_compatible_summary"
+  IO.println "         Field ∧ cardinality ∧ char ∧ constraint-bound ∧ product-rule ∧ Grover"
+  IO.println "         Six-pillar compatibility: GFp p UOV is structurally"
+  IO.println "         compatible with the ℂ Eigenverse OV formalization."
+  IO.println ""
+  IO.println "18 theorems — all machine-checked, zero sorry."
+  IO.println ""
+  IO.println "GF(p) UOV structure:"
+  IO.println "  Field:       ZMod p, char p, p elements, 0≠1."
+  IO.println "  Variables:   OilVec o p = Fin o → GFp p (abelian group, GFp p-module)."
+  IO.println "               VinegarVec v p = Fin v → GFp p."
+  IO.println "  Central map: F : OilVec → VinegarVec → OilVec (ZeroOilBlock trapdoor)."
+  IO.println "  Signing:     fix vinegar → linear system in oil → solve over GFp p."
+  IO.println "  Hardness:    n*(n−1)/2 constraints; Grover floor 2*(n−1) ≤ n*(n−1)."
+  IO.println "  Compatibility: lifts OilVinegar §8 bounds to ZMod p directly."
+  IO.println ""
+  IO.println "See FiniteFieldUOV.lean for full proof terms."
+  IO.println ""
+
 def main : IO Unit := do
   printCriticalEigenvalue
   printTimeCrystal
@@ -1696,3 +1775,4 @@ def main : IO Unit := do
   printMorphisms
   printOilVinegar
   printSignVerify
+  printFiniteFieldUOV
