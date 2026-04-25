@@ -106,7 +106,7 @@ noncomputable section
 -- ════════════════════════════════════════════════════════════════════════════
 
 /-- An observer with output type `α`: any function from states to outputs. -/
-def Observer (α : Type*) : Type* := FourState → α
+abbrev Observer (α : Type*) := FourState → α
 
 /-- `FactorsThrough obs` holds when the observer `obs` depends on the
     `FourState` only through `observe` — i.e., there exists a function
@@ -201,10 +201,14 @@ theorem physical_obs_fiber_constant {α : Type*}
 
 -- Shared normSq fact for the "standard" shared q1 and q3 components.
 private lemma normSq_eta_eta : Complex.normSq (⟨η, η⟩ : ℂ) = 1 := by
-  rw [Complex.normSq_apply]; exact balance_from_unit_circle
+  rw [Complex.normSq_apply]
+  show η * η + η * η = 1
+  nlinarith [balance_from_unit_circle]
 
 private lemma normSq_neg_eta : Complex.normSq (⟨-η, -η⟩ : ℂ) = 1 := by
-  rw [Complex.normSq_apply]; simp only [neg_sq]; exact balance_from_unit_circle
+  rw [Complex.normSq_apply]
+  show -η * -η + -η * -η = 1
+  nlinarith [balance_from_unit_circle]
 
 private lemma normSq_mu_one : Complex.normSq μ = 1 := by
   rw [Complex.normSq_eq_abs, mu_abs_one]; norm_num

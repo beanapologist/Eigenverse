@@ -214,15 +214,15 @@ theorem hidden_freedom :
   -- ── normSq computations ─────────────────────────────────────────────────
   -- normSq(η, η) = η² + η² = 1
   have hnSq_q1 : Complex.normSq (⟨η, η⟩ : ℂ) = 1 := by
-    rw [Complex.normSq_apply]; exact balance_from_unit_circle
+    rw [Complex.normSq_apply]; show η * η + η * η = 1; nlinarith [balance_from_unit_circle]
   -- normSq μ = 1
   have hnSq_q2 : Complex.normSq μ = 1 := normSq_mu
   -- normSq(−η, −η) = (−η)² + (−η)² = η² + η² = 1
   have hnSq_q3 : Complex.normSq (⟨-η, -η⟩ : ℂ) = 1 := by
-    rw [Complex.normSq_apply]; simp only [neg_sq]; exact balance_from_unit_circle
+    rw [Complex.normSq_apply]; show -η * -η + -η * -η = 1; nlinarith [balance_from_unit_circle]
   -- normSq(η, −η) = η² + (−η)² = η² + η² = 1
   have hnSq_q4₁ : Complex.normSq (⟨η, -η⟩ : ℂ) = 1 := by
-    rw [Complex.normSq_apply]; simp only [neg_sq]; exact balance_from_unit_circle
+    rw [Complex.normSq_apply]; show η * η + -η * -η = 1; nlinarith [balance_from_unit_circle]
   -- normSq(3/5, −4/5) = (3/5)² + (−4/5)² = 9/25 + 16/25 = 1
   have hnSq_q4₂ : Complex.normSq (⟨3/5, -4/5⟩ : ℂ) = 1 := by
     rw [Complex.normSq_apply]; norm_num
@@ -281,19 +281,19 @@ theorem oil_subspace_parametric (a : ℝ) (ha_pos : 0 < a) (ha_lt : a < 1) :
   have hq1_mem : Sector.Q1.contains (⟨η, η⟩ : ℂ)  := ⟨eta_pos, eta_pos⟩
   have hq2_mem : Sector.Q2.contains μ               := ⟨mu_re_neg, mu_im_pos⟩
   have hq3_mem : Sector.Q3.contains (⟨-η, -η⟩ : ℂ) := ⟨hη_neg, hη_neg⟩
-  have hq4_mem : Sector.Q4.contains (⟨a, -b⟩ : ℂ)  := ⟨ha_pos, by linarith⟩
+  have hq4_mem : Sector.Q4.contains (⟨a, -b⟩ : ℂ)  := ⟨ha_pos, neg_lt_zero.mpr hb_pos⟩
   -- Construct the witness
   let s : FourState :=
     { q1 := ⟨η, η⟩,  q2 := μ,  q3 := ⟨-η, -η⟩,  q4 := ⟨a, -b⟩,
       hq1 := hq1_mem, hq2 := hq2_mem, hq3 := hq3_mem, hq4 := hq4_mem }
   -- normSq computations
   have hnSq_q1 : Complex.normSq (⟨η, η⟩ : ℂ) = 1 := by
-    rw [Complex.normSq_apply]; exact balance_from_unit_circle
+    rw [Complex.normSq_apply]; show η * η + η * η = 1; nlinarith [balance_from_unit_circle]
   have hnSq_q2 : Complex.normSq μ = 1 := normSq_mu
   have hnSq_q3 : Complex.normSq (⟨-η, -η⟩ : ℂ) = 1 := by
-    rw [Complex.normSq_apply]; simp only [neg_sq]; exact balance_from_unit_circle
+    rw [Complex.normSq_apply]; show -η * -η + -η * -η = 1; nlinarith [balance_from_unit_circle]
   have hnSq_q4 : Complex.normSq (⟨a, -b⟩ : ℂ) = 1 := by
-    rw [Complex.normSq_apply]; simp only [neg_sq]; linarith [hb_sq]
+    rw [Complex.normSq_apply]; show a * a + -b * -b = 1; nlinarith [hb_sq]
   -- Coherent: total normSq = 4
   have hcoh : Coherent s := by
     show Complex.normSq (⟨η, η⟩ : ℂ) + Complex.normSq μ +
@@ -356,20 +356,17 @@ private lemma q4Rad_sq_eq {p : OilParams} (hv : OilValid p) :
     The Q4 component `r₄·t + i·(−r₄·√(1−t²))` lies on a circle of
     radius `r₄ = √(3 − ‖q1‖² − ‖q3‖²)` inside Q4, so the Coherent
     energy constraint `normSq q1 + 1 + normSq q3 + r₄² = 4` holds. -/
-noncomputable def oil_fiber_map (p : OilParams) (hv : OilValid p) : FourState := by
-  obtain ⟨hx₁, hy₁, hx₃, hy₃, ht_pos, ht_lt, _⟩ := hv
-  have hr_pos : 0 < q4Rad p := q4Rad_pos hv
-  have ht2_pos : 0 < 1 - p.t ^ 2 := by nlinarith
-  exact
-    { q1 := ⟨p.x₁, p.y₁⟩
-      q2 := μ
-      q3 := ⟨p.x₃, p.y₃⟩
-      q4 := ⟨q4Rad p * p.t, -(q4Rad p * Real.sqrt (1 - p.t ^ 2))⟩
-      hq1 := ⟨hx₁, hy₁⟩
-      hq2 := ⟨mu_re_neg, mu_im_pos⟩
-      hq3 := ⟨hx₃, hy₃⟩
-      hq4 := ⟨mul_pos hr_pos ht_pos,
-               neg_of_pos (mul_pos hr_pos (sqrt_pos.mpr ht2_pos))⟩ }
+noncomputable def oil_fiber_map (p : OilParams) (hv : OilValid p) : FourState :=
+  { q1 := ⟨p.x₁, p.y₁⟩
+    q2 := μ
+    q3 := ⟨p.x₃, p.y₃⟩
+    q4 := ⟨q4Rad p * p.t, -(q4Rad p * Real.sqrt (1 - p.t ^ 2))⟩
+    hq1 := ⟨hv.1, hv.2.1⟩
+    hq2 := ⟨mu_re_neg, mu_im_pos⟩
+    hq3 := ⟨hv.2.2.1, hv.2.2.2.1⟩
+    hq4 := ⟨mul_pos (q4Rad_pos hv) hv.2.2.2.2.1,
+             neg_lt_zero.mpr (mul_pos (q4Rad_pos hv)
+               (sqrt_pos.mpr (by nlinarith [hv.2.2.2.2.1, hv.2.2.2.2.2.1])))⟩ }
 
 -- Projection simp lemmas (follow from the definition by rfl).
 @[simp] private lemma ofm_q1 (p : OilParams) (hv : OilValid p) :
@@ -389,11 +386,11 @@ private lemma normSq_q4_eq (p : OilParams) (hv : OilValid p) :
   have ht2_nn : 0 ≤ 1 - p.t ^ 2 := by
     obtain ⟨_, _, _, _, ht_pos, ht_lt, _⟩ := hv; nlinarith
   rw [Complex.normSq_apply]
-  simp only [Complex.re, Complex.im, neg_sq]
+  simp only [Complex.re, Complex.im]
   -- Factor out r₄², then use (r₄)²=q4RadSq p and (√(1-t²))²=1-t².
   have hfactor :
       q4Rad p * p.t * (q4Rad p * p.t) +
-      q4Rad p * Real.sqrt (1 - p.t ^ 2) * (q4Rad p * Real.sqrt (1 - p.t ^ 2)) =
+      -(q4Rad p * Real.sqrt (1 - p.t ^ 2)) * -(q4Rad p * Real.sqrt (1 - p.t ^ 2)) =
       q4Rad p ^ 2 * p.t ^ 2 + q4Rad p ^ 2 * Real.sqrt (1 - p.t ^ 2) ^ 2 := by ring
   rw [hfactor, q4Rad_sq_eq hv, Real.sq_sqrt ht2_nn]
   ring
