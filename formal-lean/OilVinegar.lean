@@ -375,14 +375,19 @@ theorem trapdoor_max_preservation (r : ℝ) (hr : 0 < r) : C r ≤ C 1 := by
   rw [trapdoor_at_one]
   exact coherence_le_one r (le_of_lt hr)
 
-/-- **Coherence inversion balance** — C(r) + C(1/r) = 2·C(r) for all r > 0.
+/-- **Coherence inversion sum** — C(r) + C(1/r) = 2·C(r) for all r > 0.
 
     Since C is invariant under r ↦ 1/r (trapdoor_symmetry), the sum of
-    coherence over an inversion pair is twice the individual value.  This
-    is the balance axiom for the post-quantum GF(p) extension: the modular
-    trapdoor satisfies a perfect balance condition at every scale pair
-    (r, 1/r), encoding symmetric energy distribution over inverse-paired
-    keys. -/
+    coherence over an inversion pair equals twice the individual value.
+    This is a direct consequence of symmetry: C(1/r) = C(r), so
+        C(r) + C(1/r) = C(r) + C(r) = 2·C(r).
+
+    Cryptographic significance: in a post-quantum OV key space, the keys
+    r and 1/r are indistinguishable under the trapdoor function C.  Any
+    adversary observing C(r) alone cannot distinguish r from 1/r, providing
+    a 2-element equivalence class for each public coherence value (for r ≠ 1).
+    This halves the effective distinguishable key space below r = 1, a
+    useful property for GF(p) key-compression in post-quantum deployments. -/
 theorem coherence_inversion_balance (r : ℝ) (hr : 0 < r) :
     C r + C (1 / r) = 2 * C r := by
   rw [← trapdoor_symmetry r hr]

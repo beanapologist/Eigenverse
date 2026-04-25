@@ -1569,7 +1569,7 @@ private def printOilVinegar : IO Unit := do
   IO.println "  [20] trapdoor_max_preservation    : C(r) ≤ C(1)  ∀r > 0"
   IO.println "         The global maximum 1 at r=1 is an upper bound for all inputs."
   IO.println "  [21] coherence_inversion_balance  : C(r) + C(1/r) = 2·C(r)"
-  IO.println "         Balance axiom: inversion pairs sum to twice the individual value."
+  IO.println "         Consequence of inversion symmetry: r and 1/r produce equal coherence."
   IO.println "  [22] coherence_extended_golden    : C(φ) = 2φ/(φ+2)"
   IO.println "         Golden-ratio coherence via φ²=φ+1, giving 1+φ²=φ+2."
   IO.println "  [23] coherence_golden_extended_hierarchy : C(δS) < C(φ) < C(1)"
