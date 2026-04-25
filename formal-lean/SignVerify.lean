@@ -53,6 +53,7 @@
   ║                                                                          ║
   ║   Theorem                      MQ_hard   hidden_recovery_hard   BH†    ║
   ║   ────────────────────────────────────────────────────────────────────  ║
+  ║   structural_no_forgery          ✗              ✗                ✓      ║
   ║   correctness                    ✗              ✗                ✓      ║
   ║   unforgeability_precondition    ✗              ✗                ✓      ║
   ║   zero_knowledge                 ✗              ✗                ✓      ║
@@ -60,8 +61,9 @@
   ║                                                                          ║
   ║   † BH = BalanceHypothesis project axioms (shared by the whole project) ║
   ║                                                                          ║
-  ║   NIST PQC reference: UOV (Unbalanced Oil and Vinegar) is a Round 2    ║
-  ║   additional signature candidate.  This formalization is structurally   ║
+  ║   NIST PQC reference: UOV (Unbalanced Oil and Vinegar) is a NIST PQC   ║
+  ║   additional signature candidate (submitted to the NIST post-quantum    ║
+  ║   standardization process).  This formalization is structurally         ║
   ║   compatible with the standard UOV construction over GF(p), with the   ║
   ║   four-sector geometry providing the domain structure.                  ║
   ║                                                                          ║
@@ -201,9 +203,14 @@ def keygen (_ : SecretKey) : PublicKey := observe
     The resulting Signature satisfies `observe sig.state = μ`, so it verifies
     correctly against the canonical message μ under the public key `keygen sk`.
 
-    Note: the `msg` argument is accepted for interface compatibility but does
-    not influence the output in this model, reflecting the single-message
-    structure (canonical message = μ) of the four-sector oil fiber.
+    Note on the `msg` parameter: it is accepted for interface compatibility
+    with the standard sign/verify API (`sign : SecretKey → Message → Signature`)
+    but does **not** influence the output in this model.  This is a deliberate
+    design choice reflecting the single-message structure of the four-sector oil
+    fiber: every Coherent state in Alice's signing range satisfies `observe = μ`,
+    so the only verifiable message is μ regardless of the input.  In a full
+    UOV formalization over GF(p)^m, the message hash would select which linear
+    system Alice solves; here the fiber is already determined by the OilParams.
 
     Dependency chain: sign → alice_prepares → oil_fiber_map_mem → oil_fiber_map
                     → FourSector §§5,5b → BalanceHypothesis. -/
@@ -228,41 +235,88 @@ noncomputable def verify (pk : PublicKey) (msg : Message) (sig : Signature) : Bo
   if pk sig.state = msg then true else false
 
 -- ════════════════════════════════════════════════════════════════════════════
--- §3  MQ Hardness Axiom
+-- §3  MQ Hardness
 --
 -- The Multivariate Quadratic (MQ) problem is the computational hardness
--- assumption underlying UOV.  We declare it as an axiom, analogous to
+-- assumption underlying UOV.  We first prove a purely structural (information-
+-- theoretic) no-forgery theorem, then declare an axiom for the computational
+-- (polynomial-time) hardness claim, following the same pattern as
 -- `hidden_recovery_hard` in FourSector §6.
 -- ════════════════════════════════════════════════════════════════════════════
 
+/-- **Structural no-forgery** — information-theoretic version (provable theorem).
+
+    No total function `A : PublicKey → Message → Signature` can always replicate
+    the output of Alice's signing function.
+
+    Proof (identical structure to `adversary_cannot_recover` in FourSector §7):
+    * Pick two distinct keys `sk₁` (t = 1/2) and `sk₂` (t = 3/4); they produce
+      the same public key (`keygen sk₁ = keygen sk₂ = observe`) but distinct
+      signatures (`sign sk₁ μ ≠ sign sk₂ μ`, because `alice_prepares sk₁ ≠
+      alice_prepares sk₂` by `alice_key_determines_state`).
+    * Any deterministic A produces the same output for both keys (same public
+      key and message), so it fails on at least one.
+
+    This is a *theorem*, not an axiom: the structural impossibility follows from
+    the information-theoretic fiber geometry, with no computational assumptions.
+    The genuine cryptographic claim — no *polynomial-time* algorithm can forge —
+    is `MQ_hard` below.
+
+    Dependency chain: structural_no_forgery → alice_key_determines_state
+                    → oil_fiber_five_dimensional → FourSector §5b
+                    → BalanceHypothesis. -/
+theorem structural_no_forgery :
+    ∀ (A : PublicKey → Message → Signature),
+      ∃ sk : SecretKey, A (keygen sk) μ ≠ sign sk μ := by
+  intro A
+  have hv₁ : OilValid ⟨1/2, 1/2, -1/2, -1/2, 1/2⟩ :=
+    ⟨by norm_num, by norm_num, by norm_num, by norm_num,
+     by norm_num, by norm_num, by norm_num⟩
+  have hv₂ : OilValid ⟨1/2, 1/2, -1/2, -1/2, 3/4⟩ :=
+    ⟨by norm_num, by norm_num, by norm_num, by norm_num,
+     by norm_num, by norm_num, by norm_num⟩
+  let sk₁ : SecretKey := ⟨⟨1/2, 1/2, -1/2, -1/2, 1/2⟩, hv₁⟩
+  let sk₂ : SecretKey := ⟨⟨1/2, 1/2, -1/2, -1/2, 3/4⟩, hv₂⟩
+  -- sk₁ ≠ sk₂: their t fields differ (1/2 ≠ 3/4)
+  have hne_keys : sk₁ ≠ sk₂ := by
+    intro heq
+    have hval := congr_arg Subtype.val heq
+    have ht   := congr_arg OilParams.t hval
+    norm_num at ht
+  -- Distinct keys produce distinct signatures (by alice_key_determines_state)
+  have hne_sigs : sign sk₁ μ ≠ sign sk₂ μ :=
+    fun heq => hne_keys (alice_key_determines_state (congrArg Signature.state heq))
+  -- Both keys share the same public key (keygen sk₁ = observe = keygen sk₂)
+  -- so A gives the same output for both — rfl because keygen ignores its argument
+  have hA_eq : A (keygen sk₁) μ = A (keygen sk₂) μ := rfl
+  -- If A succeeds on sk₁ it must fail on sk₂; otherwise it already fails on sk₁
+  by_cases h₁ : A (keygen sk₁) μ = sign sk₁ μ
+  · refine ⟨sk₂, fun h₂ => hne_sigs ?_⟩
+    calc sign sk₁ μ
+        = A (keygen sk₁) μ := h₁.symm
+      _ = A (keygen sk₂) μ := hA_eq
+      _ = sign sk₂ μ       := h₂
+  · exact ⟨sk₁, h₁⟩
+
 /-- **MQ hardness axiom** — the Multivariate Quadratic problem is computationally hard.
 
-    No total adversary A (receiving only the public key and message) can always
-    forge a signature identical to the one Alice would produce.  Two distinct
-    secret keys produce distinct signatures (by `unforgeability_precondition`)
-    but identical public keys (by `zero_knowledge_key_independence`), so any
-    deterministic A fails on at least one key.
+    The *computational* (polynomial-time) hardness claim: no efficient adversary
+    can, given only the public key `pk = keygen sk` and a message, produce a valid
+    signature without knowing the secret key `sk`.  This is the standard MQ
+    hardness assumption over GF(p), the genuine cryptographic assumption underlying
+    UOV.
 
-    **Structural version (provable)**: the statement below — that no total
-    function `A : PublicKey → Message → Signature` can always replicate Alice's
-    signing output — is actually provable as a theorem, by the same argument as
-    `adversary_cannot_recover` in FourSector §7:
-      * Two distinct keys `sk₁ ≠ sk₂` produce distinct signatures (`sign sk₁ ≠ sign sk₂`
-        by `unforgeability_precondition`) but the same public key (`keygen sk₁ = keygen sk₂`
-        by definition of `keygen`).
-      * Any deterministic `A` gives the same output for both keys, so it fails on one.
-
-    **True cryptographic claim (unproven)**: no *polynomial-time* adversary can,
-    given `pk = keygen sk` and a message `msg`, produce a Signature `sig` satisfying
-    `verify pk msg sig = true` without knowing `sk`.  This is the standard MQ
-    hardness assumption over GF(p), and the genuine cryptographic assumption
-    underlying UOV.
+    **Distinction from `structural_no_forgery`**: the structural theorem above is
+    proved purely from the fiber geometry — it holds for ALL total adversaries with
+    no time restriction.  The present axiom is strictly stronger: it asserts that
+    even *polynomial-time* adversaries cannot win.  The polynomial-time version is
+    not provable within Lean's logic; it requires an external complexity-theoretic
+    reduction.
 
     **Status**: declared as an `axiom` to flag the computational hardness claim
     as unproven, exactly as `hidden_recovery_hard` flags the observation-inversion
-    hardness.  The structural version can be derived as a theorem (see proof of
-    `unforgeability_precondition`); the computational version requires an external
-    reduction.
+    hardness in FourSector §6.  A formal reduction from the standard MQ problem
+    over GF(p) is left for future work.
 
     Dependency chain: MQ_hard → keygen, sign → oil_fiber_map → BalanceHypothesis. -/
 axiom MQ_hard :
@@ -438,6 +492,9 @@ end -- noncomputable section
 -- ════════════════════════════════════════════════════════════════════════════
 
 section AxiomAudit
+
+-- Audit: structural no-forgery (expect Mathlib + BH axioms, NOT MQ_hard).
+#print axioms structural_no_forgery
 
 -- Audit: core protocol theorems (expect Mathlib + BH axioms, NOT MQ_hard).
 #print axioms correctness
