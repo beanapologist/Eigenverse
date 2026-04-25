@@ -357,18 +357,16 @@ private lemma q4Rad_sq_eq {p : OilParams} (hv : OilValid p) :
     radius `r₄ = √(3 − ‖q1‖² − ‖q3‖²)` inside Q4, so the Coherent
     energy constraint `normSq q1 + 1 + normSq q3 + r₄² = 4` holds. -/
 noncomputable def oil_fiber_map (p : OilParams) (hv : OilValid p) : FourState :=
-  let ⟨hx₁, hy₁, hx₃, hy₃, ht_pos, ht_lt, _⟩ := hv
-  have hr_pos : 0 < q4Rad p := q4Rad_pos hv
-  have ht2_pos : 0 < 1 - p.t ^ 2 := by nlinarith
   { q1 := ⟨p.x₁, p.y₁⟩
     q2 := μ
     q3 := ⟨p.x₃, p.y₃⟩
     q4 := ⟨q4Rad p * p.t, -(q4Rad p * Real.sqrt (1 - p.t ^ 2))⟩
-    hq1 := ⟨hx₁, hy₁⟩
+    hq1 := ⟨hv.1, hv.2.1⟩
     hq2 := ⟨mu_re_neg, mu_im_pos⟩
-    hq3 := ⟨hx₃, hy₃⟩
-    hq4 := ⟨mul_pos hr_pos ht_pos,
-             neg_lt_zero.mpr (mul_pos hr_pos (sqrt_pos.mpr ht2_pos))⟩ }
+    hq3 := ⟨hv.2.2.1, hv.2.2.2.1⟩
+    hq4 := ⟨mul_pos (q4Rad_pos hv) hv.2.2.2.2.1,
+             neg_lt_zero.mpr (mul_pos (q4Rad_pos hv)
+               (sqrt_pos.mpr (by nlinarith [hv.2.2.2.2.1, hv.2.2.2.2.2.1])))⟩ }
 
 -- Projection simp lemmas (follow from the definition by rfl).
 @[simp] private lemma ofm_q1 (p : OilParams) (hv : OilValid p) :
