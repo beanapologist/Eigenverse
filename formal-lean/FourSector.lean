@@ -26,11 +26,13 @@
   ║   §3  Observation map and energy predicate                               ║
   ║   §4  Visible uniqueness theorem                                         ║
   ║   §5  Hidden-sector freedom theorem                                      ║
+  ║   §5b Five-dimensional oil fiber                                         ║
   ║   §6  Hardness conjecture (axiom)                                        ║
   ║                                                                          ║
   ║   Proof status                                                           ║
   ║   ────────────                                                           ║
-  ║   Proven:  visible_unique, hidden_freedom (by explicit witnesses)        ║
+  ║   Proven:  visible_unique, hidden_freedom, oil_subspace_parametric,      ║
+  ║            oil_fiber_map_mem, oil_fiber_five_dimensional                 ║
   ║   Sorry:   none                                                          ║
   ║   Axioms:  hidden_recovery_hard  (cryptographic assumption)              ║
   ║                                                                          ║
@@ -294,6 +296,160 @@ theorem oil_subspace_parametric (a : ℝ) (ha_pos : 0 < a) (ha_lt : a < 1) :
          Complex.normSq (⟨-η, -η⟩ : ℂ) + Complex.normSq (⟨a, -b⟩ : ℂ) = 4
     linarith [hnSq_q1, hnSq_q2, hnSq_q3, hnSq_q4]
   exact ⟨s, hcoh, rfl, rfl⟩
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- §5b  Five-Dimensional Oil Fiber
+-- The oil fiber {s : FourState | Coherent s ∧ observe s = μ} admits an
+-- explicit injective parametrization by five real numbers, establishing
+-- that the fiber is at least 5-dimensional.
+--
+-- Parametrization: (x₁, y₁, x₃, y₃, t) ↦ FourState with
+--   q1 = x₁ + i·y₁,   q2 = μ,   q3 = x₃ + i·y₃,
+--   q4 = r₄·t + i·(−r₄·√(1−t²)),   r₄ = √(3 − x₁²−y₁²−x₃²−y₃²)
+--
+-- Injectivity: q1 recovers (x₁, y₁); q3 recovers (x₃, y₃); the radius
+-- r₄ is then determined, and Re(q4) = r₄·t with r₄ > 0 recovers t.
+-- ════════════════════════════════════════════════════════════════════════════
+
+/-- Five real parameters for the oil fiber parametrization.
+    No bundled proof fields; validity is captured by `OilValid`. -/
+@[ext]
+structure OilParams where
+  /-- Re(q1), must be positive (Q1 sector).        -/ x₁ : ℝ
+  /-- Im(q1), must be positive (Q1 sector).        -/ y₁ : ℝ
+  /-- Re(q3), must be negative (Q3 sector).        -/ x₃ : ℝ
+  /-- Im(q3), must be negative (Q3 sector).        -/ y₃ : ℝ
+  /-- Normalized Re(q4)/r₄, must lie in (0, 1).   -/ t  : ℝ
+
+/-- Validity of `OilParams`: all five parameters in their required open
+    ranges, with sufficient energy remaining for a nonzero Q4 component. -/
+def OilValid (p : OilParams) : Prop :=
+  0 < p.x₁ ∧ 0 < p.y₁ ∧ p.x₃ < 0 ∧ p.y₃ < 0 ∧
+  0 < p.t  ∧ p.t < 1 ∧ p.x₁ ^ 2 + p.y₁ ^ 2 + p.x₃ ^ 2 + p.y₃ ^ 2 < 3
+
+-- The squared radius of the Q4 circle (energy left after q1, q2, q3).
+private def q4RadSq (p : OilParams) : ℝ :=
+  3 - p.x₁ ^ 2 - p.y₁ ^ 2 - p.x₃ ^ 2 - p.y₃ ^ 2
+
+private lemma q4RadSq_pos {p : OilParams} (hv : OilValid p) : 0 < q4RadSq p := by
+  obtain ⟨_, _, _, _, _, _, hfib⟩ := hv
+  simp only [q4RadSq]; linarith
+
+-- The Q4 radius.
+private noncomputable def q4Rad (p : OilParams) : ℝ := Real.sqrt (q4RadSq p)
+
+private lemma q4Rad_pos {p : OilParams} (hv : OilValid p) : 0 < q4Rad p :=
+  sqrt_pos.mpr (q4RadSq_pos hv)
+
+-- (√(q4RadSq p))² = q4RadSq p
+private lemma q4Rad_sq_eq {p : OilParams} (hv : OilValid p) :
+    q4Rad p ^ 2 = q4RadSq p := by
+  rw [q4Rad]; exact Real.sq_sqrt (le_of_lt (q4RadSq_pos hv))
+
+/-- **Oil fiber map** — constructs a Coherent FourState with `observe = μ`
+    from five real parameters `(x₁, y₁, x₃, y₃, t)`.
+
+    The Q4 component `r₄·t + i·(−r₄·√(1−t²))` lies on a circle of
+    radius `r₄ = √(3 − ‖q1‖² − ‖q3‖²)` inside Q4, so the Coherent
+    energy constraint `normSq q1 + 1 + normSq q3 + r₄² = 4` holds. -/
+noncomputable def oil_fiber_map (p : OilParams) (hv : OilValid p) : FourState := by
+  obtain ⟨hx₁, hy₁, hx₃, hy₃, ht_pos, ht_lt, _⟩ := hv
+  have hr_pos : 0 < q4Rad p := q4Rad_pos hv
+  have ht2_pos : 0 < 1 - p.t ^ 2 := by nlinarith
+  exact
+    { q1 := ⟨p.x₁, p.y₁⟩
+      q2 := μ
+      q3 := ⟨p.x₃, p.y₃⟩
+      q4 := ⟨q4Rad p * p.t, -(q4Rad p * Real.sqrt (1 - p.t ^ 2))⟩
+      hq1 := ⟨hx₁, hy₁⟩
+      hq2 := ⟨mu_re_neg, mu_im_pos⟩
+      hq3 := ⟨hx₃, hy₃⟩
+      hq4 := ⟨mul_pos hr_pos ht_pos,
+               neg_of_pos (mul_pos hr_pos (sqrt_pos.mpr ht2_pos))⟩ }
+
+-- Projection simp lemmas (follow from the definition by rfl).
+@[simp] private lemma ofm_q1 (p : OilParams) (hv : OilValid p) :
+    (oil_fiber_map p hv).q1 = ⟨p.x₁, p.y₁⟩ := rfl
+@[simp] private lemma ofm_q2 (p : OilParams) (hv : OilValid p) :
+    (oil_fiber_map p hv).q2 = μ := rfl
+@[simp] private lemma ofm_q3 (p : OilParams) (hv : OilValid p) :
+    (oil_fiber_map p hv).q3 = ⟨p.x₃, p.y₃⟩ := rfl
+@[simp] private lemma ofm_q4 (p : OilParams) (hv : OilValid p) :
+    (oil_fiber_map p hv).q4 =
+      ⟨q4Rad p * p.t, -(q4Rad p * Real.sqrt (1 - p.t ^ 2))⟩ := rfl
+
+-- normSq q4 = q4RadSq p (unit-arc identity).
+private lemma normSq_q4_eq (p : OilParams) (hv : OilValid p) :
+    Complex.normSq (⟨q4Rad p * p.t, -(q4Rad p * Real.sqrt (1 - p.t ^ 2))⟩ : ℂ) =
+    q4RadSq p := by
+  have ht2_nn : 0 ≤ 1 - p.t ^ 2 := by
+    obtain ⟨_, _, _, _, ht_pos, ht_lt, _⟩ := hv; nlinarith
+  rw [Complex.normSq_apply]
+  simp only [Complex.re, Complex.im, neg_sq]
+  -- Factor out r₄², then use (r₄)²=q4RadSq p and (√(1-t²))²=1-t².
+  have hfactor :
+      q4Rad p * p.t * (q4Rad p * p.t) +
+      q4Rad p * Real.sqrt (1 - p.t ^ 2) * (q4Rad p * Real.sqrt (1 - p.t ^ 2)) =
+      q4Rad p ^ 2 * p.t ^ 2 + q4Rad p ^ 2 * Real.sqrt (1 - p.t ^ 2) ^ 2 := by ring
+  rw [hfactor, q4Rad_sq_eq hv, Real.sq_sqrt ht2_nn]
+  ring
+
+/-- Every `oil_fiber_map p hv` is Coherent and satisfies `observe = μ`. -/
+lemma oil_fiber_map_mem (p : OilParams) (hv : OilValid p) :
+    Coherent (oil_fiber_map p hv) ∧ observe (oil_fiber_map p hv) = μ :=
+  ⟨by
+    unfold Coherent
+    simp only [ofm_q1, ofm_q2, ofm_q3, ofm_q4]
+    rw [normSq_mu, normSq_q4_eq p hv, q4RadSq]
+    simp only [Complex.normSq_apply, Complex.re, Complex.im]
+    ring,
+   rfl⟩
+
+/-- **Five-dimensional oil fiber** — the oil fiber parametrization is injective.
+
+    The map `OilParams → FourState` (restricted to valid inputs) is injective,
+    so the oil fiber `{s | Coherent s ∧ observe s = μ}` contains an embedding
+    of a 5-real-dimensional open set.  This makes precise the claim that the
+    oil subspace is **5-dimensional**:
+
+    | Parameter | Range       | Encodes                     |
+    |-----------|-------------|-----------------------------|
+    | `x₁`      | `(0, ∞)`    | Re(q1)                      |
+    | `y₁`      | `(0, ∞)`    | Im(q1)                      |
+    | `x₃`      | `(-∞, 0)`   | Re(q3)                      |
+    | `y₃`      | `(-∞, 0)`   | Im(q3)                      |
+    | `t`       | `(0, 1)`    | Re(q4)/r₄  (angle in Q4)    |
+
+    **Proof sketch**: q1 equality gives `x₁`, `y₁`; q3 equality gives `x₃`,
+    `y₃`; those four determine `r₄ = √(3−x₁²−y₁²−x₃²−y₃²) > 0`; and
+    `Re(q4) = r₄·t` with `r₄ > 0` then recovers `t` by cancellation. -/
+theorem oil_fiber_five_dimensional :
+    Function.Injective
+      (fun p : {p : OilParams // OilValid p} => oil_fiber_map p.1 p.2) := by
+  intro ⟨p, hv_p⟩ ⟨q, hv_q⟩ heq
+  apply Subtype.ext
+  -- Extract the four FourState field equalities.
+  have hq1_eq : (oil_fiber_map p hv_p).q1 = (oil_fiber_map q hv_q).q1 :=
+    congr_arg FourState.q1 heq
+  have hq3_eq : (oil_fiber_map p hv_p).q3 = (oil_fiber_map q hv_q).q3 :=
+    congr_arg FourState.q3 heq
+  have hq4_eq : (oil_fiber_map p hv_p).q4 = (oil_fiber_map q hv_q).q4 :=
+    congr_arg FourState.q4 heq
+  simp only [ofm_q1, ofm_q3, ofm_q4] at hq1_eq hq3_eq hq4_eq
+  -- Recover the five parameters one by one.
+  have hx₁ : p.x₁ = q.x₁ := congr_arg Complex.re hq1_eq
+  have hy₁ : p.y₁ = q.y₁ := congr_arg Complex.im hq1_eq
+  have hx₃ : p.x₃ = q.x₃ := congr_arg Complex.re hq3_eq
+  have hy₃ : p.y₃ = q.y₃ := congr_arg Complex.im hq3_eq
+  -- The Q4 radii are equal once (x₁, y₁, x₃, y₃) agree.
+  have hrad : q4Rad p = q4Rad q := by
+    unfold q4Rad q4RadSq; rw [hx₁, hy₁, hx₃, hy₃]
+  -- Re(q4): r₄·p.t = r₄·q.t; cancel r₄ > 0.
+  have hre4 : q4Rad p * p.t = q4Rad q * q.t := congr_arg Complex.re hq4_eq
+  rw [hrad] at hre4
+  have ht : p.t = q.t := mul_left_cancel₀ (q4Rad_pos hv_q).ne' hre4
+  -- All five fields match → OilParams are equal.
+  exact OilParams.ext hx₁ hy₁ hx₃ hy₃ ht
 
 -- ════════════════════════════════════════════════════════════════════════════
 -- §6  Hardness Conjecture
