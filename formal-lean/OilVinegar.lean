@@ -160,7 +160,7 @@ theorem oil_linear_collapse (x : ℝ) (hx : 0 < x) (h : C (1 + 1 / x) = x) : x =
     by the trapdoor function once the vinegar constants are fixed. -/
 theorem oil_coherence_triple :
     C 1 = 1 ∧ C δS = η ∧ C (φ ^ 2) = 2 / 3 :=
-  ⟨(coherence_eq_one_iff 1 le_rfl).mpr rfl,
+  ⟨(coherence_eq_one_iff 1 zero_le_one).mpr rfl,
    coherence_probe_confirms_balance,
    koide_coherence_bridge⟩
 
@@ -179,7 +179,7 @@ theorem oil_coherence_triple :
     family.  It corresponds to perfect coherence: amplitude ratio 1
     means the two sectors are exactly matched. -/
 theorem trapdoor_at_one : C 1 = 1 :=
-  (coherence_eq_one_iff 1 le_rfl).mpr rfl
+  (coherence_eq_one_iff 1 zero_le_one).mpr rfl
 
 /-- **Trapdoor symmetry**: C(r) = C(1/r) for all r > 0.
 
