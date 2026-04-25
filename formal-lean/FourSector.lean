@@ -28,11 +28,15 @@
   ║   §5  Hidden-sector freedom theorem                                      ║
   ║   §5b Five-dimensional oil fiber                                         ║
   ║   §6  Hardness conjecture (axiom)                                        ║
+  ║   §7  Measurement asymmetry                                              ║
   ║                                                                          ║
   ║   Proof status                                                           ║
   ║   ────────────                                                           ║
   ║   Proven:  visible_unique, hidden_freedom, oil_subspace_parametric,      ║
-  ║            oil_fiber_map_mem, oil_fiber_five_dimensional                 ║
+  ║            oil_fiber_map_mem, oil_fiber_five_dimensional,                ║
+  ║            alice_key_determines_state, adversary_view_constant,          ║
+  ║            adversary_indistinguishable, measurement_asymmetry,           ║
+  ║            adversary_cannot_recover                                      ║
   ║   Sorry:   none                                                          ║
   ║   Axioms:  hidden_recovery_hard  (cryptographic assumption)              ║
   ║                                                                          ║
@@ -486,5 +490,138 @@ axiom hidden_recovery_hard :
     -- NOTE: this is provable from hidden_freedom; the true unproven claim is
     -- that no *polynomial-time* A succeeds.  See docstring above.
     ∀ (A : ℂ → FourState), ∃ s : FourState, A (observe s) ≠ s
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- §7  Measurement Asymmetry
+-- Formalizes the information gap between Alice (the state-preparer, who holds
+-- OilParams as a private secret) and an adversary (who sees only the Q2
+-- observation, a single ℂ value equal to μ for every valid preparation).
+--
+-- Alice's asymmetry comes from state preparation: she chose OilParams before
+-- any adversary interaction.  The adversary's view is a constant function of
+-- Alice's key, while Alice's preparation function is injective.
+--
+-- Definitions:
+--   AliceKey           — valid OilParams (Alice's private secret)
+--   AdversaryView      — type alias ℂ (the adversary's information)
+--   alice_prepares     — Alice's injective state-preparation function
+--   adversary_observes — the adversary's constant observation function
+--
+-- Theorems:
+--   alice_key_determines_state  — alice_prepares is injective
+--   adversary_view_constant     — adversary_observes is constant at μ
+--   adversary_indistinguishable — adversary cannot distinguish any two keys
+--   measurement_asymmetry       — combined statement of the information gap
+--   adversary_cannot_recover    — no total function recovers Alice's full state
+-- ════════════════════════════════════════════════════════════════════════════
+
+/-- Alice's private key: a valid set of five real parameters determining the
+    full hidden-sector state.
+
+    Alice's asymmetric advantage comes from state preparation: she holds
+    `params : OilParams` (encoding all four quadrant components) before any
+    adversary interaction begins.  The adversary never obtains this value —
+    they only see `observe s = μ`, which is identical for every key. -/
+abbrev AliceKey : Type := {p : OilParams // OilValid p}
+
+/-- The adversary's information type: only the visible Q2 observation.
+
+    An adversary who interacts with Alice's scheme can extract at most
+    `observe s : ℂ` — a single complex number equal to μ for every state
+    Alice prepares.  This type alias makes the information restriction
+    syntactically explicit. -/
+abbrev AdversaryView : Type := ℂ
+
+/-- Alice constructs a `Coherent` `FourState` from her private key. -/
+def alice_prepares (k : AliceKey) : FourState := oil_fiber_map k.1 k.2
+
+/-- The adversary's information extraction: they see only `observe s`. -/
+def adversary_observes (k : AliceKey) : AdversaryView := observe (alice_prepares k)
+
+/-- **Alice's key uniquely determines her state** — `alice_prepares` is injective.
+
+    Alice holds a one-to-one map from her private key to the prepared state:
+    distinct keys produce distinct states.  Knowing the state is equivalent
+    to knowing the key.  This is the positive side of the asymmetry: Alice
+    has complete information about her preparation.
+
+    Proof: direct consequence of `oil_fiber_five_dimensional`. -/
+theorem alice_key_determines_state : Function.Injective alice_prepares :=
+  oil_fiber_five_dimensional
+
+/-- **Adversary view is constant** — the adversary always sees μ, regardless
+    of which key Alice holds.
+
+    Alice's state-preparation map sends every valid `AliceKey` to a state in
+    the oil fiber, and every oil-fiber element satisfies `observe s = μ`
+    (proved by `oil_fiber_map_mem`).  The adversary's information function is
+    therefore a constant — they cannot distinguish Alice's keys by observation. -/
+theorem adversary_view_constant (k : AliceKey) : adversary_observes k = μ :=
+  (oil_fiber_map_mem k.1 k.2).2
+
+/-- Any two of Alice's keys are mutually indistinguishable from the adversary's
+    perspective: they produce the same observation. -/
+theorem adversary_indistinguishable (k₁ k₂ : AliceKey) :
+    adversary_observes k₁ = adversary_observes k₂ := by
+  rw [adversary_view_constant, adversary_view_constant]
+
+/-- **Measurement asymmetry** — the formal statement of the information gap.
+
+    Alice's map `AliceKey → FourState` is injective: she has complete
+    information about her preparation.  The adversary's map `AliceKey → ℂ`
+    is constant at μ: they have zero distinguishing information.
+
+    These two properties together make the asymmetry structurally explicit:
+    Alice and the adversary occupy incompatible epistemic positions — not by
+    definition, but as provable consequences of the oil-fiber geometry. -/
+theorem measurement_asymmetry :
+    Function.Injective alice_prepares ∧
+    ∀ k : AliceKey, adversary_observes k = μ :=
+  ⟨alice_key_determines_state, adversary_view_constant⟩
+
+/-- **Adversary cannot recover** — no total function from observations to states
+    correctly identifies every state Alice might prepare.
+
+    Proof: exhibit two distinct keys `k₁` (t = 1/2) and `k₂` (t = 3/4) with
+    the same adversary view (μ by `adversary_view_constant`).  Any deterministic
+    `A : AdversaryView → FourState` produces the same output for both; but the
+    states differ (by `alice_key_determines_state`), so `A` fails on at least one.
+
+    This theorem is provable (not an axiom) because it follows purely from the
+    information-theoretic fiber structure.  The computational hardness claim in
+    `hidden_recovery_hard` is the genuine unproven assumption. -/
+theorem adversary_cannot_recover :
+    ∀ (A : AdversaryView → FourState),
+      ∃ k : AliceKey, A (adversary_observes k) ≠ alice_prepares k := by
+  intro A
+  -- Two explicit valid keys differing only in t (1/2 vs 3/4)
+  have hv₁ : OilValid ⟨1/2, 1/2, -1/2, -1/2, 1/2⟩ :=
+    ⟨by norm_num, by norm_num, by norm_num, by norm_num,
+     by norm_num, by norm_num, by norm_num⟩
+  have hv₂ : OilValid ⟨1/2, 1/2, -1/2, -1/2, 3/4⟩ :=
+    ⟨by norm_num, by norm_num, by norm_num, by norm_num,
+     by norm_num, by norm_num, by norm_num⟩
+  let k₁ : AliceKey := ⟨⟨1/2, 1/2, -1/2, -1/2, 1/2⟩, hv₁⟩
+  let k₂ : AliceKey := ⟨⟨1/2, 1/2, -1/2, -1/2, 3/4⟩, hv₂⟩
+  -- The keys are distinct: their t fields differ (1/2 ≠ 3/4)
+  have hne_keys : k₁ ≠ k₂ := by
+    intro heq
+    have hval := congr_arg Subtype.val heq
+    have ht   := congr_arg OilParams.t hval
+    norm_num at ht
+  -- By injectivity of alice_prepares, the prepared states are distinct
+  have hne_states : alice_prepares k₁ ≠ alice_prepares k₂ :=
+    fun heq => hne_keys (alice_key_determines_state heq)
+  -- Both keys share the same adversary view, so A gives the same output for both
+  have hA_eq : A (adversary_observes k₁) = A (adversary_observes k₂) :=
+    congrArg A (adversary_indistinguishable k₁ k₂)
+  -- If A succeeds on k₁ it must fail on k₂; otherwise it already fails on k₁
+  by_cases h₁ : A (adversary_observes k₁) = alice_prepares k₁
+  · refine ⟨k₂, fun h₂ => hne_states ?_⟩
+    calc alice_prepares k₁
+        = A (adversary_observes k₁) := h₁.symm
+      _ = A (adversary_observes k₂) := hA_eq
+      _ = alice_prepares k₂         := h₂
+  · exact ⟨k₁, h₁⟩
 
 end -- noncomputable section
