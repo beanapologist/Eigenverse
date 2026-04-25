@@ -28,14 +28,14 @@
   ║   §5  Hidden-sector freedom theorem                                      ║
   ║   §5b Five-dimensional oil fiber                                         ║
   ║   §6  Hardness conjecture (axiom)                                        ║
-  ║   §7  Measurement asymmetry                                              ║
+  ║   §7  Observational asymmetry                                            ║
   ║                                                                          ║
   ║   Proof status                                                           ║
   ║   ────────────                                                           ║
   ║   Proven:  visible_unique, hidden_freedom, oil_subspace_parametric,      ║
   ║            oil_fiber_map_mem, oil_fiber_five_dimensional,                ║
   ║            alice_key_determines_state, adversary_view_constant,          ║
-  ║            adversary_indistinguishable, measurement_asymmetry,           ║
+  ║            adversary_indistinguishable, observational_asymmetry,         ║
   ║            adversary_cannot_recover                                      ║
   ║   Sorry:   none                                                          ║
   ║   Axioms:  hidden_recovery_hard  (cryptographic assumption)              ║
@@ -492,14 +492,25 @@ axiom hidden_recovery_hard :
     ∀ (A : ℂ → FourState), ∃ s : FourState, A (observe s) ≠ s
 
 -- ════════════════════════════════════════════════════════════════════════════
--- §7  Measurement Asymmetry
--- Formalizes the information gap between Alice (the state-preparer, who holds
--- OilParams as a private secret) and an adversary (who sees only the Q2
--- observation, a single ℂ value equal to μ for every valid preparation).
+-- §7  Observational Asymmetry
 --
--- Alice's asymmetry comes from state preparation: she chose OilParams before
--- any adversary interaction.  The adversary's view is a constant function of
--- Alice's key, while Alice's preparation function is injective.
+-- This section formalizes the asymmetry between Alice and an adversary that
+-- arises from state-preparation secrecy: Alice holds her OilParams privately,
+-- and the public observation is constant at μ regardless of which valid
+-- OilParams she chose.  This is the standard form of cryptographic asymmetry
+-- (Alice knows the secret key; the adversary doesn't).  It does not require
+-- any physical restriction on the adversary's measurement capability — the
+-- asymmetry is informational.  A full measurement-restriction model (where
+-- adversaries are formally constrained from reading hidden sectors) would be
+-- a stronger and physically distinct claim, not derived here yet.
+--
+-- Note on "could we derive the physical restriction?": in principle yes, but
+-- it would require a separate model — an `Observer` type with an interaction
+-- predicate that formally limits what a party can read.  The theorems below
+-- do not need that model: `adversary_view_constant` holds because the
+-- adversary's information type is `ℂ`, not because we have proved they cannot
+-- inspect `q1`.  The physical and informational claims are independent; the
+-- informational claim is the one proved here.
 --
 -- Definitions:
 --   AliceKey           — valid OilParams (Alice's private secret)
@@ -511,7 +522,7 @@ axiom hidden_recovery_hard :
 --   alice_key_determines_state  — alice_prepares is injective
 --   adversary_view_constant     — adversary_observes is constant at μ
 --   adversary_indistinguishable — adversary cannot distinguish any two keys
---   measurement_asymmetry       — combined statement of the information gap
+--   observational_asymmetry     — combined statement of the information gap
 --   adversary_cannot_recover    — no total function recovers Alice's full state
 -- ════════════════════════════════════════════════════════════════════════════
 
@@ -565,7 +576,7 @@ theorem adversary_indistinguishable (k₁ k₂ : AliceKey) :
     adversary_observes k₁ = adversary_observes k₂ := by
   rw [adversary_view_constant, adversary_view_constant]
 
-/-- **Measurement asymmetry** — the formal statement of the information gap.
+/-- **Observational asymmetry** — the formal statement of the information gap.
 
     Alice's map `AliceKey → FourState` is injective: she has complete
     information about her preparation.  The adversary's map `AliceKey → ℂ`
@@ -574,7 +585,7 @@ theorem adversary_indistinguishable (k₁ k₂ : AliceKey) :
     These two properties together make the asymmetry structurally explicit:
     Alice and the adversary occupy incompatible epistemic positions — not by
     definition, but as provable consequences of the oil-fiber geometry. -/
-theorem measurement_asymmetry :
+theorem observational_asymmetry :
     Function.Injective alice_prepares ∧
     ∀ k : AliceKey, adversary_observes k = μ :=
   ⟨alice_key_determines_state, adversary_view_constant⟩
