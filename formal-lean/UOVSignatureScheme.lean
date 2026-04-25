@@ -181,9 +181,15 @@ def uov_verify {o v p : ℕ}
     The `if-pos`/`if-neg` biconditional, convenient as a rewrite rule. -/
 theorem uov_verify_true_iff {o v p : ℕ}
     (pk : UOVPublicKey o v p) (sig : UOVSignature o v p) (msg : UOVMessage o p) :
-    uov_verify pk sig msg = true ↔ pk sig.oil sig.vin = msg :=
-  ⟨fun h => by simp only [uov_verify] at h; split_ifs at h with heq; exact heq; simp at h,
-   fun h => by simp only [uov_verify, if_pos h]⟩
+    uov_verify pk sig msg = true ↔ pk sig.oil sig.vin = msg := by
+  constructor
+  · intro h
+    unfold uov_verify at h
+    by_cases heq : pk sig.oil sig.vin = msg
+    · exact heq
+    · rw [if_neg heq] at h; simp at h
+  · intro h
+    exact if_pos h
 
 -- ════════════════════════════════════════════════════════════════════════════
 -- §4  Signing Algorithm (Trapdoor Inversion via ZeroOilBlock)
@@ -256,11 +262,11 @@ theorem uov_signing_equation {o v p : ℕ} (sk : UOVSecretKey o v p)
 
     Proof: direct application of ZeroOilBlock (FiniteFieldUOV §4). -/
 theorem signing_equation_is_linear {o v p : ℕ} [Fact (Nat.Prime p)]
-    (sk : UOVSecretKey o v p) (vin_random : VinegarVec v p) :
-    let vin' := sk.T_v.fwd vin_random
-    ∀ (a b : OilVec o p) (c : GFp p),
-      sk.F (fun i => a i + c * b i) vin' = fun i => sk.F a vin' i + c * sk.F b vin' i :=
-  fun _ a b c => sk.hZero (sk.T_v.fwd vin_random) a b c
+    (sk : UOVSecretKey o v p) (vin_random : VinegarVec v p)
+    (a b : OilVec o p) (c : GFp p) :
+    sk.F (fun i => a i + c * b i) (sk.T_v.fwd vin_random) =
+      fun i => sk.F a (sk.T_v.fwd vin_random) i + c * sk.F b (sk.T_v.fwd vin_random) i :=
+  sk.hZero (sk.T_v.fwd vin_random) a b c
 
 -- ════════════════════════════════════════════════════════════════════════════
 -- §5  Correctness Theorems
@@ -274,8 +280,9 @@ private theorem untwist_pk {o v p : ℕ} (sk : UOVSecretKey o v p)
     (oil : OilVec o p) (vin : VinegarVec v p) (msg : UOVMessage o p)
     (h : uov_keygen sk oil vin = msg) :
     sk.F (sk.T_o.fwd oil) (sk.T_v.fwd vin) = sk.S.inv msg := by
-  have heq : sk.S.inv (sk.S.fwd (sk.F (sk.T_o.fwd oil) (sk.T_v.fwd vin))) = sk.S.inv msg :=
-    congr_arg sk.S.inv (uov_pk_decomposes sk oil vin ▸ h)
+  have hpk : sk.S.fwd (sk.F (sk.T_o.fwd oil) (sk.T_v.fwd vin)) = msg :=
+    (uov_pk_decomposes sk oil vin).symm.trans h
+  have heq := congr_arg sk.S.inv hpk
   rwa [sk.S.fwd_inv] at heq
 
 /-- Main correctness theorem: a signature produced by signing always verifies.
