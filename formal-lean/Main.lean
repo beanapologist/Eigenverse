@@ -1505,7 +1505,7 @@ private def printOilVinegar : IO Unit := do
   IO.println "════════════════════════════════════════════════════════════════════════"
   IO.println ""
   IO.println "  The three pre-physical axioms are vinegar variables (freely chosen)."
-  IO.println "  All 606 physical observables are oil variables (determined by vinegar)."
+  IO.println "  The 606 foundational theorems are oil variables (determined by vinegar)."
   IO.println ""
   IO.println "§1    Vinegar triple  (V1 energy, V2 balance, V3 self-reference)"
   IO.println ""

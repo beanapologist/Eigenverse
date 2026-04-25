@@ -550,7 +550,8 @@ OilVinegar.lean — Oil-and-Vinegar partition of the Eigenverse
 
 The Eigenverse has the structure of an OV cryptosystem (Patarin 1997).
 Vinegar variables: three freely stated pre-physical axioms.
-Oil variables: all 624 theorems, uniquely determined by the vinegar.
+Oil variables: the 606 foundational theorems, uniquely determined by the vinegar.
+(The 18 OilVinegar theorems are meta-theorems about the OV structure itself.)
 
 §1  Vinegar triple  (V1 energy, V2 balance, V3 self-reference)
   [1]  vinegar_V1                 : Re(μ)² + Im(μ)² = 1  (energy conservation)
@@ -581,7 +582,8 @@ Oil variables: all 624 theorems, uniquely determined by the vinegar.
 
 §6  Lanchester quadratic hardness  (O(n²) cross-term growth)
   [17] lanchester_eigenverse_count: 606 × 605 / 2 = 183315
-         624 Eigenverse theorems ↔ 183315 pairwise quadratic constraints.
+         606 foundational theorems ↔ 183315 pairwise quadratic constraints.
+         (The 18 OilVinegar meta-theorems are not counted as oil variables.)
   [18] lanchester_quadratic_growth: n·(n−1) ≤ n²  ∀n ∈ ℕ
 
 18 theorems — all machine-checked, zero sorry.

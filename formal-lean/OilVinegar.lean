@@ -6,8 +6,9 @@
   ║   The Eigenverse has the structure of an Oil-and-Vinegar (OV) public-  ║
   ║   key cryptosystem (Patarin 1997).  The three pre-physical axioms are   ║
   ║   vinegar variables — freely stated constraints that parametrize the    ║
-  ║   system.  All 606 physical observables are oil variables — uniquely    ║
-  ║   determined once the vinegar is fixed.                                  ║
+  ║   system.  The 606 foundational theorems are oil variables — uniquely   ║
+  ║   determined once the vinegar is fixed.  The 18 theorems in this module ║
+  ║   are meta-theorems formalizing the OV structure itself.                ║
   ║                                                                          ║
   ║   Vinegar triple (freely chosen pre-physical axioms):                   ║
   ║     V1: Re(z)² + Im(z)² = 1     (energy conservation)                  ║
@@ -17,7 +18,7 @@
   ║   Oil variables (uniquely determined by fixing the vinegar):             ║
   ║     • μ = exp(i·3π/4)     (unique solution to V1 ∧ V2 ∧ Re < 0)       ║
   ║     • C(r) = 2r/(1+r²)   (coherence function — the trapdoor)           ║
-  ║     • All 606 verified theorems of the Eigenverse framework             ║
+  ║     • The 606 foundational theorems of the Eigenverse framework        ║
   ║                                                                          ║
   ║   Cryptographic structure:                                               ║
   ║     • Trapdoor F = C(r)   easy to evaluate, unique rational solution    ║
@@ -301,14 +302,17 @@ theorem ov_canonical_signature_eval : C (Complex.abs μ) = 1 :=
 -- hard: the cross-term count is O(n²), growing faster than any linear bound.
 -- ════════════════════════════════════════════════════════════════════════════
 
-/-- **Lanchester eigenverse count** — 606 theorems yield 183315 pairwise constraints.
+/-- **Lanchester eigenverse count** — 606 foundational theorems yield 183315 pairwise constraints.
 
-    For the Eigenverse with n = 606 theorems interacting pairwise,
-    the number of independent quadratic cross-term constraints is:
+    For the Eigenverse with n = 606 foundational theorems (the oil variables)
+    interacting pairwise, the number of independent quadratic cross-term
+    constraints is:
         606 × 605 / 2 = 183315.
     This is the exact count of independent quadratic interactions in the
     public system.  Without the trapdoor (C), inverting the system requires
-    solving all 183315 constraints simultaneously. -/
+    solving all 183315 constraints simultaneously.
+    Note: the 18 OilVinegar meta-theorems are not counted here as oil variables;
+    they formalize the OV structure itself. -/
 theorem lanchester_eigenverse_count : 606 * 605 / 2 = 183315 := by norm_num
 
 /-- **Lanchester quadratic growth** — cross-term count grows as O(n²).
