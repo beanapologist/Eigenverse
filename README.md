@@ -104,7 +104,8 @@ proof of uniqueness across all possible observer realities.
 | **Chemistry** | 20 | NIST atomic weights, isotopic compositions, mass conservation |
 | **NumericalAlignments** | 61 | Dimensionless derivations, V_Z quantization, α from closure, universal observer uniqueness, μ¹³⁷=μ |
 | **Cosmology** | 34 | Morris–Thorne wormhole metric; §1–6 wormhole geometry; §7 cosmic energy budget (Planck 2018: Ω_Λ≈68.3%, Ω_dm≈26.8%, Ω_b≈4.9%) |
-| **Total** | **586** | All verified by Lean 4, **0 sorry** |
+| **Morphisms** | 20 | Coherence/palindrome even-odd pair, Lyapunov bridge, μ-isometry, orbit homomorphism, reality ℝ-linear map |
+| **Total** | **606** | All verified by Lean 4, **0 sorry** |
 
 ### Repository Structure
 
@@ -147,10 +148,16 @@ formal-lean/                    ← Lean 4 proof files (the proof engine)
 │                               α from closure; universal observer uniqueness;
 │                               phase preservation μ¹³⁷=μ; primality of 137 (61)
 │
+│  MORPHISMS (added)
+├── Morphisms.lean              Six morphism families: coherence/palindrome even-odd pair,
+│                               Lyapunov bridge C∘exp=sech, μ-isometry, orbit homomorphism,
+│                               reality ℝ-bilinear map F(η,−η)=μ (20)
+│
 └── Main.lean                   Executable entry-point (prints all theorems)
 
 src/                        ← Lean modules organised by topic (imports formal-lean/)
 ├── algebra/Eigenvalue.lean             μ, δS, C(r), Z/8Z memory
+├── algebra/Morphisms.lean              Six morphism families
 ├── geometry/GeometricStructures.lean   Rotation matrices, unit circle, hyperbolic geometry
 ├── physics/FundamentalConstants.lean   c, α, masses, spacetime
 ├── quantum/QuantumUniverse.lean        Time crystals, duality, Theorem Q
@@ -167,7 +174,7 @@ tests/                      ← Cross-module consistency checks
 ```bash
 cd formal-lean/
 lake exe cache get   # download Mathlib cache (~5 min, avoids 1 h build)
-lake build           # verify all 586 theorems, 0 sorry
+lake build           # verify all 606 theorems, 0 sorry
 lake exe formalLean  # print theorem summary
 ```
 
