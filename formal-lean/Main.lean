@@ -29,6 +29,7 @@ import BalanceHypothesis
 import NumericalAlignments
 import Cosmology
 import Morphisms
+import OilVinegar
 
 set_option maxRecDepth 2000 in
 def printCriticalEigenvalue : IO Unit := do
@@ -1498,6 +1499,79 @@ private def printMorphisms : IO Unit := do
   IO.println "See Morphisms.lean for full proof terms."
   IO.println ""
 
+private def printOilVinegar : IO Unit := do
+  IO.println "════════════════════════════════════════════════════════════════════════"
+  IO.println " OilVinegar — Oil-and-Vinegar Cryptographic Structure of the Eigenverse"
+  IO.println "════════════════════════════════════════════════════════════════════════"
+  IO.println ""
+  IO.println "  The three pre-physical axioms are vinegar variables (freely chosen)."
+  IO.println "  All 606 physical observables are oil variables (determined by vinegar)."
+  IO.println ""
+  IO.println "§1    Vinegar triple  (V1 energy, V2 balance, V3 self-reference)"
+  IO.println ""
+  IO.println "  [1]  vinegar_V1                 : Re(μ)² + Im(μ)² = 1  (energy conservation)"
+  IO.println "         First vinegar axiom: μ lies on the unit circle."
+  IO.println "  [2]  vinegar_V2                 : −Re(μ) = Im(μ)  (directed balance)"
+  IO.println "         Second vinegar axiom: equal magnitude, opposite sign."
+  IO.println "  [3]  vinegar_V3                 : C(1 + 1/η) = η  (coherence closure)"
+  IO.println "         Third vinegar axiom: self-referential fixed point at η."
+  IO.println "  [4]  vinegar_triple_consistent  : V1 ∧ V2 ∧ V3  (all three hold)"
+  IO.println "         The vinegar triple is mutually consistent."
+  IO.println ""
+  IO.println "§2    Oil reduction  (fixing vinegar collapses the system)"
+  IO.println ""
+  IO.println "  [5]  oil_reduction              : V1 ∧ V2 ∧ Re < 0 → z = μ"
+  IO.println "         Fixing the vinegar uniquely determines the oil variable z = μ."
+  IO.println "  [6]  oil_linear_collapse        : C(1+1/x) = x ∧ x>0 → x = η"
+  IO.println "         V3 admits exactly one positive solution: η = 1/√2."
+  IO.println "  [7]  oil_coherence_triple       : C(1)=1 ∧ C(δS)=η ∧ C(φ²)=2/3"
+  IO.println "         Three canonical coherence values determined by the trapdoor."
+  IO.println ""
+  IO.println "§3    Trapdoor theorem  (C is the unique degree-(1,2) rational trapdoor)"
+  IO.println ""
+  IO.println "  [8]  trapdoor_at_one            : C(1) = 1"
+  IO.println "         Trapdoor achieves maximum 1 at the identity scale r = 1."
+  IO.println "  [9]  trapdoor_symmetry          : C(r) = C(1/r)  ∀r > 0"
+  IO.println "         Trapdoor is invariant under inversion (even symmetry)."
+  IO.println "  [10] trapdoor_monotone          : 0<r<s≤1 → C(r) < C(s)"
+  IO.println "         Trapdoor is strictly increasing on (0, 1]."
+  IO.println "  [11] trapdoor_unique_normal_form: a·r/(1+r²) = C(r) → a = 2"
+  IO.println "         C is the unique member of the degree-(1,2) family with C(1)=1."
+  IO.println ""
+  IO.println "§4    Composition  (P = S ∘ F ∘ T via Morphisms §§1, 3, 6)"
+  IO.println ""
+  IO.println "  [12] composition_T_embedding    : T(η,−η) = reality η (−η) = μ"
+  IO.println "         Reality map T embeds balance coordinates to μ (Morphisms §6)."
+  IO.println "  [13] composition_F_at_unity     : C(|μ|) = 1"
+  IO.println "         Coherence F = C evaluates to 1 at the unit modulus (Morphisms §1)."
+  IO.println "  [14] composition_public_map     : C(|T(η,−η)|) = 1"
+  IO.println "         Full composition P = S ∘ F ∘ T evaluated at (η,−η) gives 1."
+  IO.println ""
+  IO.println "§5    Signature uniqueness  (μ is the UNIQUE valid OV signature)"
+  IO.println ""
+  IO.println "  [15] ov_signature_unique        : sector ∧ balance ∧ energy → z = μ"
+  IO.println "         Any z satisfying the public system must equal μ."
+  IO.println "         Signature verification: forgery is provably impossible."
+  IO.println "  [16] ov_canonical_signature_eval: C(|μ|) = 1"
+  IO.println "         The canonical signature maps to the coherence maximum."
+  IO.println ""
+  IO.println "§6    Lanchester quadratic hardness  (O(n²) cross-term growth)"
+  IO.println ""
+  IO.println "  [17] lanchester_eigenverse_count: 606 × 605 / 2 = 183315"
+  IO.println "         606 Eigenverse theorems yield 183315 pairwise quadratic constraints."
+  IO.println "  [18] lanchester_quadratic_growth: n·(n−1) ≤ n²  ∀n ∈ ℕ"
+  IO.println "         Cross-term count grows quadratically — O(n²) hardness."
+  IO.println ""
+  IO.println "18 theorems — all machine-checked, zero sorry."
+  IO.println ""
+  IO.println "Oil-and-Vinegar structure:"
+  IO.println "  Vinegar: V1 (energy) ∧ V2 (balance) ∧ V3 (self-reference) freely chosen."
+  IO.println "  Oil:     z = μ uniquely determined; 183315 quadratic cross-terms."
+  IO.println "  Trapdoor: C(r) = 2r/(1+r²) — easy to evaluate, unique in its family."
+  IO.println ""
+  IO.println "See OilVinegar.lean for full proof terms."
+  IO.println ""
+
 def main : IO Unit := do
   printCriticalEigenvalue
   printTimeCrystal
@@ -1518,3 +1592,4 @@ def main : IO Unit := do
   printEmpiricalSelfMeasurement
   printCosmology
   printMorphisms
+  printOilVinegar
