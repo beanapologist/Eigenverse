@@ -93,9 +93,16 @@ noncomputable section
 
 /-- Message type: a complex number representing the target output of the public map.
 
-    In the standard UOV construction over GF(p), a message is a vector
-    `h ∈ GF(p)^m` (the hash of the message content).  In this formalization
-    over ℂ, a message is the target value that the public map must evaluate to.
+    **Design choice**: standard UOV uses messages from GF(p)^m (a vector of hash
+    outputs), but this formalization uses `ℂ` for three reasons:
+    1. The four-sector geometry is defined over ℂ (`FourState`, `observe : FourState → ℂ`),
+       so the natural "message space" — the codomain of the public map — is ℂ.
+    2. The canonical message `μ` is the unique complex number that every Coherent
+       FourState maps to under `observe` (by `visible_unique` in BalanceHypothesis).
+       Using `ℂ` makes this uniqueness structural rather than by convention.
+    3. The GF(p) embedding is straightforward: in a full instantiation over GF(p),
+       the message would be an element of GF(p) (the scalar field), with the same
+       role as the single output coordinate here.
 
     The canonical message is `μ`: every valid signature produced by `sign` maps
     to `μ` under the public key.  This reflects the oil-fiber structure:
@@ -186,6 +193,13 @@ def keygen (_ : SecretKey) : PublicKey := observe
 
 /-- Sign a message using the secret key.
 
+    **⚠ Single-message model**: the `msg` parameter is ignored by this
+    implementation.  Every Coherent state Alice can construct satisfies
+    `observe state = μ`, so the only verifiable message in this formalization
+    is the canonical μ.  Callers should pass `μ` and use `correctness` to
+    confirm verification succeeds.  See the note at the bottom of this docstring
+    for the relationship to multi-message UOV.
+
     Alice uses her trapdoor (`oil_fiber_map`) to construct a Coherent FourState
     in the oil fiber.  This is the UOV "fix vinegar, solve linear system" step:
 
@@ -203,14 +217,15 @@ def keygen (_ : SecretKey) : PublicKey := observe
     The resulting Signature satisfies `observe sig.state = μ`, so it verifies
     correctly against the canonical message μ under the public key `keygen sk`.
 
-    Note on the `msg` parameter: it is accepted for interface compatibility
-    with the standard sign/verify API (`sign : SecretKey → Message → Signature`)
-    but does **not** influence the output in this model.  This is a deliberate
-    design choice reflecting the single-message structure of the four-sector oil
-    fiber: every Coherent state in Alice's signing range satisfies `observe = μ`,
-    so the only verifiable message is μ regardless of the input.  In a full
-    UOV formalization over GF(p)^m, the message hash would select which linear
-    system Alice solves; here the fiber is already determined by the OilParams.
+    Note on the `msg` parameter: the parameter is present to satisfy the
+    standard sign/verify API contract (`sign : SecretKey → Message → Signature`)
+    and to enable the `correctness` theorem to be stated uniformly.  It does not
+    influence the output because this formalization captures the *single-message*
+    structure of the four-sector oil fiber.  In a full multi-message UOV
+    formalization over GF(p)^m, the message hash would be combined with random
+    vinegar values to produce a target vector, and Alice would solve a different
+    linear system for each message; here the fiber is already fully determined
+    by the OilParams alone.
 
     Dependency chain: sign → alice_prepares → oil_fiber_map_mem → oil_fiber_map
                     → FourSector §§5,5b → BalanceHypothesis. -/
