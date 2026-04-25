@@ -350,6 +350,46 @@ private lemma q4Rad_sq_eq {p : OilParams} (hv : OilValid p) :
     q4Rad p ^ 2 = q4RadSq p := by
   rw [q4Rad]; exact Real.sq_sqrt (le_of_lt (q4RadSq_pos hv))
 
+/-!
+## UOV Full Mixing Matrix (the trapdoor geometry)
+
+The public quadratic map factors through the **classic UOV block form**:
+
+```
+M = | V  0 |
+    | v  O |
+```
+
+where:
+- **Vinegar column** `V` (public, 1×1 block): only `v_{i1}` is nonzero.
+  Alice fixes the single vinegar variable `Q₂ = μ`.
+- **Zero block** (Oil rows × Oil columns): **the trapdoor**.  This forces all
+  oil-equations to become linear once the vinegar is fixed.
+- **Oil block** `O` (secret): lives in the **5-dimensional fiber** parametrized
+  by `(x₁, y₁, x₃, y₃, t)` — exactly the `OilParams` below.
+- **Coherence condition**: `‖Q₁‖² + ‖Q₂‖² + ‖Q₃‖² + ‖Q₄‖² = 4`
+  (keeps the fiber exactly 5-dimensional).
+
+Explicit layout (4 equations × 4 variables):
+
+```
+         Q₂ (vinegar)   Q₁   Q₃   Q₄
+oil eq₁:  v₁₁           0    0    0    ← o₁
+oil eq₂:  v₂₁           0    0    0    ← o₂
+oil eq₃:  v₃₁           0    0    0    ← o₃
+vin eq:   v₄₁           0    0    0    ← o₄
+```
+
+**Key facts**:
+- `Oil × Oil = 0` ⇒ after fixing `Q₂ = μ`, the system is **linear** in the
+  three oil variables (Q₁, Q₃, Q₄).  Alice solves instantly using the secret `O`.
+- Bob only sees the public vinegar column (the observable scalar) and verifies
+  `P(Q) = μ` (i.e., `observe state = μ`).
+- This is exactly why `MultiMessage.lean` works: the message hash perturbs the
+  **base `OilParams`** inside the same 5D fiber; the trapdoor (zero block) is
+  untouched, so `observe = μ` still holds for every message.
+-/
+
 /-- **Oil fiber map** — constructs a Coherent FourState with `observe = μ`
     from five real parameters `(x₁, y₁, x₃, y₃, t)`.
 
