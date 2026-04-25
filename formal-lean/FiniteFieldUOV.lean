@@ -8,7 +8,7 @@
   ║   using Mathlib's ZMod infrastructure.                                  ║
   ║                                                                          ║
   ║   The current ℂ formalization in OilVinegar.lean and SignVerify.lean     ║
-  ║   is structurally compatible with UOV over 𝔽_p:                        ║
+  ║   is structurally compatible with UOV over GF(p):                       ║
   ║                                                                          ║
   ║     ℂ model                    GF(p) model (this file)                 ║
   ║     ─────────────────────────  ─────────────────────────────────────── ║
@@ -287,6 +287,15 @@ abbrev UOVCentralMap (o v p : ℕ) := OilVec o p → VinegarVec v p → OilVec o
         F(a + c * b, vin) = F(a, vin) + c * F(b, vin)
 
     for all oil vectors a, b and scalars c ∈ GFp p.
+
+    **Why this single condition suffices for full linearity**: This combined
+    form immediately implies both of the standard linearity axioms:
+      • Additivity:    c = 1  → F(a + b, vin) = F(a, vin) + F(b, vin)    (zob_additive)
+      • Homogeneity:   a = 0  → F(c * b, vin) = c * F(b, vin)             (zob_smul)
+    Hence ZeroOilBlock is equivalent to asserting full GFp p-linearity of
+    F(·, vin) for each fixed vinegar.  The combined form is chosen because it
+    matches the ZeroOilBlock proof obligation that arises directly from the
+    structure of the quadratic central map (no oil×oil cross terms).
 
     **Cryptographic meaning**: the absence of oil×oil quadratic terms in F
     means that once the v vinegar variables are substituted with concrete

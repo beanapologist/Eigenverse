@@ -1716,7 +1716,7 @@ def printFiniteFieldUOV : IO Unit := do
   IO.println "         Constraint count representative equals the ℕ residue mod p."
   IO.println "  [12] gfp_lanchester_val_lt   : ((n*(n−1)/2 : ℕ) : GFp p).val < p"
   IO.println "         Constraint count is a valid GFp p element (val < p)."
-  IO.println "         GFp p lift of lanchester_modular_gfp (OilVinegar §8)."
+  IO.println "         GFp p-lift of lanchester_modular_gfp (OilVinegar §8)."
   IO.println "  [13] gfp_lanchester_product_rule : ((n*(n−1) : ℕ) : GFp p) = ↑n * ↑(n−1)"
   IO.println "         Modular product rule: count computable within GFp p."
   IO.println ""
