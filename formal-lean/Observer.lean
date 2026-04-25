@@ -27,6 +27,7 @@
   ║   §2  Core indistinguishability theorem                                  ║
   ║   §3  Hidden-sector inaccessibility (derived, not axiom)                 ║
   ║   §4  Observer vs Alice: combined asymmetry                              ║
+  ║   §5  #print axioms audit                                                ║
   ║                                                                          ║
   ║   Proof status                                                           ║
   ║   ────────────                                                           ║
@@ -38,6 +39,44 @@
   ║            observer_alice_asymmetry                                      ║
   ║   Sorry:   none                                                          ║
   ║   Axioms:  PhysicalConstraint  (the model assumption; see §1 docstring)  ║
+  ║                                                                          ║
+  ║   Theorem dependencies                                                   ║
+  ║   ─────────────────────                                                  ║
+  ║   The critical observation is that `PhysicalConstraint` is *declared*    ║
+  ║   in this file but is *not used* in any proof.  Every theorem in §§2–4   ║
+  ║   quantifies over a `PhysicalObserver` (a bundled structure that         ║
+  ║   already carries `hfactor` as a field), so no theorem needs to invoke   ║
+  ║   `PhysicalConstraint` to obtain the factoring property.                 ║
+  ║                                                                          ║
+  ║   `PhysicalConstraint`'s role is *semantic*: it says that every          ║
+  ║   `Observer` in the physical model satisfies `FactorsThrough`, so it     ║
+  ║   can be wrapped into a `PhysicalObserver`.  It is not a proof           ║
+  ║   ingredient of the inaccessibility theorems.                            ║
+  ║                                                                          ║
+  ║   Axiom dependency table (verifiable via `#print axioms` in §5):         ║
+  ║                                                                          ║
+  ║   Theorem                       PhysicalConstraint  BalanceHypothesis   ║
+  ║                                                     axioms only†         ║
+  ║   ─────────────────────────────────────────────────────────────────────  ║
+  ║   physical_obs_indistinguishable       ✗                  ✗              ║
+  ║   physical_obs_fiber_constant          ✗                  ✗              ║
+  ║   q4_re_inaccessible                   ✗                  ✓              ║
+  ║   q4_im_inaccessible                   ✗                  ✓              ║
+  ║   q1_inaccessible                      ✗                  ✓              ║
+  ║   q3_inaccessible                      ✗                  ✓              ║
+  ║   observer_cannot_recover              ✗                  ✓              ║
+  ║   observer_alice_asymmetry             ✗                  ✓              ║
+  ║                                                                          ║
+  ║   † "BalanceHypothesis axioms" = the axioms declared in                  ║
+  ║     BalanceHypothesis.lean that underpin the whole Eigenverse project    ║
+  ║     (e.g. `balance_from_unit_circle`, `mu_re_neg`, `mu_im_pos`,          ║
+  ║     `mu_abs_one`, `eta_pos`).  These are shared by every theorem in      ║
+  ║     the project and not specific to Observer.lean.                       ║
+  ║                                                                          ║
+  ║   In short: `#print axioms observer_cannot_recover` (and similarly for   ║
+  ║   `q1_inaccessible` and `observer_alice_asymmetry`) should list only     ║
+  ║   Mathlib propositional axioms (propext, funext, Classical.choice) plus   ║
+  ║   the BalanceHypothesis axioms — NOT `PhysicalConstraint`.               ║
   ║                                                                          ║
   ╚══════════════════════════════════════════════════════════════════════════╝
 -/
@@ -414,3 +453,51 @@ theorem observer_alice_asymmetry :
    fun P s₁ s₂ h₁ h₂ => physical_obs_fiber_constant P s₁ s₂ h₁ h₂⟩
 
 end -- noncomputable section
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- §5  #print axioms Audit
+--
+-- Running `#print axioms <theorem>` in Lean 4's infoview reveals the complete
+-- transitive closure of axioms a proof depends on.  The commands below allow
+-- any reader to verify the dependency claims in the top docstring.
+--
+-- Expected results:
+--
+--   observer_cannot_recover, q1_inaccessible, observer_alice_asymmetry
+--   ──────────────────────────────────────────────────────────────────
+--   Should list ONLY:
+--     • Lean/Mathlib propositional axioms:
+--         propext, funext (Eq.propIntro), Classical.choice, Quot.sound
+--     • BalanceHypothesis project axioms (shared by the whole Eigenverse):
+--         balance_from_unit_circle, mu_re_neg, mu_im_pos, mu_abs_one,
+--         eta_pos  (exact set depends on which lemmas are used transitively)
+--     • hidden_recovery_hard is NOT listed (it is not used by these proofs)
+--     • PhysicalConstraint is NOT listed
+--       ↑ This is the key check: the §3 and §4 theorems quantify over
+--         `PhysicalObserver` (bundled with `hfactor`), so they never
+--         call `PhysicalConstraint` to produce the factoring property.
+--
+--   physical_obs_indistinguishable, physical_obs_fiber_constant
+--   ─────────────────────────────────────────────────────────────
+--   Should list ONLY Lean/Mathlib propositional axioms (no project axioms
+--   at all, because these theorems only use `P.hfactor` and `h₁.2`, `h₂.2`).
+-- ════════════════════════════════════════════════════════════════════════════
+
+section AxiomAudit
+
+-- Audit: core indistinguishability theorems (expect Mathlib axioms only).
+#print axioms physical_obs_indistinguishable
+#print axioms physical_obs_fiber_constant
+
+-- Audit: hidden-sector inaccessibility theorems (expect Mathlib + BH axioms,
+-- NOT PhysicalConstraint).
+#print axioms q4_re_inaccessible
+#print axioms q4_im_inaccessible
+#print axioms q1_inaccessible
+#print axioms q3_inaccessible
+#print axioms observer_cannot_recover
+
+-- Audit: combined asymmetry (expect Mathlib + BH axioms, NOT PhysicalConstraint).
+#print axioms observer_alice_asymmetry
+
+end AxiomAudit
