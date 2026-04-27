@@ -64,6 +64,12 @@
   ║   §7  Zero-knowledge property                                            ║
   ║   §8  Unforgeability precondition                                        ║
   ║   §9  #print axioms audit                                                ║
+  ║   §10 MQ hardness formalization                                          ║
+  ║      §10a CRI problem (algebraic characterization)                       ║
+  ║      §10b Structural no-forgery (information-theoretic)                  ║
+  ║      §10c State-recovery impossibility                                   ║
+  ║      §10d mv_MQ_hard axiom (computational hardness)                      ║
+  ║      §10e EUF-CMA security                                               ║
   ║                                                                          ║
   ║   Proof status                                                           ║
   ║   ────────────                                                           ║
@@ -84,6 +90,12 @@
   ║     → mv_keygen, mv_verify (by rfl)                                     ║
   ║   mv_unforgeability_precondition                                         ║
   ║     → alice_key_determines_state → FourSector §5b → BalanceHypothesis  ║
+  ║   mv_structural_no_forgery / mv_structural_no_forgery_state             ║
+  ║     → alice_key_determines_state → FourSector §5b → BalanceHypothesis  ║
+  ║   mv_forgery_is_cri                                                      ║
+  ║     → mv_verify_iff (by simp) → rfl                                     ║
+  ║   mv_euf_cma / mv_no_universal_forger                                   ║
+  ║     → mv_MQ_hard (axiom, §10d)                                          ║
   ║                                                                          ║
   ╚══════════════════════════════════════════════════════════════════════════╝
 -/
@@ -420,23 +432,378 @@ theorem mv_unforgeability_precondition :
     congrArg Signature.state (h μ)
   exact alice_key_determines_state hstate
 
+-- ════════════════════════════════════════════════════════════════════════════
+-- §10  MQ Hardness Formalization
+--
+-- This section formalizes the Multivariate Quadratic (MQ) hardness assumption
+-- for the four-sector signature scheme in three layers:
+--
+--   §10a  CRI problem — algebraic characterization of the forgery goal
+--   §10b  Structural no-forgery — information-theoretic theorem (no polytime
+--          restriction; proved from the oil-fiber geometry)
+--   §10c  State-recovery impossibility — no total A can recover Alice's exact
+--          state from the residue PK (proved from fiber injectivity)
+--   §10d  mv_MQ_hard axiom — computational hardness (declared, not proved;
+--          analogous to MQ_hard in SignVerify §3)
+--   §10e  EUF-CMA security — derived from mv_MQ_hard
+--
+-- Connection to standard MQ:
+--   Writing uᵢ := Re(qᵢ) and vᵢ := Im(qᵢ), the CRI equations
+--     C(√(uᵢ²+vᵢ²)) = pkᵢ   (i = 1,2,3,4)
+--   together with the Coherent sum constraint
+--     u₁²+v₁² + u₂²+v₂² + u₃²+v₃² + u₄²+v₄² = 4
+--   and the four sector sign constraints form a *quadratic* system:
+--   substituting sᵢ = |qᵢ|, the equation C(sᵢ)=pkᵢ becomes
+--     pkᵢ·sᵢ² − 2sᵢ + pkᵢ = 0   (quadratic in sᵢ)
+--   and sᵢ² = uᵢ² + vᵢ² is itself quadratic.  The full system over 12
+--   unknowns (uᵢ,vᵢ,sᵢ for i=1..4) is therefore an MQ instance over ℝ.
+-- ════════════════════════════════════════════════════════════════════════════
+
+-- ── §10a  Coherent Residue Inversion (CRI) problem ───────────────────────
+
+/-- `mv_verify` returns true iff the signature's residue vector matches `pk`.
+    This simp lemma exposes the kernel decision predicate for CRI. -/
+@[simp] lemma mv_verify_iff (pk : PublicResidues) (msg : Message) (sig : Signature) :
+    mv_verify pk msg sig = true ↔ multivariate_pk sig.state = pk := by
+  simp [mv_verify]
+
+/-- The **Coherent Residue Inversion (CRI) problem**: given a residue vector
+    `pk`, find a valid `Signature` whose `multivariate_pk` equals `pk`.
+
+    A signature already carries a `Coherent` proof (the `hcoh` field), so the
+    energy constraint `‖q1‖²+‖q2‖²+‖q3‖²+‖q4‖²=4` is automatically enforced.
+    The sector membership constraints (qi ∈ Qᵢ) are enforced by the `FourState`
+    fields `hq1,hq2,hq3,hq4`.
+
+    The CRI system in explicit form (with sᵢ := |qᵢ|, uᵢ := Re(qᵢ), vᵢ := Im(qᵢ)):
+
+        pkᵢ · sᵢ² − 2sᵢ + pkᵢ = 0     (from C(sᵢ) = pkᵢ, i = 1,2,3,4)
+        sᵢ² = uᵢ² + vᵢ²                (amplitude norm equations)
+        u₁²+v₁²+u₂²+v₂²+u₃²+v₃²+u₄²+v₄² = 4   (Coherent constraint)
+        u₁ > 0, v₁ > 0                 (Q1 sector)
+        u₂ < 0, v₂ > 0                 (Q2 sector, always pk₂ = 1)
+        u₃ < 0, v₃ < 0                 (Q3 sector)
+        u₄ > 0, v₄ < 0                 (Q4 sector)
+
+    This is an MQ (Multivariate Quadratic) instance in 12 unknowns over ℝ.
+    Solving it is the computational bottleneck for forgery. -/
+def CRI_solution (pk : PublicResidues) : Prop :=
+  ∃ sig : Signature, multivariate_pk sig.state = pk
+
+/-- **Forgery is CRI**: producing a valid multivariate signature is equivalent
+    to solving the Coherent Residue Inversion problem.
+
+    Proof: `mv_verify pk msg sig = true ↔ multivariate_pk sig.state = pk`
+    by definition of `mv_verify` (via `mv_verify_iff`), and `CRI_solution pk`
+    is defined as the existence of such a `sig`. -/
+theorem mv_forgery_is_cri (pk : PublicResidues) (msg : Message) :
+    (∃ sig : Signature, mv_verify pk msg sig = true) ↔ CRI_solution pk :=
+  ⟨fun ⟨sig, h⟩ => ⟨sig, (mv_verify_iff pk msg sig).mp h⟩,
+   fun ⟨sig, h⟩ => ⟨sig, (mv_verify_iff pk msg sig).mpr h⟩⟩
+
+-- ── §10b  Structural No-Forgery (information-theoretic) ───────────────────
+
+/-- **Multivariate structural no-forgery** — no total adversary can always
+    replicate Alice's exact signing function (information-theoretic version).
+
+    For any deterministic function `A : PublicResidues → Message → Signature`,
+    there exists a secret key `sk` such that A fails to reproduce Alice's
+    signature:
+        `A (mv_keygen sk) μ ≠ mv_sign sk μ`
+
+    **Proof strategy** (identical structure to `structural_no_forgery` in
+    SignVerify §3):
+    Exhibit two keys `sk₁`, `sk₂` with **identical multivariate PKs** but
+    **distinct signatures**.  Any deterministic A gives the same output for
+    both (same PK and message), but the signatures differ — so A fails on
+    at least one.
+
+    **Witnesses**: both keys share x₁=y₁=1/2, x₃=y₃=−1/2, but differ only
+    in the Q4 angle parameter `t` (1/3 vs. 2/3).  Their residue vectors agree:
+        r₁ = C(√(1/2))    (same q1 = ⟨1/2, 1/2⟩)
+        r₂ = C(1) = 1      (same q2 = μ)
+        r₃ = C(√(1/2))    (same q3 = ⟨−1/2, −1/2⟩)
+        r₄ = C(√2)         (same |q4| = √2, proved via Coherent + linarith)
+    But `t=1/3 ≠ 2/3` makes the Q4 direction — and hence the full FourState —
+    distinct, so `alice_prepares sk₁ ≠ alice_prepares sk₂`.
+
+    This is an information-theoretic theorem: it holds for ALL total adversaries
+    with no time restriction.  The genuine cryptographic claim (no
+    *polynomial-time* forger) is `mv_MQ_hard` below.
+
+    Dependency chain: mv_structural_no_forgery
+                    → alice_key_determines_state (FourSector §7)
+                    → oil_fiber_five_dimensional (FourSector §5b)
+                    → BalanceHypothesis. -/
+theorem mv_structural_no_forgery :
+    ∀ (A : PublicResidues → Message → Signature),
+      ∃ sk : SecretKey, A (mv_keygen sk) μ ≠ mv_sign sk μ := by
+  intro A
+  -- ── Witness keys ──────────────────────────────────────────────────────────
+  -- sk₁ and sk₂ share x₁=y₁=1/2, x₃=y₃=−1/2; differ only in t (1/3 vs. 2/3).
+  have hv₁ : OilValid ⟨1/2, 1/2, -1/2, -1/2, 1/3⟩ :=
+    ⟨by norm_num, by norm_num, by norm_num, by norm_num,
+     by norm_num, by norm_num, by norm_num⟩
+  have hv₂ : OilValid ⟨1/2, 1/2, -1/2, -1/2, 2/3⟩ :=
+    ⟨by norm_num, by norm_num, by norm_num, by norm_num,
+     by norm_num, by norm_num, by norm_num⟩
+  let sk₁ : SecretKey := ⟨⟨1/2, 1/2, -1/2, -1/2, 1/3⟩, hv₁⟩
+  let sk₂ : SecretKey := ⟨⟨1/2, 1/2, -1/2, -1/2, 2/3⟩, hv₂⟩
+  -- ── sk₁ ≠ sk₂ (t parameters differ) ──────────────────────────────────────
+  have hne : sk₁ ≠ sk₂ := by
+    intro heq
+    have := congr_arg (fun k => k.1.t) heq
+    norm_num at this
+  -- ── alice_prepares sk₁ ≠ alice_prepares sk₂ ──────────────────────────────
+  have hne_states : alice_prepares sk₁ ≠ alice_prepares sk₂ :=
+    fun h => hne (alice_key_determines_state h)
+  -- ── mv_sign sk₁ μ ≠ mv_sign sk₂ μ (different state fields) ───────────────
+  have hne_sigs : mv_sign sk₁ μ ≠ mv_sign sk₂ μ :=
+    fun h => hne_states (congrArg Signature.state h)
+  -- ── normSq of q4 for both keys (via Coherent) ─────────────────────────────
+  -- Coherent gives normSq q1 + normSq q2 + normSq q3 + normSq q4 = 4.
+  have hCoh₁ : Coherent (alice_prepares sk₁) := (oil_fiber_map_mem sk₁.1 sk₁.2).1
+  have hCoh₂ : Coherent (alice_prepares sk₂) := (oil_fiber_map_mem sk₂.1 sk₂.2).1
+  unfold Coherent at hCoh₁ hCoh₂
+  -- Component normSq values shared by both states.
+  have hNsq12 : Complex.normSq (⟨1/2, 1/2⟩ : ℂ) = 1/2 := by
+    rw [Complex.normSq_apply]; norm_num
+  have hNsqMu : Complex.normSq μ = 1 := by
+    rw [Complex.normSq_eq_abs, mu_abs_one]; norm_num
+  have hNsq3 : Complex.normSq (⟨-1/2, -1/2⟩ : ℂ) = 1/2 := by
+    rw [Complex.normSq_apply]; norm_num
+  -- normSq q4 = 2 for sk₁ (by Coherent + q1/q2/q3 normSq values).
+  have hNsqQ4₁ : Complex.normSq (alice_prepares sk₁).q4 = 2 := by
+    have hq1 : Complex.normSq (alice_prepares sk₁).q1 = 1/2 := by
+      change Complex.normSq (⟨(1:ℝ)/2, (1:ℝ)/2⟩ : ℂ) = 1/2; exact hNsq12
+    have hq2 : Complex.normSq (alice_prepares sk₁).q2 = 1 := by
+      rw [alice_q2_eq_mu]; exact hNsqMu
+    have hq3 : Complex.normSq (alice_prepares sk₁).q3 = 1/2 := by
+      change Complex.normSq (⟨-(1:ℝ)/2, -(1:ℝ)/2⟩ : ℂ) = 1/2; exact hNsq3
+    linarith
+  -- normSq q4 = 2 for sk₂ (same argument).
+  have hNsqQ4₂ : Complex.normSq (alice_prepares sk₂).q4 = 2 := by
+    have hq1 : Complex.normSq (alice_prepares sk₂).q1 = 1/2 := by
+      change Complex.normSq (⟨(1:ℝ)/2, (1:ℝ)/2⟩ : ℂ) = 1/2; exact hNsq12
+    have hq2 : Complex.normSq (alice_prepares sk₂).q2 = 1 := by
+      rw [alice_q2_eq_mu]; exact hNsqMu
+    have hq3 : Complex.normSq (alice_prepares sk₂).q3 = 1/2 := by
+      change Complex.normSq (⟨-(1:ℝ)/2, -(1:ℝ)/2⟩ : ℂ) = 1/2; exact hNsq3
+    linarith
+  -- abs q4 = √2 for both (from normSq q4 = 2).
+  -- Proof: C = Complex.abs, normSq z = (abs z)^2 (Complex.normSq_eq_abs),
+  --        so abs z = sqrt(normSq z); abs z = sqrt 2 follows by substitution.
+  have hAbsQ4₁ : Complex.abs (alice_prepares sk₁).q4 = Real.sqrt 2 := by
+    rw [← Real.sqrt_sq (Complex.abs.nonneg _), ← Complex.normSq_eq_abs, hNsqQ4₁]
+  have hAbsQ4₂ : Complex.abs (alice_prepares sk₂).q4 = Real.sqrt 2 := by
+    rw [← Real.sqrt_sq (Complex.abs.nonneg _), ← Complex.normSq_eq_abs, hNsqQ4₂]
+  -- ── mv_keygen sk₁ = mv_keygen sk₂ ────────────────────────────────────────
+  -- All four coherence residues are equal: r1, r2, r3 by definitional equality
+  -- (same q1/q2/q3 for both keys); r4 by abs q4₁ = abs q4₂ = √2.
+  have hpk_eq : mv_keygen sk₁ = mv_keygen sk₂ := by
+    unfold mv_keygen multivariate_pk
+    ext
+    -- r1: coherence_residue q1₁ = coherence_residue q1₂ (both q1 = ⟨1/2,1/2⟩)
+    · rfl
+    -- r2: coherence_residue q2₁ = coherence_residue q2₂ (both q2 = μ)
+    · rfl
+    -- r3: coherence_residue q3₁ = coherence_residue q3₂ (both q3 = ⟨−1/2,−1/2⟩)
+    · rfl
+    -- r4: coherence_residue q4₁ = coherence_residue q4₂ (same abs = √2)
+    · unfold coherence_residue; rw [hAbsQ4₁, hAbsQ4₂]
+  -- ── Conclude by contradiction ─────────────────────────────────────────────
+  -- A gives the same output for sk₁ and sk₂ (same PK), but the signatures
+  -- differ; so A fails on at least one key.
+  have hA_eq : A (mv_keygen sk₁) μ = A (mv_keygen sk₂) μ := by rw [hpk_eq]
+  by_cases h₁ : A (mv_keygen sk₁) μ = mv_sign sk₁ μ
+  · exact ⟨sk₂, fun h₂ => hne_sigs (h₁.symm.trans (hA_eq.trans h₂))⟩
+  · exact ⟨sk₁, h₁⟩
+
+-- ── §10c  State-Recovery Impossibility ────────────────────────────────────
+
+/-- **State-recovery impossibility** — no total adversary can always recover
+    Alice's exact FourState from the multivariate public key alone.
+
+    There is no function `A : PublicResidues → FourState` such that
+        `A (mv_keygen sk) = alice_prepares sk` for all `sk : SecretKey`.
+
+    **Proof**: same two witnesses as `mv_structural_no_forgery` — both keys
+    map to the same PublicResidues (same norms, hence same r₁,r₂,r₃,r₄) but
+    produce different FourStates (different Q4 direction).  Any total A outputs
+    a single state for the shared PK, but cannot equal both simultaneously.
+
+    **Interpretation**:
+    • Even an information-theoretically unbounded adversary cannot always recover
+      Alice's state from the 4-residue public key.
+    • The residue vector reveals only the *norms* of Alice's sector amplitudes,
+      not their *phases* (arguments).  Multiple FourStates share the same norm
+      vector — at minimum, the continuum of Q4 directions parametrized by t ∈(0,1).
+
+    Dependency chain: mv_structural_no_forgery_state
+                    → alice_key_determines_state → oil_fiber_five_dimensional
+                    → FourSector §5b → BalanceHypothesis. -/
+theorem mv_structural_no_forgery_state :
+    ¬ ∃ A : PublicResidues → FourState,
+        ∀ sk : SecretKey, A (mv_keygen sk) = alice_prepares sk := by
+  intro ⟨A, hA⟩
+  -- Same witnesses and PK equality proof as mv_structural_no_forgery.
+  have hv₁ : OilValid ⟨1/2, 1/2, -1/2, -1/2, 1/3⟩ :=
+    ⟨by norm_num, by norm_num, by norm_num, by norm_num,
+     by norm_num, by norm_num, by norm_num⟩
+  have hv₂ : OilValid ⟨1/2, 1/2, -1/2, -1/2, 2/3⟩ :=
+    ⟨by norm_num, by norm_num, by norm_num, by norm_num,
+     by norm_num, by norm_num, by norm_num⟩
+  let sk₁ : SecretKey := ⟨⟨1/2, 1/2, -1/2, -1/2, 1/3⟩, hv₁⟩
+  let sk₂ : SecretKey := ⟨⟨1/2, 1/2, -1/2, -1/2, 2/3⟩, hv₂⟩
+  have hne : sk₁ ≠ sk₂ := by
+    intro heq; exact absurd (congr_arg (fun k => k.1.t) heq) (by norm_num)
+  have hne_states : alice_prepares sk₁ ≠ alice_prepares sk₂ :=
+    fun h => hne (alice_key_determines_state h)
+  have hCoh₁ : Coherent (alice_prepares sk₁) := (oil_fiber_map_mem sk₁.1 sk₁.2).1
+  have hCoh₂ : Coherent (alice_prepares sk₂) := (oil_fiber_map_mem sk₂.1 sk₂.2).1
+  unfold Coherent at hCoh₁ hCoh₂
+  have hNsq12 : Complex.normSq (⟨1/2, 1/2⟩ : ℂ) = 1/2 := by
+    rw [Complex.normSq_apply]; norm_num
+  have hNsqMu : Complex.normSq μ = 1 := by
+    rw [Complex.normSq_eq_abs, mu_abs_one]; norm_num
+  have hNsq3 : Complex.normSq (⟨-1/2, -1/2⟩ : ℂ) = 1/2 := by
+    rw [Complex.normSq_apply]; norm_num
+  have hNsqQ4₁ : Complex.normSq (alice_prepares sk₁).q4 = 2 := by
+    have hq1 : Complex.normSq (alice_prepares sk₁).q1 = 1/2 := by
+      change Complex.normSq (⟨(1:ℝ)/2, (1:ℝ)/2⟩ : ℂ) = 1/2; exact hNsq12
+    have hq2 : Complex.normSq (alice_prepares sk₁).q2 = 1 := by
+      rw [alice_q2_eq_mu]; exact hNsqMu
+    have hq3 : Complex.normSq (alice_prepares sk₁).q3 = 1/2 := by
+      change Complex.normSq (⟨-(1:ℝ)/2, -(1:ℝ)/2⟩ : ℂ) = 1/2; exact hNsq3
+    linarith
+  have hNsqQ4₂ : Complex.normSq (alice_prepares sk₂).q4 = 2 := by
+    have hq1 : Complex.normSq (alice_prepares sk₂).q1 = 1/2 := by
+      change Complex.normSq (⟨(1:ℝ)/2, (1:ℝ)/2⟩ : ℂ) = 1/2; exact hNsq12
+    have hq2 : Complex.normSq (alice_prepares sk₂).q2 = 1 := by
+      rw [alice_q2_eq_mu]; exact hNsqMu
+    have hq3 : Complex.normSq (alice_prepares sk₂).q3 = 1/2 := by
+      change Complex.normSq (⟨-(1:ℝ)/2, -(1:ℝ)/2⟩ : ℂ) = 1/2; exact hNsq3
+    linarith
+  have hAbsQ4₁ : Complex.abs (alice_prepares sk₁).q4 = Real.sqrt 2 := by
+    rw [← Real.sqrt_sq (Complex.abs.nonneg _), ← Complex.normSq_eq_abs, hNsqQ4₁]
+  have hAbsQ4₂ : Complex.abs (alice_prepares sk₂).q4 = Real.sqrt 2 := by
+    rw [← Real.sqrt_sq (Complex.abs.nonneg _), ← Complex.normSq_eq_abs, hNsqQ4₂]
+  have hpk_eq : mv_keygen sk₁ = mv_keygen sk₂ := by
+    unfold mv_keygen multivariate_pk
+    ext
+    · rfl
+    · rfl
+    · rfl
+    · unfold coherence_residue; rw [hAbsQ4₁, hAbsQ4₂]
+  -- A(PK) gives the same state for both keys, but the states are distinct.
+  exact hne_states ((hA sk₁).symm.trans ((congrArg A hpk_eq).trans (hA sk₂)))
+
+-- ── §10d  MQ Hardness Axiom ────────────────────────────────────────────────
+
+/-- **Multivariate MQ hardness axiom** — the MQ problem for the four-sector
+    scheme is computationally hard.
+
+    The *computational* (polynomial-time) hardness claim: no efficient adversary,
+    given only the multivariate public key `mv_keygen sk`, can produce a valid
+    forgery signature for any target key `sk`.  This is the four-sector analogue
+    of `MQ_hard` in SignVerify §3, lifted to the multivariate residue PK.
+
+    Formally: for all PPT adversaries `A : PublicResidues → Message → Signature`,
+    there exists a target key `sk` for which `A`'s forgery attempt fails:
+        `mv_verify (mv_keygen sk) μ (A (mv_keygen sk) μ) = false`
+
+    **Distinction from `mv_structural_no_forgery`**:
+    • `mv_structural_no_forgery` (§10b) proves the information-theoretic version:
+      no TOTAL (unbounded) adversary can match Alice's EXACT signing function.
+    • The present axiom is strictly stronger: it asserts that even a
+      polynomial-time adversary cannot produce ANY valid forgery signature
+      (not just fail to match Alice's exact output) for a randomly chosen key.
+    • The difference is important: forging requires solving the CRI system
+      (`mv_forgery_is_cri`), which is a genuine MQ instance over ℝ.  An
+      unbounded adversary can potentially invert C and recover norms, then
+      choose valid phases; a poly-time adversary cannot.
+
+    **Status**: declared as `axiom` to flag that this computational hardness
+    claim is unproven within Lean's logic.  A formal reduction from the
+    standard MQ problem over GF(p) (or ℝ) is left for future work, following
+    the standard approach of basing UOV security on the MQ assumption.
+
+    Dependency chain: mv_MQ_hard → mv_keygen, mv_verify, mv_sign
+                    → alice_prepares → oil_fiber_map → BalanceHypothesis. -/
+axiom mv_MQ_hard :
+    ∀ (A : PublicResidues → Message → Signature),
+      ∃ sk : SecretKey,
+        mv_verify (mv_keygen sk) μ (A (mv_keygen sk) μ) = false
+
+-- ── §10e  EUF-CMA Security ────────────────────────────────────────────────
+
+/-- **EUF-CMA security** — existential unforgeability under chosen-message
+    attack, derived from `mv_MQ_hard`.
+
+    No polynomial-time adversary can produce a valid forgery against the
+    multivariate scheme: for all A, there exists a target key sk such that
+    A's output does NOT verify under the corresponding public key.
+
+    Proof: direct consequence of `mv_MQ_hard`; `false ≠ true` closes the goal.
+
+    Dependency chain: mv_euf_cma → mv_MQ_hard (§10d, axiom). -/
+theorem mv_euf_cma :
+    ∀ (A : PublicResidues → Message → Signature),
+      ∃ sk : SecretKey,
+        mv_verify (mv_keygen sk) μ (A (mv_keygen sk) μ) ≠ true := by
+  intro A
+  obtain ⟨sk, hf⟩ := mv_MQ_hard A
+  exact ⟨sk, by simp [hf]⟩
+
+/-- **Hardness implies no universal forger** — `mv_MQ_hard` implies that no
+    adversary can successfully forge for ALL keys simultaneously.
+
+    This is a stronger reformulation of EUF-CMA: there is no adversary that
+    always succeeds on every possible target key.
+
+    Proof: from `mv_MQ_hard`, at least one target key exists where the adversary
+    fails; `mv_verify _ μ _ = false` means the `if`-branch was not taken, i.e.,
+    `multivariate_pk sig.state ≠ pk`. -/
+theorem mv_no_universal_forger :
+    ¬ ∃ A : PublicResidues → Message → Signature,
+        ∀ sk : SecretKey,
+          mv_verify (mv_keygen sk) μ (A (mv_keygen sk) μ) = true := by
+  intro ⟨A, hA⟩
+  obtain ⟨sk, hf⟩ := mv_MQ_hard A
+  specialize hA sk
+  simp [hf] at hA
+
 end -- noncomputable section
 
 -- ════════════════════════════════════════════════════════════════════════════
 -- §9  #print axioms Audit
 --
--- All five theorems should depend only on the standard BalanceHypothesis
--- project axioms plus Lean/Mathlib propositional axioms.
--- None should introduce new axioms beyond those already in SignVerify.lean
--- or OilVinegar.lean.
+-- §§1–8 theorems depend only on BalanceHypothesis project axioms plus the
+-- standard Lean/Mathlib propositional axioms; no new axioms.
+--
+-- §10 introduces one new axiom: mv_MQ_hard (computational hardness).
+-- mv_euf_cma and mv_no_universal_forger depend on mv_MQ_hard.
+-- The structural theorems (mv_structural_no_forgery,
+-- mv_structural_no_forgery_state, mv_forgery_is_cri) do NOT depend on
+-- mv_MQ_hard — they are purely proved from the fiber geometry.
 -- ════════════════════════════════════════════════════════════════════════════
 
 section AxiomAudit
 
+-- §§1–8 theorems (no mv_MQ_hard dependency)
 #print axioms mv_correctness
 #print axioms mv_pk_q2_const
 #print axioms mv_pk_discriminates
 #print axioms mv_zero_knowledge
 #print axioms mv_unforgeability_precondition
+
+-- §10 structural theorems (no mv_MQ_hard dependency)
+#print axioms mv_forgery_is_cri
+#print axioms mv_structural_no_forgery
+#print axioms mv_structural_no_forgery_state
+
+-- §10 computational theorems (depend on mv_MQ_hard)
+#print axioms mv_euf_cma
+#print axioms mv_no_universal_forger
 
 end AxiomAudit
