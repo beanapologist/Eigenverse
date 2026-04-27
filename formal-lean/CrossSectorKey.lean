@@ -175,8 +175,8 @@ private lemma cr_one_of_abs_one {z : ℂ} (h : Complex.abs z = 1) :
     and arctan(3/4) respectively.  This continuous phase freedom is unconstrained
     by the norm-only public key, enabling cross-key forgery. -/
 theorem mv_forgery_example :
-    ∃ (sk : SecretKey) (sig_bad : Signature),
-      mv_verify (mv_keygen sk) μ sig_bad = true ∧ sig_bad ≠ mv_sign sk μ := by
+    ∃ (sk : SecretKey) (forgery : Signature),
+      mv_verify (mv_keygen sk) μ forgery = true ∧ forgery ≠ mv_sign sk μ := by
   -- ── Witnesses ─────────────────────────────────────────────────────────────
   have hv_A : OilValid ⟨3/5, 4/5, -4/5, -3/5, 1/2⟩ :=
     ⟨by norm_num, by norm_num, by norm_num, by norm_num,
@@ -398,10 +398,12 @@ theorem cs_coupling_distinguishes (sk₁ sk₂ : SecretKey)
   intro heq
   exact hκ (congrArg CrossSectorPK.kappa heq)
 
-/-- **Key independence**: cs_verify depends only on the published key, not on
-    which secret key was used to generate it — identical to mv_key_independence. -/
-theorem cs_key_independence (pk : CrossSectorPK) (sig : Signature) (msg : Message) :
-    cs_verify pk msg sig = cs_verify pk msg sig := rfl
+/-- **Key independence**: if two secret keys produce the same CrossSectorPK,
+    they yield identical verification outcomes for any signature. -/
+theorem cs_key_independence (sk₁ sk₂ : SecretKey) (sig : Signature) (msg : Message)
+    (heq : cs_keygen sk₁ = cs_keygen sk₂) :
+    cs_verify (cs_keygen sk₁) msg sig = cs_verify (cs_keygen sk₂) msg sig := by
+  rw [heq]
 
 -- ════════════════════════════════════════════════════════════════════════════
 -- §8  GF(q) Cross-Sector Coupling (criterion 1)
