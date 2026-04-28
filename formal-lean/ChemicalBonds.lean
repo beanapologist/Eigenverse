@@ -195,13 +195,15 @@ theorem chem_bond_state_normalised :
     η ^ 2 + Complex.normSq (μ * ↑η) = 1 :=
   canonical_norm
 
-/-- **Maximum of the coherence function** (calculus): C(1) = 1.
-    C(r) = 2r/(1+r²) achieves its global maximum 1 at r = 1. -/
+/-- **Maximum of the coherence function** (algebra): C(1) = 1.
+    C(r) = 2r/(1+r²) achieves its global maximum 1 at r = 1.
+    Proof: 2·1 = 1+1² by evaluation. -/
 theorem chem_bond_maximum_coherence :
     C 1 = 1 :=
   mu_crystal_max_coherence
 
-/-- **Coherence strictly below maximum** (calculus): C(r) < 1 for r ≥ 0, r ≠ 1. -/
+/-- **Coherence strictly below maximum** (algebra): C(r) < 1 for r ≥ 0, r ≠ 1.
+    Proof: 2r ≤ 1+r² follows from (r−1)² ≥ 0; equality iff r=1. -/
 theorem chem_off_balance_coherence_reduced (r : ℝ) (hr : 0 ≤ r) (hr1 : r ≠ 1) :
     C r < 1 :=
   coherence_lt_one r hr hr1
