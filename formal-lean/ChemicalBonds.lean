@@ -62,10 +62,11 @@
   5.  Emergent molecular properties               (Funneling sector)
   6.  Eigenverse bond conditions                  (Lead conjunction)
   7.  Functional-analytic scaffolding             (Mathlib inner product space)
+  8.  Tunnel/funnel bound state                   (initial consideration)
 
   Proof status
   ────────────
-  All 23 theorems have complete machine-checked proofs.
+  All 26 theorems have complete machine-checked proofs.
   No `sorry` placeholders remain.
 -/
 
@@ -408,3 +409,63 @@ theorem isNormalizedState_iff_norm (ψ : ℋ) :
     IsNormalizedState ψ ↔ ‖ψ‖ = 1 := Iff.rfl
 
 end HilbertScaffolding
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- Section 8 — Tunnel/Funnel Bound State (initial consideration)
+-- The Eigenverse three-sector causal chain places bond stability at the
+-- intersection of the Tunneling sector (Im > 0) and the Funneling sector
+-- (Re < 0).  A state satisfying both conditions simultaneously is called a
+-- tunnel/funnel bound state: it is drawn inward (funneling, Re < 0) while
+-- maintaining quantum coherence (tunneling, Im > 0).
+--
+-- The critical eigenvalue μ = exp(I·3π/4) = (−1+i)/√2 is the canonical
+-- Eigenverse example: Re(μ) = −1/√2 < 0 (funneling) and Im(μ) = 1/√2 > 0
+-- (tunneling), so μ lies in the open second quadrant of ℂ.
+--
+-- This section introduces the formal predicate and proves three properties
+-- of μ under it.  Further development (e.g. a molecular bound-state
+-- condition using the Hilbert-space scaffold from §7) is future work.
+-- ════════════════════════════════════════════════════════════════════════════
+
+section TunnelFunnelBoundState
+
+/-- A complex number z is an **Eigenverse tunnel/funnel bound state** when it
+    simultaneously satisfies:
+      • Im(z) > 0  — the *tunneling* condition (quantum oscillation / dark-
+                      energy sector; positive imaginary axis)
+      • Re(z) < 0  — the *funneling* condition (classical damping / gravity
+                      sector; negative real part)
+    Together these place z in the open second quadrant of ℂ.  In the
+    Eigenverse model, only states in this region are energetically stable:
+    the funneling term drives the system toward lower energy while the
+    tunneling term sustains quantum coherence. -/
+def IsTunnelFunnelBoundState (z : ℂ) : Prop :=
+  0 < z.im ∧ z.re < 0
+
+/-- **[24] The critical eigenvalue μ is a tunnel/funnel bound state** (arithmetic).
+    Im(μ) = 1/√2 > 0 (tunneling sector; proved by mu_im_pos) and
+    Re(μ) = −1/√2 < 0 (funneling sector; proved by mu_re_neg).
+    Both conditions hold simultaneously, so μ satisfies IsTunnelFunnelBoundState. -/
+theorem mu_is_tunnel_funnel_bound_state :
+    IsTunnelFunnelBoundState μ :=
+  ⟨mu_im_pos, mu_re_neg⟩
+
+/-- **[25] Tunnel/funnel bound states have negative real part** (definitional).
+    Within the Eigenverse model, Re(z) is the energy-like quantity in the
+    funneling sector.  Re(z) < 0 is the model-internal analogue of "bound
+    state energy lies below the dissociation threshold (zero)".  This is the
+    funneling component of the two-sector stability condition. -/
+theorem tunnel_funnel_energy_negative (z : ℂ) :
+    IsTunnelFunnelBoundState z → z.re < 0 :=
+  And.right
+
+/-- **[26] Real and imaginary parts are strictly ordered** (arithmetic).
+    For any tunnel/funnel bound state z, Re(z) < Im(z), i.e. the damping
+    term is strictly less than the oscillation term.  Proof: Re(z) < 0 < Im(z)
+    (by definition), so the ordering follows by transitivity via linarith. -/
+theorem tunnel_funnel_parts_ordered (z : ℂ) :
+    IsTunnelFunnelBoundState z → z.re < z.im := by
+  intro ⟨him, hre⟩
+  linarith
+
+end TunnelFunnelBoundState

@@ -21,21 +21,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # elan is the Lean version manager (analogous to rustup).
-      # We install it without a default toolchain; the lean-toolchain file
-      # in formal-lean/ selects the exact version automatically.
-      - name: Install elan (Lean version manager)
-        run: |
-          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
-            | sh -s -- -y --default-toolchain none
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-
-      - name: Install Lean toolchain
-        run: elan toolchain install "$(cat lean-toolchain)"
-
-      # Cache the Mathlib prebuilt artifacts and the .lake build directory to
-      # avoid a full 60-minute Mathlib recompilation on every run.
+      # Cache elan, the Lean toolchain, Mathlib pre-built artifacts, and the
+      # .lake build directory.  The cache is keyed on the lean-toolchain and
+      # lakefile so a toolchain/dependency bump busts the cache automatically.
+      # The cache step is placed *before* the install step so that a cache hit
+      # skips the network-heavy toolchain download entirely.
       - name: Cache Lean / Mathlib build artifacts
+        id: lean-cache
         uses: actions/cache@v4
         with:
           path: |
@@ -45,6 +37,22 @@ jobs:
           key: lake-${{ runner.os }}-${{ hashFiles('formal-lean/lean-toolchain', 'formal-lean/lakefile.lean') }}
           restore-keys: |
             lake-${{ runner.os }}-
+
+      # Install elan (pinned to v4.2.1 — the latest stable release — to avoid
+      # the "failed to parse latest release tag" error that occurs when elan
+      # fetches its own update metadata from GitHub at startup).
+      # We pass --default-toolchain so elan installs the Lean toolchain in one
+      # step, eliminating the need for a separate `elan toolchain install` call.
+      # The step is skipped when the cache contains a usable elan installation.
+      - name: Install elan and Lean toolchain
+        if: steps.lean-cache.outputs.cache-hit != 'true'
+        run: |
+          LEAN_TC="$(cat lean-toolchain)"
+          curl -fsSL "https://raw.githubusercontent.com/leanprover/elan/v4.2.1/elan-init.sh" \
+            | sh -s -- -y --default-toolchain "$LEAN_TC" --no-modify-path
+
+      - name: Add elan to PATH
+        run: echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
       # Download pre-compiled Mathlib oleans from the community cache server.
       # This is ~300 MB but avoids a ~60-minute local compilation.
