@@ -7,85 +7,96 @@
 **Eigenverse** is a fully formal, machine-checked library of theorems whose
 entire content — 624 theorems spanning algebra, geometry, physics, quantum
 mechanics, chemistry, cosmology, and cryptography — is the exhaustive
-downstream consequence of exactly **two primitive interaction types**:
+downstream consequence of exactly **two primitive interaction types** defined
+by their sector assignment in the complex plane:
 
-- **Funneling** — directed channeling through a cascade of four axiom-funnels
-  that narrows the solution space until only one point on the complex unit
-  circle survives: the critical eigenvalue **μ = exp(i·3π/4)**.
-- **Tunneling** — bidirectional passage enabled by the coherence function
-  **C(r) = 2r/(1+r²)** that propagates the Eigenverse structure across
-  scales, sectors, and physical domains without introducing any new free
-  parameters.
+- **Funneling** — always the **negative real sector (Re < 0)**: gravity,
+  time, dissipation, damping.
+- **Tunneling** — always the **positive imaginary sector (Im > 0)**: quantum
+  mechanics, dark energy, oscillation, coherent passage.
 
-Every statement is verified by the [Lean 4](https://leanprover.github.io/)
+The critical eigenvalue **μ = −η + i·η** (η = 1/√2) is the unique balance
+point where `Re(μ) = −η` (funneling) and `Im(μ) = +η` (tunneling) are equal
+in magnitude.  Every statement is verified by the [Lean 4](https://leanprover.github.io/)
 type-checker; there are **zero `sorry` placeholders** anywhere in the codebase.
-
-This means that if Lean accepts a proof, the theorem is *logically guaranteed*
-to follow from the stated axioms — no hand-waving, no gaps.
 
 ---
 
 ## The Two Primitives
 
-### Funneling
+### Funneling — negative real sector (Re < 0)
 
-The three founding axioms act as a cascade of funnels:
+Funneling is the sector Re < 0 of the complex plane.  By definition,
+all interactions belonging to gravity, classical time, dissipation, and
+damping live in this sector.
+
+| Domain | Module | Expression |
+|--------|--------|------------|
+| Gravity / classical time | `GravityQuantumDuality` | Re ↔ gravity/time; Re(μ) = −η |
+| Time domain embedding | `SpaceTime` | F(s,t).re = t; time on the negative real axis |
+| Forward-time dissipation | `ForwardClassicalTime` | F_fwd(l) = 1 − sech(l): energy dissipated into Re sector |
+| Observer sector | `BalanceHypothesis` | `hQ2_re : z.re < 0` (sector constraint on μ) |
+| Wormhole radial funnel | `Cosmology` | Throat geometry: b(r)/r → 0 as r → ∞ |
+
+### Tunneling — positive imaginary sector (Im > 0)
+
+Tunneling is the sector Im > 0 of the complex plane.  By definition, all
+interactions belonging to quantum mechanics, dark energy, oscillation, and
+coherent passage live in this sector.
+
+| Domain | Module | Expression |
+|--------|--------|------------|
+| Quantum / dark energy | `GravityQuantumDuality` | Im ↔ quantum/dark energy; Im(μ) = +η |
+| Floquet oscillation | `TimeCrystal` | ψ(t+T) = μ·ψ(t): imaginary-phase propagation |
+| Bidirectional time | `BidirectionalTime` | F_bi carries energy across time boundaries |
+| Traversable wormhole | `Cosmology` | Morris–Thorne metric: passage through curved spacetime |
+| Phase cycle | `NumericalAlignments` | μ^8 = 1; μ^137 = μ: phase preserved in Im sector |
+| Scale palindrome | `CriticalEigenvalue` | C(r) = C(1/r): coherence tunnels across reciprocal scales |
+| Morphism families | `Morphisms` | Six families propagate Im-sector structure across domains |
+
+### Balance: funneling meets tunneling at μ
+
+The directed balance axiom `−Re(μ) = Im(μ)` is the exact statement that
+funneling amplitude equals tunneling amplitude.  Combined with energy
+conservation and the observer sector choice, it uniquely forces μ = −η + i·η:
 
 ```
-Re²+Im²=1  ──►  unit circle S¹                  (energy funnel)
-    ↓  −Re=Im
-  Q2/Q4 diagonal                                 (balance funnel)
-    ↓  Re < 0
-  Q2 only                                        (observer funnel)
-    ↓  C(1+1/x)=x
-  η = 1/√2  →  μ = −η + iη                       (coherence funnel)
+energy conservation : Re² + Im² = 1         → unit circle S¹
+directed balance    : −Re = Im               → funneling = tunneling
+observer sector     : Re < 0                 → funneling sector selected
+
+  ↓ unique solution
+  Re(μ) = −1/√2  (funneling)    Im(μ) = +1/√2  (tunneling)
 ```
 
-**μ is the unique point that survives all four funnels.**
 `reality_unique` (BalanceHypothesis.lean §7) is the machine-checked proof.
-
-### Tunneling
-
-Once μ is fixed, the coherence function opens a family of bidirectional
-tunnels that carry structure across the library:
-
-| Tunnel | Module | Mechanism |
-|--------|--------|-----------|
-| Scale | `CriticalEigenvalue` | Palindrome C(r) = C(1/r): structure at r ↔ structure at 1/r |
-| Lyapunov | `CriticalEigenvalue` | C(exp λ) = sech λ: coherence ↔ hyperbolic geometry |
-| Phase | `NumericalAlignments` | μ^8 = 1 orbit; μ^137 = μ phase-preservation closure |
-| Temporal | `BidirectionalTime` | F_bi(lf,lb): frustration tunnels across forward/backward time |
-| Spacetime | `Cosmology` | Morris–Thorne wormhole metric: traversable spacetime tunnel |
-| Sector | `GravityQuantumDuality` | Re ↔ gravity/time; Im ↔ quantum/dark energy |
-| Domain | `Morphisms` | Six morphism families carry structure across mathematical domains |
-| Frustration | `ForwardClassicalTime` | F_fwd(l) = 1−sech(l) harvests energy across the time boundary |
 
 ---
 
 ## Scope
 
-| Module | Key Results | Theorems |
-|--------|-------------|----------|
-| **BalanceHypothesis** | `reality_unique`: μ is the ONLY Q2 unit-circle balance point (funneling terminus) | 37 |
-| **CriticalEigenvalue** | μ⁸=1, δS=1+√2, C(r)≤1, palindrome C(r)=C(1/r) (scale tunnel), Z/8Z memory | 82 |
-| **SpaceTime** | Rotation matrix R(3π/4) det=1/orthogonal/order-8; F(s,t)=t+i·s | 43 |
-| **FineStructure** | Fine structure constant α_FS = 1/137 | 30 |
-| **SpeedOfLight** | c = 1/√(μ₀ε₀); structural isomorphism with η | 19 |
-| **Turbulence** | Navier-Stokes turbulence bounds | 29 |
-| **ParticleMass** | Koide C(φ²)=2/3; proton/electron mass ratio R=1836 | 38 |
-| **GravityQuantumDuality** | Re↔Gravity/Time; Im↔Quantum/Dark Energy (sector tunnel) | 22 |
-| **TimeCrystal** | Discrete time crystal / Floquet theory | 33 |
-| **Quantization** | Theorem Q: H·T=5π/4 → all Q1–Q5 simultaneously | 20 |
-| **BidirectionalTime** | Bidirectional time & Planck floor (temporal tunnel) | 24 |
-| **KernelAxle** | Canonical amplitude η; gear ratio; cross-section | 20 |
-| **SilverCoherence** | C(δS)=√2/2; uniqueness; physics at 45° | 29 |
-| **OhmTriality** | Ohm–Coherence duality G·R=1 at triality scales | 24 |
-| **ForwardClassicalTime** | Forward-time frustration harvesting (frustration tunnel) | 21 |
-| **Chemistry** | NIST atomic weights, isotopic abundances, mass conservation | 20 |
-| **NumericalAlignments** | Dimensionless derivations §0–§13; V_Z quantization; α from closure; universal observer uniqueness; μ¹³⁷=μ (phase tunnel) | 61 |
-| **Cosmology** | Morris–Thorne wormhole metric (spacetime tunnel); §1–6 wormhole geometry; §7 cosmic energy budget (Planck 2018: Ω_Λ=68.3%, Ω_dm=26.8%, Ω_b=4.9%) | 34 |
-| **Morphisms** | Coherence/palindrome even-odd pair; Lyapunov bridge C∘exp=sech; μ-isometry; orbit homomorphism; reality ℝ-bilinear map (domain tunnels) | 20 |
-| **Total** | | **624** |
+| Module | Sector | Key Results | Theorems |
+|--------|--------|-------------|----------|
+| **BalanceHypothesis** | Both | `reality_unique`: unique balance of funneling & tunneling sectors | 37 |
+| **CriticalEigenvalue** | Both | μ⁸=1, δS=1+√2, palindrome C(r)=C(1/r), Z/8Z memory | 82 |
+| **SpaceTime** | Funneling (Re) | Rotation matrix R(3π/4); F(s,t)=t+i·s; time on real axis | 43 |
+| **FineStructure** | Both | Fine structure constant α_FS = 1/137 | 30 |
+| **SpeedOfLight** | Both | c = 1/√(μ₀ε₀); structural isomorphism with η | 19 |
+| **Turbulence** | Funneling (Re) | Navier-Stokes dissipation bounds | 29 |
+| **ParticleMass** | Both | Koide C(φ²)=2/3; proton/electron mass ratio R=1836 | 38 |
+| **GravityQuantumDuality** | Both | Re↔Gravity/Time (funneling); Im↔Quantum/Dark Energy (tunneling) | 22 |
+| **TimeCrystal** | Tunneling (Im) | Discrete time crystal / Floquet oscillation | 33 |
+| **Quantization** | Tunneling (Im) | Theorem Q: H·T=5π/4 → all Q1–Q5 simultaneously | 20 |
+| **BidirectionalTime** | Tunneling (Im) | Bidirectional time passage & Planck floor | 24 |
+| **KernelAxle** | Both | Canonical amplitude η; gear ratio; cross-section | 20 |
+| **SilverCoherence** | Both | C(δS)=√2/2; uniqueness; 45° balance point | 29 |
+| **OhmTriality** | Both | Ohm–Coherence duality G·R=1 at triality scales | 24 |
+| **ForwardClassicalTime** | Funneling (Re) | F_fwd(l) = 1−sech(l): dissipation into Re sector | 21 |
+| **Chemistry** | Both | NIST atomic weights, isotopic abundances, mass conservation | 20 |
+| **NumericalAlignments** | Tunneling (Im) | μ¹³⁷=μ phase preservation; α from Im-sector closure | 61 |
+| **Cosmology** | Both | Morris–Thorne wormhole (tunneling); cosmic energy budget | 34 |
+| **Morphisms** | Tunneling (Im) | Six families propagate Im-sector structure across domains | 20 |
+| **Total** | | | **624** |
 
 ---
 
@@ -151,7 +162,7 @@ tests/                          # Cross-module consistency checks
 ```bash
 cd formal-lean/
 lake exe cache get   # download pre-built Mathlib cache (~5 min)
-lake build           # verify all 606 theorems, 0 sorry
+lake build           # verify all 624 theorems, 0 sorry
 lake exe formalLean  # print summary of verified theorems
 ```
 
