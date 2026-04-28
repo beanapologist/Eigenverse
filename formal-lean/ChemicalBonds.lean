@@ -63,10 +63,11 @@
   6.  Eigenverse bond conditions                  (Lead conjunction)
   7.  Functional-analytic scaffolding             (Mathlib inner product space)
   8.  Tunnel/funnel bound state                   (initial consideration)
+  9.  Hilbert-space bridge                        (§8 → §7 connection)
 
   Proof status
   ────────────
-  All 26 theorems have complete machine-checked proofs.
+  All 28 theorems have complete machine-checked proofs.
   No `sorry` placeholders remain.
 -/
 
@@ -75,7 +76,7 @@ import Chemistry
 import BalanceHypothesis
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.InnerProductSpace.Adjoint
-import Mathlib.Analysis.Spectrum.Basic
+import Mathlib.Analysis.Normed.Algebra.Spectrum
 
 open Complex Real
 
@@ -469,3 +470,64 @@ theorem tunnel_funnel_parts_ordered (z : ℂ) :
   linarith
 
 end TunnelFunnelBoundState
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- Section 9 — Connecting §8 (TunnelFunnelBoundState) to §7 (HilbertScaffolding)
+-- This section bridges the two-sector stability condition from §8 with the
+-- abstract Hilbert-space infrastructure from §7.
+--
+-- A quantum state ψ ∈ ℋ is an Eigenverse bound state candidate when the
+-- complex expected energy ⟨Aψ, ψ⟩ of some observable A lies in the open
+-- second quadrant of ℂ — i.e. when the complex inner product itself
+-- satisfies IsTunnelFunnelBoundState.
+--
+-- This is the model-internal analogue of: a state lies below the continuum
+-- threshold (Re < 0, funneling sector) while maintaining quantum coherence
+-- (Im > 0, tunneling sector).  A genuine proof that chemical bonds arise
+-- from quantum mechanics would require additionally:
+--   • The observable A to be the two-centre molecular Hamiltonian
+--   • A proof that the molecular ground state realises this condition
+--   • A proof that two separated-atom states do not
+-- Those steps require the full Kato-Rellich + spectral theory infrastructure
+-- and remain future work (documented in §7).
+-- ════════════════════════════════════════════════════════════════════════════
+
+section HilbertTunnelFunnel
+
+variable {ℋ : Type*} [NormedAddCommGroup ℋ] [InnerProductSpace ℂ ℋ] [CompleteSpace ℋ]
+
+/-- A quantum state ψ and observable A are in **Eigenverse bound-state
+    configuration** when the complex expected value ⟨Aψ, ψ⟩ is a tunnel/funnel
+    bound state: the imaginary part is positive (tunneling, quantum coherence)
+    and the real part is negative (funneling, below dissociation threshold).
+    This bridges the abstract Hilbert-space infrastructure of §7 with the
+    two-sector stability condition of §8. -/
+def IsHilbertBoundStateConfig (A : ℋ →L[ℂ] ℋ) (ψ : ℋ) : Prop :=
+  IsTunnelFunnelBoundState (inner (A ψ) ψ : ℂ)
+
+/-- **[27] Hilbert bound-state configuration unfolds to two sign conditions**
+    (definitional).
+    `IsHilbertBoundStateConfig A ψ` holds iff the complex expected value
+    ⟨Aψ, ψ⟩ has positive imaginary part (tunneling) and negative real part
+    (funneling).  This is the definitional bridge between the Hilbert-space
+    scaffolding from §7 and the tunnel/funnel predicate from §8. -/
+theorem isHilbertBoundStateConfig_iff (A : ℋ →L[ℂ] ℋ) (ψ : ℋ) :
+    IsHilbertBoundStateConfig A ψ ↔
+    0 < (inner (A ψ) ψ : ℂ).im ∧ (inner (A ψ) ψ : ℂ).re < 0 :=
+  Iff.rfl
+
+/-- **[28] Rayleigh quotient is negative for Hilbert bound-state configs**
+    (definitional + arithmetic).
+    When `IsHilbertBoundStateConfig A ψ` holds, the real part of ⟨Aψ, ψ⟩
+    is negative, which means `rayleighQuotient A ψ < 0`.
+    Since `rayleighQuotient A ψ = Re⟨Aψ, ψ⟩` (by definition), this is the
+    Hilbert-space analogue of "bound state energy lies below the dissociation
+    threshold": the Rayleigh quotient is strictly negative.
+    This directly connects §7's `rayleighQuotient` to §8's bound-state
+    condition via the §9 bridge predicate. -/
+theorem hilbert_bound_state_rayleigh_negative (A : ℋ →L[ℂ] ℋ) (ψ : ℋ) :
+    IsHilbertBoundStateConfig A ψ → rayleighQuotient A ψ < 0 := by
+  intro ⟨_, hre⟩
+  exact hre
+
+end HilbertTunnelFunnel
