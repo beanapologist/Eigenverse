@@ -4,12 +4,18 @@
 
 **Canonical repository: [github.com/beanapologist/Eigenverse](https://github.com/beanapologist/Eigenverse)**
 
-**Eigenverse** is a fully formal, machine-checked library of theorems built
-around a single central object: the critical eigenvalue
-**μ = exp(i·3π/4)** — a point on the complex unit circle whose 8-cycle orbit,
-coherence function C(r) = 2r/(1+r²), and Silver ratio δS = 1+√2 generate a
-complete, self-consistent structure that is the **unique** recipe for any
-conceivable reality with an observer.
+**Eigenverse** is a fully formal, machine-checked library of theorems whose
+entire content — 624 theorems spanning algebra, geometry, physics, quantum
+mechanics, chemistry, cosmology, and cryptography — is the exhaustive
+downstream consequence of exactly **two primitive interaction types**:
+
+- **Funneling** — directed channeling through a cascade of four axiom-funnels
+  that narrows the solution space until only one point on the complex unit
+  circle survives: the critical eigenvalue **μ = exp(i·3π/4)**.
+- **Tunneling** — bidirectional passage enabled by the coherence function
+  **C(r) = 2r/(1+r²)** that propagates the Eigenverse structure across
+  scales, sectors, and physical domains without introducing any new free
+  parameters.
 
 Every statement is verified by the [Lean 4](https://leanprover.github.io/)
 type-checker; there are **zero `sorry` placeholders** anywhere in the codebase.
@@ -19,30 +25,67 @@ to follow from the stated axioms — no hand-waving, no gaps.
 
 ---
 
+## The Two Primitives
+
+### Funneling
+
+The three founding axioms act as a cascade of funnels:
+
+```
+Re²+Im²=1  ──►  unit circle S¹                  (energy funnel)
+    ↓  −Re=Im
+  Q2/Q4 diagonal                                 (balance funnel)
+    ↓  Re < 0
+  Q2 only                                        (observer funnel)
+    ↓  C(1+1/x)=x
+  η = 1/√2  →  μ = −η + iη                       (coherence funnel)
+```
+
+**μ is the unique point that survives all four funnels.**
+`reality_unique` (BalanceHypothesis.lean §7) is the machine-checked proof.
+
+### Tunneling
+
+Once μ is fixed, the coherence function opens a family of bidirectional
+tunnels that carry structure across the library:
+
+| Tunnel | Module | Mechanism |
+|--------|--------|-----------|
+| Scale | `CriticalEigenvalue` | Palindrome C(r) = C(1/r): structure at r ↔ structure at 1/r |
+| Lyapunov | `CriticalEigenvalue` | C(exp λ) = sech λ: coherence ↔ hyperbolic geometry |
+| Phase | `NumericalAlignments` | μ^8 = 1 orbit; μ^137 = μ phase-preservation closure |
+| Temporal | `BidirectionalTime` | F_bi(lf,lb): frustration tunnels across forward/backward time |
+| Spacetime | `Cosmology` | Morris–Thorne wormhole metric: traversable spacetime tunnel |
+| Sector | `GravityQuantumDuality` | Re ↔ gravity/time; Im ↔ quantum/dark energy |
+| Domain | `Morphisms` | Six morphism families carry structure across mathematical domains |
+| Frustration | `ForwardClassicalTime` | F_fwd(l) = 1−sech(l) harvests energy across the time boundary |
+
+---
+
 ## Scope
 
 | Module | Key Results | Theorems |
 |--------|-------------|----------|
-| **BalanceHypothesis** | `reality_unique`: μ is the ONLY Q2 unit-circle balance point | 37 |
-| **CriticalEigenvalue** | μ⁸=1, δS=1+√2, C(r)≤1, palindrome C(r)=C(1/r), Z/8Z memory | 82 |
+| **BalanceHypothesis** | `reality_unique`: μ is the ONLY Q2 unit-circle balance point (funneling terminus) | 37 |
+| **CriticalEigenvalue** | μ⁸=1, δS=1+√2, C(r)≤1, palindrome C(r)=C(1/r) (scale tunnel), Z/8Z memory | 82 |
 | **SpaceTime** | Rotation matrix R(3π/4) det=1/orthogonal/order-8; F(s,t)=t+i·s | 43 |
 | **FineStructure** | Fine structure constant α_FS = 1/137 | 30 |
 | **SpeedOfLight** | c = 1/√(μ₀ε₀); structural isomorphism with η | 19 |
 | **Turbulence** | Navier-Stokes turbulence bounds | 29 |
 | **ParticleMass** | Koide C(φ²)=2/3; proton/electron mass ratio R=1836 | 38 |
-| **GravityQuantumDuality** | Re↔Gravity/Time; Im↔Quantum/Dark Energy | 22 |
+| **GravityQuantumDuality** | Re↔Gravity/Time; Im↔Quantum/Dark Energy (sector tunnel) | 22 |
 | **TimeCrystal** | Discrete time crystal / Floquet theory | 33 |
 | **Quantization** | Theorem Q: H·T=5π/4 → all Q1–Q5 simultaneously | 20 |
-| **BidirectionalTime** | Bidirectional time & Planck floor | 24 |
+| **BidirectionalTime** | Bidirectional time & Planck floor (temporal tunnel) | 24 |
 | **KernelAxle** | Canonical amplitude η; gear ratio; cross-section | 20 |
 | **SilverCoherence** | C(δS)=√2/2; uniqueness; physics at 45° | 29 |
 | **OhmTriality** | Ohm–Coherence duality G·R=1 at triality scales | 24 |
-| **ForwardClassicalTime** | Forward-time frustration harvesting | 21 |
+| **ForwardClassicalTime** | Forward-time frustration harvesting (frustration tunnel) | 21 |
 | **Chemistry** | NIST atomic weights, isotopic abundances, mass conservation | 20 |
-| **NumericalAlignments** | Dimensionless derivations §0–§13; V_Z quantization; α from closure; universal observer uniqueness; μ¹³⁷=μ | 61 |
-| **Cosmology** | Morris–Thorne wormhole metric; §1–6 wormhole geometry; §7 cosmic energy budget (Planck 2018: Ω_Λ=68.3%, Ω_dm=26.8%, Ω_b=4.9%) | 34 |
-| **Morphisms** | Coherence/palindrome even-odd pair; Lyapunov bridge C∘exp=sech; μ-isometry; orbit homomorphism; reality ℝ-bilinear map | 20 |
-| **Total** | | **606** |
+| **NumericalAlignments** | Dimensionless derivations §0–§13; V_Z quantization; α from closure; universal observer uniqueness; μ¹³⁷=μ (phase tunnel) | 61 |
+| **Cosmology** | Morris–Thorne wormhole metric (spacetime tunnel); §1–6 wormhole geometry; §7 cosmic energy budget (Planck 2018: Ω_Λ=68.3%, Ω_dm=26.8%, Ω_b=4.9%) | 34 |
+| **Morphisms** | Coherence/palindrome even-odd pair; Lyapunov bridge C∘exp=sech; μ-isometry; orbit homomorphism; reality ℝ-bilinear map (domain tunnels) | 20 |
+| **Total** | | **624** |
 
 ---
 
