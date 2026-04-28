@@ -502,9 +502,15 @@ end TunnelFunnelBoundState
 -- │  Currently A is an arbitrary bounded operator ℋ →L[ℂ] ℋ.  We need:    │
 -- │                                                                         │
 -- │    def molecularHamiltonian (R : ℝ) : ℋ →L[ℂ] ℋ                       │
--- │    -- H_mol = −Δ/2 − 1/|r−R_A| − 1/|r−R_B| + 1/R                     │
--- │    -- Requires Kato-Rellich: V = −1/|r−R_A| − 1/|r−R_B| is             │
--- │    --   relatively bounded w.r.t. −Δ with relative bound < 1            │
+-- │    -- Encodes: H_mol = −Δ/2 + V(r), where the two-centre Coulomb       │
+-- │    -- potential for nuclei at positions R_A, R_B with charges Z_A, Z_B  │
+-- │    -- acting on an electron at r is:                                    │
+-- │    --   V(r) = −Z_A·e²/|r − R_A| − Z_B·e²/|r − R_B| + Z_A·Z_B·e²/R  │
+-- │    -- (the third term is the nucleus-nucleus repulsion at separation R) │
+-- │    --                                                                   │
+-- │    -- Kato-Rellich licence: V is relatively bounded w.r.t. −Δ with      │
+-- │    -- relative bound < 1, so H_mol is self-adjoint on H²(ℝ³) and       │
+-- │    -- IsSelfAdjoint (molecularHamiltonian R) holds.                     │
 -- │                                                                         │
 -- │  Without this, IsHilbertBoundStateConfig speaks about an abstract A,   │
 -- │  not the physical two-centre Coulomb operator.                          │
@@ -517,11 +523,15 @@ end TunnelFunnelBoundState
 -- │        ∃ R_eq : ℝ, ∃ ψ_mol : ℋ,                                        │
 -- │          IsNormalizedState ψ_mol ∧                                      │
 -- │          IsHilbertBoundStateConfig (molecularHamiltonian R_eq) ψ_mol    │
--- │    -- Proof path: spectral theorem on H_mol →  ground state ψ₀ exists  │
--- │    --   with H_mol ψ₀ = E₀ • ψ₀, E₀ < 0, Im⟨H_mol ψ₀, ψ₀⟩ > 0        │
--- │    --   (the imaginary part requirement is the tunneling condition;      │
--- │    --   it is nontrivial and specific to the Eigenverse model in which   │
--- │    --   the expected energy is treated as a complex number)              │
+-- │    -- Proof path:                                                       │
+-- │    --  (a) IsSelfAdjoint (molecularHamiltonian R_eq)  [from GAP 1]      │
+-- │    --  (b) Spectral Theorem → ∃ ψ₀ ‖ψ₀‖=1, H_mol ψ₀ = E₀ • ψ₀,       │
+-- │    --      where E₀ = inf { rayleighQuotient H_mol ψ | ‖ψ‖ = 1 }       │
+-- │    --  (c) E₀ < 0  (molecular energy below dissociation threshold)      │
+-- │    --  (d) Im⟨H_mol ψ₀, ψ₀⟩ > 0  (Eigenverse tunneling condition;      │
+-- │    --      nontrivial — specific to complex-valued expected energies)    │
+-- │    -- Steps (a)–(c) are standard functional analysis; (d) is the        │
+-- │    -- Eigenverse-model assumption that distinguishes bound from free.    │
 -- │                                                                         │
 -- │  GAP 3 — Separated atoms do not satisfy the bound-state config          │
 -- │  ─────────────────────────────────────────────────────────────          │
@@ -532,22 +542,30 @@ end TunnelFunnelBoundState
 -- │        ∀ ε > 0, ∃ R_large : ℝ, ∀ ψ : ℋ,                                │
 -- │          IsNormalizedState ψ →                                          │
 -- │          ¬ IsHilbertBoundStateConfig (molecularHamiltonian R_large) ψ   │
--- │    -- Proof path: as R → ∞ the real part of ⟨H_mol ψ, ψ⟩ approaches    │
--- │    --   the sum of two isolated-atom ground energies (a negative         │
--- │    --   constant), but the imaginary part Im⟨H_mol ψ, ψ⟩ → 0, so the  │
--- │    --   tunneling condition Im > 0 is eventually violated.               │
+-- │    -- Proof path: model the dissociation limit R → ∞.                  │
+-- │    -- As the internuclear distance grows, the electron-cloud overlap     │
+-- │    -- between the two centres vanishes.  Formally:                      │
+-- │    --                                                                   │
+-- │    --   lim_{R→∞} Im⟨(molecularHamiltonian R) ψ, ψ⟩ = 0               │
+-- │    --                                                                   │
+-- │    -- Once Im⟨H_mol ψ, ψ⟩ = 0, the first conjunct of                   │
+-- │    -- IsTunnelFunnelBoundState fails, so IsHilbertBoundStateConfig      │
+-- │    -- returns False — the bond is formally broken.                      │
+-- │    -- (The real part converges to a negative constant equal to the sum  │
+-- │    --  of the two isolated-atom ground energies; the funneling sector   │
+-- │    --  Re < 0 alone is insufficient — tunneling Im > 0 is also needed.) │
 -- │                                                                         │
 -- │  Together GAP 1 + GAP 2 + GAP 3 would constitute a proof that the      │
 -- │  tunnel/funnel mechanism (IsHilbertBoundStateConfig) differentiates     │
 -- │  bound molecular states from unbound configurations, which is the       │
 -- │  Eigenverse model-internal analogue of "bonds arise from QM".           │
 -- │                                                                         │
--- │  The infrastructure to discharge these gaps exists in Mathlib:          │
+-- │  Mathlib infrastructure available to discharge these gaps:              │
 -- │    • InnerProductSpace, ContinuousLinearMap  (already imported §7)      │
 -- │    • IsSelfAdjoint, spectrum (Mathlib.Analysis.Normed.Algebra.Spectrum) │
 -- │    • SpectralTheorem for compact self-adjoint operators                 │
 -- │      (Mathlib.Analysis.InnerProductSpace.Spectrum)                      │
--- │  but connecting it to a concrete Coulomb Hamiltonian requires either    │
+-- │  Connecting them to the concrete Coulomb operator still requires either │
 -- │  formalising Kato-Rellich or importing it from an external library.     │
 -- └─────────────────────────────────────────────────────────────────────────┘
 -- ════════════════════════════════════════════════════════════════════════════
