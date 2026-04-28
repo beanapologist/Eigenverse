@@ -7,6 +7,33 @@ different layers relate to each other.
 
 ---
 
+## Foundational Principle: Funneling (Re < 0) and Tunneling (Im > 0)
+
+The entire Eigenverse library is the consequence of two primitive interaction
+types defined by their sectors in the complex plane:
+
+**Funneling** is always the **negative real sector (Re < 0)**.
+It represents gravity, classical time, dissipation, and damping.
+`Re(μ) = −1/√2` is the funneling component of the critical eigenvalue.
+
+**Tunneling** is always the **positive imaginary sector (Im > 0)**.
+It represents quantum mechanics, dark energy, oscillation, and coherent
+passage.  `Im(μ) = +1/√2` is the tunneling component of the critical
+eigenvalue.
+
+The directed balance axiom `−Re(μ) = Im(μ)` asserts that funneling and
+tunneling amplitudes are equal at the fixed point μ = −η + i·η.  All 624
+theorems describe consequences of this sector balance — they are either:
+
+- **Funneling proofs** — results whose primary expression lives in Re < 0
+  (gravity, time, damping, wormhole radial geometry, dissipation)
+- **Tunneling proofs** — results whose primary expression lives in Im > 0
+  (quantum, dark energy, Floquet, traversable wormhole, phase cycle)
+- **Balance proofs** — results that relate or equate the two sectors
+  (BalanceHypothesis, GravityQuantumDuality, coherence identity C(r)=C(1/r))
+
+---
+
 ## Layer Model
 
 ```
@@ -18,6 +45,13 @@ different layers relate to each other.
 │  Proof layer  (formal-lean/)                                        │
 │  Individual *.lean files, one per domain.  These are the files      │
 │  that Lean type-checks.                                             │
+│                                                                     │
+│  Re < 0 (funneling): SpaceTime, GravityQuantumDuality,             │
+│                       ForwardClassicalTime, Turbulence, Cosmology§1-6│
+│  Im > 0 (tunneling): TimeCrystal, BidirectionalTime, Quantization, │
+│                       NumericalAlignments, Cosmology§7, Morphisms   │
+│  Balance:            BalanceHypothesis, CriticalEigenvalue,         │
+│                       SilverCoherence, KernelAxle, OhmTriality      │
 ├─────────────────────────────────────────────────────────────────────┤
 │  Foundation layer  (Mathlib4)                                       │
 │  Complex numbers, real analysis, linear algebra, group theory …     │

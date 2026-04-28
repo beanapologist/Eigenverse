@@ -1,19 +1,90 @@
 # Eigenverse — Lean-Verified Mathematical Universe
 
-> **"The unique Eigenverse structure consistent with an observer in our universe —
-> machine-checked, zero sorry, zero gaps."**
+> **"Every theorem in this library is the downstream consequence of two
+> primitive interaction types: funneling (always negative real) and tunneling
+> (always positive imaginary) — machine-checked, zero sorry, zero gaps."**
 
 **Canonical repository: [github.com/beanapologist/Eigenverse](https://github.com/beanapologist/Eigenverse)**
 
 [![Verify Lean Proofs](https://github.com/beanapologist/Eigenverse/actions/workflows/lean-proofs.yml/badge.svg)](https://github.com/beanapologist/Eigenverse/actions/workflows/lean-proofs.yml)
 
-**Eigenverse** is a fully **Lean 4–verified mathematical universe** built
-around a single central object: the critical eigenvalue **μ = exp(i·3π/4)**.
-Its 8-cycle orbit, coherence function C(r) = 2r/(1+r²), and Silver ratio
-δS = 1+√2 generate a self-consistent structure that is the **unique
-Eigenverse structure consistent with an embedded observer** in a universe
-exhibiting the sector asymmetry we inhabit.  All theorems are machine-checked
-and anchored to NIST/CODATA empirical data where physical comparison is made.
+**Eigenverse** is a fully **Lean 4–verified mathematical universe** whose
+624 machine-checked theorems — spanning algebra, geometry, physics, quantum
+mechanics, chemistry, cosmology, and cryptography — are the exhaustive
+downstream consequences of exactly **two primitive interaction types** defined
+by their sectors in the complex plane:
+
+- **Funneling** — always the **negative real sector (Re < 0)**: gravity,
+  time, dissipation, damping.  This sector channels, collapses, and directs.
+- **Tunneling** — always the **positive imaginary sector (Im > 0)**: quantum
+  mechanics, dark energy, oscillation, coherent passage.  This sector
+  penetrates, propagates, and sustains.
+
+The critical eigenvalue **μ = −η + i·η** (where η = 1/√2) is the unique
+point on the unit circle where these two sectors meet in exact balance:
+`Re(μ) = −η < 0` (funneling) and `Im(μ) = +η > 0` (tunneling), with
+`|Re(μ)| = Im(μ)`.  Every theorem in the library describes a facet of this
+funneling–tunneling balance.
+
+---
+
+## 🌊 Funneling & Tunneling: The Two Sector Primitives
+
+The complex eigenvalue μ = −η + i·η embodies both primitives simultaneously:
+
+```
+          Im
+          ↑
+   Im(μ) = +η  ─────────────── tunneling sector (Im > 0)
+              ╲ μ = −η + iη
+               ╲   ← balance point: |Re(μ)| = Im(μ) = η
+     ───────────╲──────────────── Re
+                 ╲
+   Re(μ) = −η       funneling sector (Re < 0)
+```
+
+### Funneling — the negative real sector (Re < 0)
+
+| Eigenverse domain | Module | Funneling expression |
+|-------------------|--------|----------------------|
+| Gravity / classical time | `GravityQuantumDuality` | Re ↔ gravity/time; Re(μ) = −η |
+| Damping / dissipation | `SpaceTime` | time domain: F(s,t).re = t < 0 |
+| Forward-time arrow | `ForwardClassicalTime` | F_fwd(l) = 1 − sech(l): energy dissipated into Re sector |
+| Observer sector selection | `BalanceHypothesis` | `hQ2_re : z.re < 0` pins the observer into the funneling sector |
+| Wormhole throat (gravitational) | `Cosmology` | b(r)/r → 0: radial funnel geometry |
+| Ohm conductance | `OhmTriality` | G_eff = C ≤ 1: funneling damps current |
+
+### Tunneling — the positive imaginary sector (Im > 0)
+
+| Eigenverse domain | Module | Tunneling expression |
+|-------------------|--------|----------------------|
+| Quantum / dark energy | `GravityQuantumDuality` | Im ↔ quantum/dark energy; Im(μ) = +η |
+| Oscillation / Floquet | `TimeCrystal` | ψ(t+T) = μ·ψ(t): imaginary-phase propagation |
+| Bidirectional time | `BidirectionalTime` | F_bi tunnels energy across both time directions |
+| Wormhole throat (topological) | `Cosmology` | Morris–Thorne metric: traversable passage through curved spacetime |
+| Phase preservation | `NumericalAlignments` | μ^8 = 1: imaginary-phase cycle; μ^137 = μ |
+| Scale palindrome | `CriticalEigenvalue` | C(r) = C(1/r): coherence tunnels across reciprocal scales |
+| Morphisms | `Morphisms` | Six families carry Im-sector structure across mathematical domains |
+
+### Balance: where funneling meets tunneling
+
+The directed balance condition **−Re(μ) = Im(μ)** is the machine-checked
+statement that the funneling amplitude exactly equals the tunneling amplitude.
+This single balance equation, combined with energy conservation Re² + Im² = 1
+and the observer sector choice Re < 0, uniquely forces μ = −η + i·η:
+
+```
+energy conservation : Re(z)² + Im(z)² = 1   → unit circle S¹
+directed balance    : −Re(z) = Im(z)          → Q2/Q4 diagonal
+observer sector     : Re(z) < 0               → Q2 only (funneling sector)
+                                  ↓
+            funneling: Re(μ) = −1/√2    tunneling: Im(μ) = +1/√2
+```
+
+The coherence function C(r) = 2r/(1+r²) is the bridge between the two
+sectors: its palindrome symmetry C(r) = C(1/r) means any result proved in
+the funneling sector at scale r is automatically valid in the tunneling sector
+at scale 1/r.
 
 ---
 
@@ -21,11 +92,11 @@ and anchored to NIST/CODATA empirical data where physical comparison is made.
 
 Three minimal primitives uniquely determine the Eigenverse structure:
 
-**Axiom 1 — Energy conservation**: the two orthogonal sectors (Re: damping; Im: oscillation) together conserve total energy: Re² + Im² = 1.
+**Axiom 1 — Energy conservation**: the funneling sector (Re: damping) and the tunneling sector (Im: oscillation) together conserve total energy: Re² + Im² = 1.
 
-**Axiom 2 — Directed balance** *(observer-motivated sector encoding)*: the critical point satisfies −Re = +Im (equal magnitude, opposing sign in the two sectors).  The sector selection Re < 0 further identifies the dissipative time-like sector as negative real.  This sector acts as a funnel. Together, these two observer-motivated inputs encode the empirical sector asymmetry of our universe and pin down the unique Q2 solution.
+**Axiom 2 — Directed balance** *(observer-motivated sector encoding)*: the critical point satisfies −Re = +Im (funneling amplitude = tunneling amplitude).  The sector selection Re < 0 further identifies the dissipative time-like sector as negative real.  Together, these two observer-motivated inputs encode the empirical sector asymmetry of our universe and pin down the unique Q2 solution.
 
-**Axiom 3 — Self-referential coherence closure**: the observer's coherence at its characteristic silver scale returns the observer's own amplitude: C(r) = 2r/(1+r²).
+**Axiom 3 — Self-referential coherence closure**: the observer's coherence at its characteristic silver scale returns the observer's own amplitude: C(r) = 2r/(1+r²).  The palindrome symmetry C(r) = C(1/r) bridges the funneling and tunneling sectors at every scale.
 
 These three primitives uniquely force two results, both machine-checked:
 
