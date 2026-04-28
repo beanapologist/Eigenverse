@@ -367,9 +367,9 @@ end
 
 section HilbertScaffolding
 
-/-- Abstract Hilbert space for quantum states.
-    This represents the L²(ℝ³) setting required for genuine QM formalization.
-    Mathlib's concrete L² construction is `MeasureTheory.Lp ℂ 2 volume`. -/
+/- Abstract Hilbert space for quantum states.
+   This represents the L²(ℝ³) setting required for genuine QM formalization.
+   Mathlib's concrete L² construction is MeasureTheory.Lp ℂ 2 volume. -/
 variable {ℋ : Type*} [NormedAddCommGroup ℋ] [InnerProductSpace ℂ ℋ] [CompleteSpace ℋ]
 
 /-- The Rayleigh quotient of a continuous linear operator A at state ψ.
