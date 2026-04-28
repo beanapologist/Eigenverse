@@ -474,22 +474,82 @@ end TunnelFunnelBoundState
 -- ════════════════════════════════════════════════════════════════════════════
 -- Section 9 — Connecting §8 (TunnelFunnelBoundState) to §7 (HilbertScaffolding)
 -- This section bridges the two-sector stability condition from §8 with the
--- abstract Hilbert-space infrastructure from §7.
+-- abstract Hilbert-space infrastructure from §7, and makes the remaining gap
+-- explicit at the level of precise Lean statements.
 --
--- A quantum state ψ ∈ ℋ is an Eigenverse bound state candidate when the
--- complex expected energy ⟨Aψ, ψ⟩ of some observable A lies in the open
--- second quadrant of ℂ — i.e. when the complex inner product itself
--- satisfies IsTunnelFunnelBoundState.
+-- ┌─────────────────────────────────────────────────────────────────────────┐
+-- │  What §9 proves (machine-checked)                                       │
+-- │                                                                         │
+-- │  IsHilbertBoundStateConfig A ψ  :=                                      │
+-- │      IsTunnelFunnelBoundState (⟨Aψ, ψ⟩ : ℂ)                           │
+-- │                                                                         │
+-- │  [27] isHilbertBoundStateConfig_iff                                     │
+-- │       ↔  0 < Im⟨Aψ,ψ⟩  ∧  Re⟨Aψ,ψ⟩ < 0                               │
+-- │                                                                         │
+-- │  [28] hilbert_bound_state_rayleigh_negative                             │
+-- │       IsHilbertBoundStateConfig A ψ → rayleighQuotient A ψ < 0         │
+-- └─────────────────────────────────────────────────────────────────────────┘
 --
--- This is the model-internal analogue of: a state lies below the continuum
--- threshold (Re < 0, funneling sector) while maintaining quantum coherence
--- (Im > 0, tunneling sector).  A genuine proof that chemical bonds arise
--- from quantum mechanics would require additionally:
---   • The observable A to be the two-centre molecular Hamiltonian
---   • A proof that the molecular ground state realises this condition
---   • A proof that two separated-atom states do not
--- Those steps require the full Kato-Rellich + spectral theory infrastructure
--- and remain future work (documented in §7).
+-- ┌─────────────────────────────────────────────────────────────────────────┐
+-- │  Final tunnel/funnel gap — what remains to be proved                    │
+-- │                                                                         │
+-- │  The three steps below are NOT proved in this file.  They are the       │
+-- │  precise Lean statements that would close the gap between §9 and a      │
+-- │  genuine molecular-bond theorem.                                        │
+-- │                                                                         │
+-- │  GAP 1 — Specialise A to the molecular Hamiltonian                      │
+-- │  ──────────────────────────────────────────────────                     │
+-- │  Currently A is an arbitrary bounded operator ℋ →L[ℂ] ℋ.  We need:    │
+-- │                                                                         │
+-- │    def molecularHamiltonian (R : ℝ) : ℋ →L[ℂ] ℋ                       │
+-- │    -- H_mol = −Δ/2 − 1/|r−R_A| − 1/|r−R_B| + 1/R                     │
+-- │    -- Requires Kato-Rellich: V = −1/|r−R_A| − 1/|r−R_B| is             │
+-- │    --   relatively bounded w.r.t. −Δ with relative bound < 1            │
+-- │                                                                         │
+-- │  Without this, IsHilbertBoundStateConfig speaks about an abstract A,   │
+-- │  not the physical two-centre Coulomb operator.                          │
+-- │                                                                         │
+-- │  GAP 2 — The molecular ground state realises the bound-state config     │
+-- │  ──────────────────────────────────────────────────────────────────     │
+-- │  We need a normalised state ψ_mol that witnesses the condition:         │
+-- │                                                                         │
+-- │    theorem molecular_ground_state_is_bound :                            │
+-- │        ∃ R_eq : ℝ, ∃ ψ_mol : ℋ,                                        │
+-- │          IsNormalizedState ψ_mol ∧                                      │
+-- │          IsHilbertBoundStateConfig (molecularHamiltonian R_eq) ψ_mol    │
+-- │    -- Proof path: spectral theorem on H_mol →  ground state ψ₀ exists  │
+-- │    --   with H_mol ψ₀ = E₀ • ψ₀, E₀ < 0, Im⟨H_mol ψ₀, ψ₀⟩ > 0        │
+-- │    --   (the imaginary part requirement is the tunneling condition;      │
+-- │    --   it is nontrivial and specific to the Eigenverse model in which   │
+-- │    --   the expected energy is treated as a complex number)              │
+-- │                                                                         │
+-- │  GAP 3 — Separated atoms do not satisfy the bound-state config          │
+-- │  ─────────────────────────────────────────────────────────────          │
+-- │  We need to show that at large internuclear separation the two-centre   │
+-- │  system no longer satisfies IsHilbertBoundStateConfig:                  │
+-- │                                                                         │
+-- │    theorem separated_atoms_not_bound :                                  │
+-- │        ∀ ε > 0, ∃ R_large : ℝ, ∀ ψ : ℋ,                                │
+-- │          IsNormalizedState ψ →                                          │
+-- │          ¬ IsHilbertBoundStateConfig (molecularHamiltonian R_large) ψ   │
+-- │    -- Proof path: as R → ∞ the real part of ⟨H_mol ψ, ψ⟩ approaches    │
+-- │    --   the sum of two isolated-atom ground energies (a negative         │
+-- │    --   constant), but the imaginary part Im⟨H_mol ψ, ψ⟩ → 0, so the  │
+-- │    --   tunneling condition Im > 0 is eventually violated.               │
+-- │                                                                         │
+-- │  Together GAP 1 + GAP 2 + GAP 3 would constitute a proof that the      │
+-- │  tunnel/funnel mechanism (IsHilbertBoundStateConfig) differentiates     │
+-- │  bound molecular states from unbound configurations, which is the       │
+-- │  Eigenverse model-internal analogue of "bonds arise from QM".           │
+-- │                                                                         │
+-- │  The infrastructure to discharge these gaps exists in Mathlib:          │
+-- │    • InnerProductSpace, ContinuousLinearMap  (already imported §7)      │
+-- │    • IsSelfAdjoint, spectrum (Mathlib.Analysis.Normed.Algebra.Spectrum) │
+-- │    • SpectralTheorem for compact self-adjoint operators                 │
+-- │      (Mathlib.Analysis.InnerProductSpace.Spectrum)                      │
+-- │  but connecting it to a concrete Coulomb Hamiltonian requires either    │
+-- │  formalising Kato-Rellich or importing it from an external library.     │
+-- └─────────────────────────────────────────────────────────────────────────┘
 -- ════════════════════════════════════════════════════════════════════════════
 
 section HilbertTunnelFunnel
