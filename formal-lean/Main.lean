@@ -1028,7 +1028,7 @@ def printChemicalBonds : IO Unit := do
   IO.println "  [15] chem_excitation_costs_energy          : E_n < E_{n+1}  (strict ascent)"
   IO.println "         Every excitation costs energy; the bond is protected by an energy gap."
   IO.println "  [16] chem_bond_energy_negative             : E_n < 0  for all n ≥ 1"
-  IO.println "         Bond energy is below ionisation threshold — bonded state is stable."
+  IO.println "         Bond energy is below ionization threshold — bonded state is stable."
   IO.println ""
   IO.println "§5    Emergent molecular properties  (Funneling sector)"
   IO.println ""

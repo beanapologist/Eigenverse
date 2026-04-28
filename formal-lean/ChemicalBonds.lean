@@ -85,7 +85,7 @@ noncomputable section
     In the Eigenverse sector assignment, negative energy lives in the Funneling
     sector (Re < 0).  The bound-state condition E_n < 0 means electrons are
     confined — the precondition for chemical bond formation.  A bond cannot
-    form if the electronic state has zero or positive energy (unbound/ionised).
+    form if the electronic state has zero or positive energy (unbound/ionized).
     Ref: Quantization §2, FineStructure §3 (rydbergEnergy_neg). -/
 theorem chem_eigenstates_bound (n : ℕ) (hn : n ≠ 0) :
     rydbergEnergy n hn < 0 :=
@@ -106,7 +106,7 @@ theorem chem_spectrum_discrete (n : ℕ) (hn : 0 < n) :
 
 /-- **Ground-state energy**: E₁ = −1 Hartree, the deepest bound state.
     This is the reference energy for all bond-energy calculations in Hartree
-    atomic units.  The bond well has depth 1 Hartree relative to ionisation
+    atomic units.  The bond well has depth 1 Hartree relative to ionization
     (E = 0).
     Ref: Quantization §5 (quantization_ground_energy). -/
 theorem chem_ground_state_energy :
@@ -239,7 +239,7 @@ theorem chem_orbital_balance_from_unit_circle :
 -- A stable chemical bond exists because the bonded state has LOWER energy than
 -- separated atoms.  The ground-state Rydberg energy E₁ = −1 is the energy
 -- minimum: all excited states sit strictly above it.  The bond energy well has
--- depth 1 Hartree (distance from E₁ to the ionisation threshold E = 0).
+-- depth 1 Hartree (distance from E₁ to the ionization threshold E = 0).
 -- Any excitation strictly raises the energy toward 0 (dissociation threshold).
 -- ════════════════════════════════════════════════════════════════════════════
 
@@ -277,7 +277,7 @@ theorem chem_ground_state_strict_minimum (n : ℕ) (hn : 0 < n) (hn1 : n ≠ 1) 
 
 /-- **Excitations strictly raise the bond energy**: E_n < E_{n+1} for all n ≥ 1.
     Every step up the quantum ladder costs energy; the spectrum converges toward
-    the ionisation threshold (E = 0) from below.  This confirms that the bonded
+    the ionization threshold (E = 0) from below.  This confirms that the bonded
     state is protected by an energy gap: breaking the bond requires absorbing at
     least |E₁| = 1 Hartree of energy.
     Ref: Quantization §2 (quantization_energy_strictMono). -/
@@ -286,9 +286,9 @@ theorem chem_excitation_costs_energy (n : ℕ) (hn : 0 < n) :
     rydbergEnergy (n + 1) (Nat.succ_ne_zero n) :=
   rydbergEnergy_strictMono n hn
 
-/-- **Bond energy is negative**: the bonded state lies below the ionisation threshold.
+/-- **Bond energy is negative**: the bonded state lies below the ionization threshold.
     The fact that E_n < 0 for all n ≥ 1 means the bound (bonded) system always
-    has lower energy than the unbound (ionised) state at E = 0.  Bond formation
+    has lower energy than the unbound (ionized) state at E = 0.  Bond formation
     releases energy and requires energy to undo — the defining property of a
     stable chemical bond.
     Ref: FineStructure §3 (rydbergEnergy_neg). -/
@@ -363,7 +363,7 @@ theorem chem_bond_mass_conservation :
       (2) GROUND STATE MINIMUM (CriticalEigenvalue / Balance):
           E₁ = −1 Hartree is the energy minimum of the discrete spectrum.
           This is the bond energy well: the bonded system sits 1 Hartree below
-          the ionisation threshold and must absorb that energy to dissociate.
+          the ionization threshold and must absorb that energy to dissociate.
 
       (3) ORBITAL AMPLITUDE BALANCE (Balance sector):
           The two-electron orbital balance 2η² = 1 encodes quantum probability
