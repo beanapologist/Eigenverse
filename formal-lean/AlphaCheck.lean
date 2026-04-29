@@ -48,8 +48,8 @@ open Real Finset
 /-- Computable IEEE-754 double-precision approximation of `alpha_inv_prediction`.
 
     Given the integer approximation Z of the inverse fine-structure constant,
-    returns:  Z + (ln Z / Z) · (1 + FK/Z − FS/Z²)
-    where FK = 1/3 and FS = 1 − √2/2.
+    returns:  Z + (ln Z / Z) * (1 + FK/Z - FS/Z^2)
+    where FK = 1/3 and FS = 1 - sqrt(2)/2.
 
     Use `#eval alpha_inv_approx 137` to watch the universe compute its own
     coupling constant: the output (≈ 137.036) matches CODATA 2022
