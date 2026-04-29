@@ -188,15 +188,15 @@ theorem bonded_state_energy_gap :
   hamiltonian_eigenvalues_below_dissociation 1 one_ne_zero
 
 /-- **[30] Ground-state energy equals negative squared norm of μ** (arithmetic).
-    hamiltonianEigenvalue 1 one_ne_zero = −(μ.re² + μ.im²) = −1.
+    hamiltonianEigenvalue 1 one_ne_zero = −(μ.re ^ 2 + μ.im ^ 2) = −1.
 
-    Since μ.re² + μ.im² = 1 (proved from `mu_energy_conserved`, which follows
+    Since μ.re ^ 2 + μ.im ^ 2 = 1 (proved from `mu_energy_conserved`, which follows
     from `balance_two_eta_sq` and `mu_re_is_neg_eta`/`mu_im_is_eta`), this ties
     the Hamiltonian sector (§§1–2) to the balance-sector constant μ (§§3–4):
     the minimum of the energy sequence is exactly the negative of μ's squared
     Euclidean norm.
 
-    Algebraically: hamiltonianEigenvalue 1 = −1 = −(η² + η²) = −(μ.re² + μ.im²).
+    Algebraically: hamiltonianEigenvalue 1 = −1 = −(η ^ 2 + η ^ 2) = −(μ.re ^ 2 + μ.im ^ 2).
     The critical eigenvalue μ is the unique complex number in the second quadrant
     whose squared norm equals the magnitude of the ground-state energy gap. -/
 theorem ground_energy_eq_neg_mu_norm_sq :
