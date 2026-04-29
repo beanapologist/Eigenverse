@@ -125,7 +125,7 @@ theorem silver_frustration_pos : 0 < silver_frustration := by
   unfold silver_frustration
   rw [silver_coherence]
   have hsq : Real.sqrt 2 * Real.sqrt 2 = 2 := Real.mul_self_sqrt (by norm_num)
-  nlinarith [Real.sqrt_nonneg 2]
+  nlinarith [Real.sqrt_nonneg 2, hsq]
 
 -- ════════════════════════════════════════════════════════════════════════════
 -- Section 4 — Sign Analysis

@@ -1994,7 +1994,7 @@ def printClosurePrediction : IO Unit := do
   IO.println "12 theorems — all machine-checked, zero sorry."
   IO.println ""
   IO.println "Derivation chain: SilverCoherence → ClosurePrediction ← ChemicalBonds"
-  IO.println "  silver_frustration_lt_koide uses koide_below_silver (SilverCoherence §5)."
+  IO.println "  silver_frustration_lt_koide uses koide_below_silver from SilverCoherence §5."
   IO.println "  dissociation_fail_point_connection uses tunneling_vanishes_implies_unbound"
   IO.println "  (ChemicalBonds [29]).  All three files contribute machine-checked theorems."
   IO.println ""
