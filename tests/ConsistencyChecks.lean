@@ -53,4 +53,27 @@
 -- Morphisms.lyapunov_bridge_bounded: 0 < C(exp λ) ∧ C(exp λ) ≤ 1 must be
 -- consistent with coherence_pos applied to exp λ > 0.
 
+-- ── Check 9: Organic dissociation hierarchy consistency ───────────────────────
+-- OrganicDissociation.organic_dissociation_hierarchy proves
+--   C-N < C-C < C-O < C-H < O-H < C=C < C=O < C≡C  (BDE, kJ/mol).
+-- This is consistent with the abstract dissociation ordering in
+-- ClosurePrediction.dissociation_ordering (FS < FK: Silver before Koide):
+--   single bonds (higher frustration, first to dissociate) parallel the Koide scale;
+--   multiple bonds (lower frustration, last to dissociate) parallel the Silver scale.
+-- Verified by: OrganicDissociation.organic_dissociation_lead (22 theorems).
+
+-- ── Check 10: Molecular geometry bond-length consistency ──────────────────────
+-- MolecularGeometry.carbon_bond_length_ordering:
+--   bl_CC_triple (120 pm) < bl_CC_double (134 pm) < bl_C_C (154 pm).
+-- MolecularGeometry.bond_length_bde_correspondence:
+--   the carbon bond-length ordering agrees with the carbon bond-order BDE
+--   hierarchy from OrganicDissociation (bde_C_C < bde_CC_double < bde_CC_triple).
+-- Verified by: MolecularGeometry.molecular_geometry_lead (26 theorems).
+
+-- ── Check 11: CH₄ tetrahedral geometry ───────────────────────────────────────
+-- MolecularGeometry.ch4_tetrahedral_cos proves cos θ = −1/3 for the tetrahedral
+-- bond angle of CH₄, consistent with the VSEPR angle_tetrahedral = arccos(−1/3).
+-- The angle ordering right < tetrahedral < trigonal_planar < linear is verified
+-- by theorems [11]–[13] in MolecularGeometry.
+
 #check @id  -- placeholder to keep the file parseable before build

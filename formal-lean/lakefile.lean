@@ -36,7 +36,7 @@ lean_lib «FormalLean» where
              `SpeedOfLight, `GravityQuantumDuality, `Quantization, `Chemistry, `BidirectionalTime,
              `BalanceHypothesis, `BalanceInstances, `NumericalAlignments, `Cosmology, `Morphisms, `ChemicalBonds,
              `OilVinegar, `FourSector, `Observer, `SignVerify, `MultiMessage, `FiniteFieldUOV,
-             `ClosurePrediction, `AlphaCheck]
+             `ClosurePrediction, `AlphaCheck, `OrganicDissociation, `MolecularGeometry]
 
 /-- Executable entry point that prints a summary of verified theorems. -/
 @[default_target]
