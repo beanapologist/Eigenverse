@@ -5,7 +5,7 @@
 **Canonical repository: [github.com/beanapologist/Eigenverse](https://github.com/beanapologist/Eigenverse)**
 
 **Eigenverse** is a fully formal, machine-checked library of theorems whose
-entire content — 624 theorems spanning algebra, geometry, physics, quantum
+entire content — 644 theorems spanning algebra, geometry, physics, quantum
 mechanics, chemistry, cosmology, and cryptography — is the exhaustive
 downstream consequence of exactly **two primitive interaction types** defined
 by their sector assignment in the complex plane:
@@ -93,10 +93,11 @@ observer sector     : Re < 0                 → funneling sector selected
 | **OhmTriality** | Both | Ohm–Coherence duality G·R=1 at triality scales | 24 |
 | **ForwardClassicalTime** | Funneling (Re) | F_fwd(l) = 1−sech(l): dissipation into Re sector | 21 |
 | **Chemistry** | Both | NIST atomic weights, isotopic abundances, mass conservation | 20 |
+| **ChemicalBonds** | All three | Chemical Bond Hypothesis: quantum → balance → stable molecules | 20 |
 | **NumericalAlignments** | Tunneling (Im) | μ¹³⁷=μ phase preservation; α from Im-sector closure | 61 |
 | **Cosmology** | Both | Morris–Thorne wormhole (tunneling); cosmic energy budget | 34 |
 | **Morphisms** | Tunneling (Im) | Six families propagate Im-sector structure across domains | 20 |
-| **Total** | | | **624** |
+| **Total** | | | **644** |
 
 ---
 
@@ -120,6 +121,7 @@ formal-lean/                    # Lean 4 source files (the proof engine)
 ├── OhmTriality.lean            # Ohm G·R=1 (24)
 ├── ForwardClassicalTime.lean   # Forward frustration (21)
 ├── Chemistry.lean              # NIST atomic weights (20)
+├── ChemicalBonds.lean          # Chemical Bond Hypothesis: quantum → stable molecules (20)
 ├── NumericalAlignments.lean    # Dimensionless derivations §0–§13 (61)
 ├── Cosmology.lean              # Morris–Thorne wormholes + cosmic energy budget (34)
 ├── Morphisms.lean              # Six morphism families: C/Res even-odd, Lyapunov bridge, μ-isometry, orbit, reality (20)
