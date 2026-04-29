@@ -164,17 +164,28 @@ noncomputable def angle_right : ℝ := Real.pi / 2
 
 /-- **[11] Right angle < tetrahedral**: π/2 < arccos(−1/3).
 
-    Proof: arccos is strictly decreasing; −1/3 < 0 = cos(π/2), so
-    arccos(0) = π/2 < arccos(−1/3) by Real.arccos_lt_arccos. -/
+    Proof: cos is strictly decreasing on [0, π] (Real.strictAntiOn_cos).
+    Setting a = arccos(−1/3) and b = π/2 in lt_iff_lt gives
+    cos(arccos(−1/3)) < cos(π/2) ↔ π/2 < arccos(−1/3).
+    The LHS reduces to −1/3 < 0 by cos_arccos and cos_pi_div_two. -/
 theorem angle_right_lt_tetrahedral : angle_right < angle_tetrahedral := by
   unfold angle_right angle_tetrahedral
-  rw [show Real.pi / 2 = Real.arccos 0 from Real.arccos_zero.symm]
-  exact Real.arccos_lt_arccos (by norm_num) (by norm_num) (by norm_num)
+  have h_arccos_mem : Real.arccos (-1/3 : ℝ) ∈ Set.Icc (0 : ℝ) Real.pi :=
+    Set.mem_Icc.mpr ⟨Real.arccos_nonneg _, Real.arccos_le_pi _⟩
+  have h_pi2_mem : Real.pi / 2 ∈ Set.Icc (0 : ℝ) Real.pi :=
+    Set.mem_Icc.mpr ⟨by linarith [Real.pi_pos], by linarith [Real.pi_pos]⟩
+  -- lt_iff_lt ha hb : cos a < cos b ↔ b < a
+  -- so .mp : cos(arccos(-1/3)) < cos(π/2) → π/2 < arccos(-1/3)
+  apply (Real.strictAntiOn_cos.lt_iff_lt h_arccos_mem h_pi2_mem).mp
+  rw [Real.cos_arccos (by norm_num) (by norm_num), Real.cos_pi_div_two]
+  norm_num
 
 /-- **[12] Tetrahedral < trigonal planar**: arccos(−1/3) < 2π/3.
 
-    Proof: arccos(−1/2) = 2π/3 (since cos(2π/3) = −1/2) and arccos is
-    strictly decreasing, so −1/3 > −1/2 gives arccos(−1/3) < arccos(−1/2). -/
+    Proof: cos(2π/3) = −1/2 (computed from cos(π − π/3) = −cos(π/3) = −1/2).
+    arccos(−1/3) ∈ [0, π] and 2π/3 ∈ [0, π].  Since cos is strictly decreasing
+    on [0, π] (Real.strictAntiOn_cos) and cos(arccos(−1/3)) = −1/3 > −1/2 =
+    cos(2π/3), strict antitonicity gives arccos(−1/3) < 2π/3. -/
 theorem angle_tetrahedral_lt_trigonal_planar :
     angle_tetrahedral < angle_trigonal_planar := by
   unfold angle_tetrahedral angle_trigonal_planar
@@ -187,15 +198,17 @@ theorem angle_tetrahedral_lt_trigonal_planar :
     rw [show (2 : ℝ) * Real.pi / 3 = Real.pi - Real.pi / 3 by ring]
     rw [Real.cos_pi_sub, hcos_pi3]
     norm_num
-  -- Step 2: arccos(-1/2) = 2π/3
-  have heq : Real.arccos (-1/2 : ℝ) = 2 * Real.pi / 3 := by
-    rw [show (-1/2 : ℝ) = Real.cos (2 * Real.pi / 3) from hcos.symm]
-    exact Real.arccos_cos (by linarith [Real.pi_pos]) (by linarith [Real.pi_pos])
-  -- Step 3: arccos(-1/3) < arccos(-1/2) = 2π/3
-  calc Real.arccos (-1/3 : ℝ)
-      < Real.arccos (-1/2 : ℝ) :=
-          Real.arccos_lt_arccos (by norm_num) (by norm_num) (by norm_num)
-    _ = 2 * Real.pi / 3 := heq
+  -- Step 2: use strict antitonicity of cos on [0, π]
+  -- Setting a = 2π/3 and b = arccos(-1/3) in lt_iff_lt gives
+  -- cos(2π/3) < cos(arccos(-1/3)) ↔ arccos(-1/3) < 2π/3.
+  -- .mp : cos(2π/3) < cos(arccos(-1/3)) → arccos(-1/3) < 2π/3 ✓
+  have h_2pi3_mem : (2 * Real.pi / 3) ∈ Set.Icc (0 : ℝ) Real.pi :=
+    Set.mem_Icc.mpr ⟨by linarith [Real.pi_pos], by linarith [Real.pi_pos]⟩
+  have h_arccos_mem : Real.arccos (-1/3 : ℝ) ∈ Set.Icc (0 : ℝ) Real.pi :=
+    Set.mem_Icc.mpr ⟨Real.arccos_nonneg _, Real.arccos_le_pi _⟩
+  apply (Real.strictAntiOn_cos.lt_iff_lt h_2pi3_mem h_arccos_mem).mp
+  rw [hcos, Real.cos_arccos (by norm_num) (by norm_num)]
+  norm_num
 
 /-- **[13] Trigonal planar < linear**: 2π/3 < π. -/
 theorem angle_trigonal_lt_linear : angle_trigonal_planar < angle_linear := by
@@ -262,7 +275,6 @@ theorem ch4_tetrahedral_cos :
   have hn2 : normSq3 ch4_h2 = 3    := ch4_equal_norms.2.1
   have hsq : Real.sqrt 3 * Real.sqrt 3 = 3 := Real.mul_self_sqrt (by norm_num)
   rw [h12, hn1, hn2, hsq]
-  norm_num
 
 -- ════════════════════════════════════════════════════════════════════════════
 -- Section 7 — Linear Geometry: HC≡CH (sp-carbon)
@@ -332,8 +344,8 @@ theorem sp2_cross_dots :
     dot3 sp2_e1 sp2_e2 = -1/2 ∧ dot3 sp2_e1 sp2_e3 = -1/2 ∧ dot3 sp2_e2 sp2_e3 = -1/2 := by
   have h3 : Real.sqrt 3 * Real.sqrt 3 = 3 := Real.mul_self_sqrt (by norm_num)
   refine ⟨?_, ?_, ?_⟩
-  · simp only [dot3, sp2_e1, sp2_e2]; ring_nf; norm_num
-  · simp only [dot3, sp2_e1, sp2_e3]; ring_nf; norm_num
+  · simp only [dot3, sp2_e1, sp2_e2]; ring_nf
+  · simp only [dot3, sp2_e1, sp2_e3]; ring_nf
   · simp only [dot3, sp2_e2, sp2_e3]; nlinarith
 
 /-- **[21] Trigonal planar bond vectors sum to zero**: e₁ + e₂ + e₃ = 0.
