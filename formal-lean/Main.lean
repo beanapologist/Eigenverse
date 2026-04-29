@@ -35,6 +35,7 @@ import MultiMessage
 import FiniteFieldUOV
 import ChemicalBonds
 import ClosurePrediction
+import AlphaCheck
 
 set_option maxRecDepth 2000 in
 def printCriticalEigenvalue : IO Unit := do
@@ -2016,6 +2017,60 @@ def printClosurePrediction : IO Unit := do
   IO.println "See ClosurePrediction.lean for full proof terms."
   IO.println ""
 
+def printAlphaCheck : IO Unit := do
+  IO.println "==================================================="
+  IO.println " AlphaCheck.lean — Fine-Structure Constant Tactic"
+  IO.println "==================================================="
+  IO.println ""
+  IO.println "Exposes alpha_inv_prediction as a user-facing tactic so anyone can"
+  IO.println "evaluate and verify the prediction interactively:"
+  IO.println ""
+  IO.println "  #check alpha_inv_prediction (137 : ℝ)   -- alpha_inv_prediction 137 : ℝ"
+  IO.println "  #eval  alpha_inv_approx 137             -- ≈ 137.03600  (watch the universe!)"
+  IO.println "  example : ... > 137 := by alpha_pred_check  -- tactic proof"
+  IO.println ""
+  IO.println "§1    Computable Float approximation"
+  IO.println ""
+  IO.println "  def  alpha_inv_approx (Z : Float) : Float"
+  IO.println "         = Z + (Float.log Z / Z) * (1 + FK/Z - FS/Z^2)"
+  IO.println "         Uses IEEE-754 double precision: #eval alpha_inv_approx 137 ≈ 137.036"
+  IO.println ""
+  IO.println "§2    Tactic macro"
+  IO.println ""
+  IO.println "  macro \"alpha_pred_check\" : tactic"
+  IO.println "         Proves alpha_inv_prediction Z > Z for any concrete Z > 1."
+  IO.println "         Wraps assembly_rule + norm_num into a single tactic call."
+  IO.println ""
+  IO.println "§3    Taylor lower bound for exp(5)"
+  IO.println ""
+  IO.println "  [1]  exp_5_gt_137"
+  IO.println "         : 137 < Real.exp 5"
+  IO.println "         9-term Taylor partial sum sum_{k=0}^{8} 5^k/k! = 5576545/40320 ~= 138.3073 > 137."
+  IO.println ""
+  IO.println "§4    Logarithm upper bound"
+  IO.println ""
+  IO.println "  [2]  log_137_lt_5"
+  IO.println "         : Real.log 137 < 5"
+  IO.println "         Follows from exp(5) > 137 by monotonicity of log."
+  IO.println ""
+  IO.println "§5    Upper bound on the prediction"
+  IO.println ""
+  IO.println "  [3]  alpha_inv_prediction_lt_138"
+  IO.println "         : alpha_inv_prediction 137 < 138"
+  IO.println "         correction = (log 137 / 137) * bracket < (5/137) * 2 < 1."
+  IO.println ""
+  IO.println "§6    Combined bounds"
+  IO.println ""
+  IO.println "  [4]  alpha_inv_prediction_137_bounds"
+  IO.println "         : 137 < alpha_inv_prediction 137 ∧ alpha_inv_prediction 137 < 138"
+  IO.println "         Lower bound: assembly_rule.  Upper bound: §5."
+  IO.println "         Float eval: ~= 137.036 (CODATA 2022 value: 137.035999177)."
+  IO.println ""
+  IO.println "4 theorems — all machine-checked, zero sorry."
+  IO.println ""
+  IO.println "See AlphaCheck.lean for full proof terms."
+  IO.println ""
+
 def main : IO Unit := do
   printCriticalEigenvalue
   printTimeCrystal
@@ -2041,3 +2096,4 @@ def main : IO Unit := do
   printSignVerify
   printFiniteFieldUOV
   printClosurePrediction
+  printAlphaCheck
