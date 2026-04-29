@@ -67,7 +67,7 @@
 
   Proof status
   ────────────
-  All 28 theorems have complete machine-checked proofs.
+  All 29 theorems have complete machine-checked proofs.
   No `sorry` placeholders remain.
 -/
 
@@ -488,6 +488,10 @@ end TunnelFunnelBoundState
 -- │                                                                         │
 -- │  [28] hilbert_bound_state_rayleigh_negative                             │
 -- │       IsHilbertBoundStateConfig A ψ → rayleighQuotient A ψ < 0         │
+-- │                                                                         │
+-- │  [29] tunneling_vanishes_implies_unbound                                │
+-- │       Im⟨Aψ,ψ⟩ = 0 → ¬ IsHilbertBoundStateConfig A ψ                  │
+-- │       (tunneling Im > 0 is the precise fail point during dissociation)  │
 -- └─────────────────────────────────────────────────────────────────────────┘
 --
 -- ┌─────────────────────────────────────────────────────────────────────────┐
@@ -544,13 +548,21 @@ end TunnelFunnelBoundState
 -- │          ¬ IsHilbertBoundStateConfig (molecularHamiltonian R_large) ψ   │
 -- │    -- Proof path: model the dissociation limit R → ∞.                  │
 -- │    -- As the internuclear distance grows, the electron-cloud overlap     │
--- │    -- between the two centres vanishes.  Formally:                      │
+-- │    -- between the two centres vanishes.  The dissociation limit in Lean │
+-- │    -- is expressed via Filter.Tendsto:                                  │
 -- │    --                                                                   │
--- │    --   lim_{R→∞} Im⟨(molecularHamiltonian R) ψ, ψ⟩ = 0               │
+-- │    --   Filter.Tendsto                                                  │
+-- │    --     (fun R => (inner ((molecularHamiltonian R) ψ) ψ : ℂ).im)     │
+-- │    --     Filter.atTop (nhds 0)                                         │
+-- │    --                                                                   │
+-- │    -- (requires Mathlib.Topology.Algebra.Order.LiminfLimsup and the    │
+-- │    --  Filter.atTop filter on ℝ; uses GAP 1's molecularHamiltonian)    │
 -- │    --                                                                   │
 -- │    -- Once Im⟨H_mol ψ, ψ⟩ = 0, the first conjunct of                   │
 -- │    -- IsTunnelFunnelBoundState fails, so IsHilbertBoundStateConfig      │
 -- │    -- returns False — the bond is formally broken.                      │
+-- │    -- Theorem [29] (proved below) establishes the general principle:    │
+-- │    -- Im⟨Aψ,ψ⟩ = 0 → ¬IsHilbertBoundStateConfig A ψ.                  │
 -- │    -- (The real part converges to a negative constant equal to the sum  │
 -- │    --  of the two isolated-atom ground energies; the funneling sector   │
 -- │    --  Re < 0 alone is insufficient — tunneling Im > 0 is also needed.) │
@@ -607,5 +619,29 @@ theorem hilbert_bound_state_rayleigh_negative (A : ℋ →L[ℂ] ℋ) (ψ : ℋ)
     IsHilbertBoundStateConfig A ψ → rayleighQuotient A ψ < 0 := by
   intro ⟨_, hre⟩
   exact hre
+
+/-- **[29] Tunneling vanishing implies unbound state** (arithmetic).
+    When the imaginary part of the expected value ⟨Aψ, ψ⟩ is zero, the
+    tunneling condition Im⟨Aψ, ψ⟩ > 0 fails, so `IsHilbertBoundStateConfig`
+    returns False.  This identifies the tunneling sector (Im > 0) as the
+    **precise fail point** during dissociation: even when the funneling
+    condition Re⟨Aψ, ψ⟩ < 0 persists, a vanishing imaginary part is
+    sufficient to break the bound-state predicate.
+
+    In the context of GAP 3, the dissociation limit in Lean is the statement:
+      Filter.Tendsto
+        (fun R => (inner ((molecularHamiltonian R) ψ) ψ : ℂ).im)
+        Filter.atTop (nhds 0)
+    which, once proved (using GAP 1's `molecularHamiltonian`), combines with
+    this theorem to give `¬ IsHilbertBoundStateConfig (molecularHamiltonian R) ψ`
+    for large R — formally proving the bond is broken.
+
+    The logical circuit: Bonded ↔ (Im > 0 ∧ Re < 0); Dissociated ↔ (Im = 0)
+    → ¬ Bonded, regardless of the funneling sector. -/
+theorem tunneling_vanishes_implies_unbound (A : ℋ →L[ℂ] ℋ) (ψ : ℋ)
+    (him : (inner (A ψ) ψ : ℂ).im = 0) :
+    ¬ IsHilbertBoundStateConfig A ψ := by
+  intro ⟨hpos, _⟩
+  linarith
 
 end HilbertTunnelFunnel
