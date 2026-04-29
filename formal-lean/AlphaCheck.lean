@@ -150,14 +150,14 @@ theorem alpha_inv_prediction_lt_138 : alpha_inv_prediction 137 < 138 := by
   have hb_pos : 0 < b := by
     have h1 : 0 ≤ koide_frustration / 137 := div_nonneg hFK_pos.le h137.le
     have h2 : silver_frustration / 137 ^ 2 ≤ silver_frustration := by
-      rw [div_le_iff h137sq]; nlinarith
-    linarith
+      rw [div_le_iff₀ h137sq]; nlinarith
+    linarith [hb_def]
   -- bracket < 2
   have hb_lt : b < 2 := by
     have h1 : koide_frustration / 137 < 1 := by
       rw [div_lt_one h137]; linarith
     have h2 : 0 ≤ silver_frustration / 137 ^ 2 := div_nonneg hFS_pos.le h137sq.le
-    linarith
+    linarith [hb_def]
   -- log(137) * bracket < 10 < 137
   have h_prod : Real.log 137 * b < 137 := by
     have step1 : Real.log 137 * b < 5 * 2 :=
@@ -196,9 +196,9 @@ theorem alpha_inv_prediction_137_bounds :
 -- These examples show the three ways to interact with the prediction.
 -- ════════════════════════════════════════════════════════════════════════════
 
-/-- Example 1: type-check the prediction formula at Z = 137.
-    Running `#check alpha_inv_prediction (137 : ℝ)` shows:
-      `alpha_inv_prediction 137 : ℝ` -/
+-- Example 1: type-check the prediction formula at Z = 137.
+--   Running `#check alpha_inv_prediction (137 : ℝ)` shows:
+--     `alpha_inv_prediction 137 : ℝ`
 #check alpha_inv_prediction (137 : ℝ)
 
 /-- Example 2: the prediction exceeds the integer approximation (tactic proof). -/
