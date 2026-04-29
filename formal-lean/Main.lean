@@ -34,6 +34,7 @@ import SignVerify
 import MultiMessage
 import FiniteFieldUOV
 import ChemicalBonds
+import ClosurePrediction
 
 set_option maxRecDepth 2000 in
 def printCriticalEigenvalue : IO Unit := do
@@ -1920,6 +1921,86 @@ def printFiniteFieldUOV : IO Unit := do
   IO.println "See FiniteFieldUOV.lean for full proof terms."
   IO.println ""
 
+def printClosurePrediction : IO Unit := do
+  IO.println "════════════════════════════════════════════════════════════════════════"
+  IO.println " ClosurePrediction — Dissociation hierarchy and assembly rule for 1/α"
+  IO.println "════════════════════════════════════════════════════════════════════════"
+  IO.println ""
+  IO.println "The assembly rule is the dissociation hierarchy:"
+  IO.println ""
+  IO.println "  Scale  | Frustration  | Bound strength             | Order | Sign"
+  IO.println "  -------|--------------|----------------------------|-------|-------------"
+  IO.println "  Koide  | FK = 1/3     | weaker (more frustrated)   | 1/Z   | + (tunneling)"
+  IO.println "  Silver | FS = 1−√2/2  | stronger (less frustrated) | 1/Z²  | − (funneling)"
+  IO.println ""
+  IO.println "ChemicalBonds theorem [29] (tunneling_vanishes_implies_unbound):"
+  IO.println "  Im⟨Aψ,ψ⟩ = 0 → ¬ IsHilbertBoundStateConfig A ψ."
+  IO.println "  The tunneling sector Im > 0 is the precise fail point during dissociation."
+  IO.println ""
+  IO.println "Assembly formula:  1/α = Z + (lnZ/Z) · [1 + FK/Z − FS/Z²]"
+  IO.println "At Z = 137: 1/α_pred ≈ 137.035999 — error 9×10⁻⁸ vs CODATA 2022."
+  IO.println ""
+  IO.println "§1    Frustration constants (FK = 1/3, FS = 1−√2/2)"
+  IO.println ""
+  IO.println "  [1]  koide_frustration_eq         : koide_frustration = 1/3"
+  IO.println "  [2]  silver_frustration_eq        : silver_frustration = 1 − √2/2"
+  IO.println ""
+  IO.println "§2    Frustration ordering (FS < FK)"
+  IO.println ""
+  IO.println "  [3]  silver_frustration_lt_koide  : FS < FK  ← KEY THEOREM (zero sorry)"
+  IO.println "         Silver is more tightly bound; Koide dissociates first."
+  IO.println ""
+  IO.println "§3    Positivity of frustration constants"
+  IO.println ""
+  IO.println "  [4]  koide_frustration_pos        : 0 < FK = 1/3"
+  IO.println "  [5]  silver_frustration_pos       : 0 < FS = 1 − √2/2"
+  IO.println ""
+  IO.println "§4    Sign analysis (tunneling = +, funneling = −)"
+  IO.println ""
+  IO.println "  [6]  tunneling_sector_sign_pos    : 0 < Im(μ)  (positive tunneling sector)"
+  IO.println "  [7]  funneling_sector_sign_neg    : Re(μ) < 0  (negative funneling sector)"
+  IO.println ""
+  IO.println "§5    Dissociation sequence (Koide first, Silver later)"
+  IO.println ""
+  IO.println "  [8]  dissociation_ordering        : FS < FK  (Koide → 1/Z, Silver → 1/Z²)"
+  IO.println ""
+  IO.println "§6    Bound strength (frustrations sub-unit)"
+  IO.println ""
+  IO.println "  [9]  koide_frustration_lt_one     : FK = 1/3 < 1"
+  IO.println ""
+  IO.println "§7    ChemicalBonds connection (tunneling as the dissociation fail point)"
+  IO.println ""
+  IO.println "  [10] dissociation_fail_point_connection"
+  IO.println "         Im⟨Aψ,ψ⟩ = 0 → ¬ IsHilbertBoundStateConfig A ψ"
+  IO.println "         Bridges ChemicalBonds [29] into the assembly-rule sign structure."
+  IO.println ""
+  IO.println "§8    Assembly formula definition"
+  IO.println ""
+  IO.println "  def  alpha_inv_prediction Z = Z + (lnZ/Z) · (1 + FK/Z − FS/Z²)"
+  IO.println ""
+  IO.println "§9    Formula structural properties"
+  IO.println ""
+  IO.println "  [11] assembly_formula_correction_positive"
+  IO.println "         : Z > 1 → 0 < (lnZ/Z) · (1 + FK/Z − FS/Z²)"
+  IO.println "         The net correction is positive for all Z > 1."
+  IO.println ""
+  IO.println "§10   Assembly rule (main result)"
+  IO.println ""
+  IO.println "  [12] assembly_rule"
+  IO.println "         : Z > 1 → alpha_inv_prediction Z > Z"
+  IO.println "         The formula exceeds the integer approximation Z."
+  IO.println "         At Z = 137: gives 1/α ≈ 137.036 (CODATA 2022 error: 9×10⁻⁸)."
+  IO.println ""
+  IO.println "12 theorems — all machine-checked, zero sorry."
+  IO.println ""
+  IO.println "Derivation chain: SilverCoherence → ClosurePrediction ← ChemicalBonds"
+  IO.println "  silver_frustration_lt_koide uses koide_below_silver (SilverCoherence §5)."
+  IO.println "  dissociation_fail_point_connection uses tunneling_vanishes_implies_unbound"
+  IO.println "  (ChemicalBonds [29]).  All three files contribute machine-checked theorems."
+  IO.println ""
+  IO.println "See ClosurePrediction.lean for full proof terms."
+  IO.println ""
+
 def main : IO Unit := do
   printCriticalEigenvalue
   printTimeCrystal
@@ -1944,3 +2025,4 @@ def main : IO Unit := do
   printOilVinegar
   printSignVerify
   printFiniteFieldUOV
+  printClosurePrediction
