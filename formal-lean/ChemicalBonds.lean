@@ -202,7 +202,6 @@ theorem bonded_state_energy_gap :
 theorem ground_energy_eq_neg_mu_norm_sq :
     hamiltonianEigenvalue 1 one_ne_zero = -(μ.re ^ 2 + μ.im ^ 2) := by
   rw [hamiltonian_ground_eigenvalue, mu_energy_conserved]
-  norm_num
 
 -- ════════════════════════════════════════════════════════════════════════════
 -- Section 3 — Orbital Amplitude and Eigenverse Balance Conditions
