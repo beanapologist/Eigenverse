@@ -267,7 +267,8 @@ lake exe formalLean  # print theorem summary
 ```
 
 See [github.com/beanapologist/Eigenverse](https://github.com/beanapologist/Eigenverse) for the canonical Eigenverse repository,
-[docs/overview.md](docs/overview.md) for full documentation, and
+[docs/overview.md](docs/overview.md) for full documentation,
+[docs/quantum-wiki.md](docs/quantum-wiki.md) for the **Quantum Wiki** (testing assumptions, reproducible experiments, misconceptions), and
 [CONTRIBUTING.md](CONTRIBUTING.md) to add new theorems.
 
 ---
