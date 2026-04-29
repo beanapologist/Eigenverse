@@ -5,7 +5,7 @@
 **Canonical repository: [github.com/beanapologist/Eigenverse](https://github.com/beanapologist/Eigenverse)**
 
 **Eigenverse** is a fully formal, machine-checked library of theorems whose
-entire content — 656 theorems spanning algebra, geometry, physics, quantum
+entire content — 659 theorems spanning algebra, geometry, physics, quantum
 mechanics, chemistry, cosmology, and cryptography — is the exhaustive
 downstream consequence of exactly **two primitive interaction types** defined
 by their sector assignment in the complex plane:
@@ -97,8 +97,8 @@ observer sector     : Re < 0                 → funneling sector selected
 | **NumericalAlignments** | Tunneling (Im) | μ¹³⁷=μ phase preservation; α from Im-sector closure | 61 |
 | **Cosmology** | Both | Morris–Thorne wormhole (tunneling); cosmic energy budget | 34 |
 | **Morphisms** | Tunneling (Im) | Six families propagate Im-sector structure across domains | 20 |
-| **ClosurePrediction** | Both | `assembly_rule`: dissociation hierarchy → $\alpha^{-1}(Z) > Z$ for $Z > 1$ | 12 |
-| **Total** | | | **656** |
+| **ClosurePrediction** | Both | `assembly_rule`: dissociation hierarchy → $\alpha^{-1}(Z) > Z$ for $Z > 1$; `mu_pow_137_from_8cycle`: $Z\equiv1\pmod{8}$ from $\mu^8=1$ | 15 |
+| **Total** | | | **659** |
 
 ---
 
@@ -126,7 +126,7 @@ formal-lean/                    # Lean 4 source files (the proof engine)
 ├── NumericalAlignments.lean    # Dimensionless derivations §0–§13 (61)
 ├── Cosmology.lean              # Morris–Thorne wormholes + cosmic energy budget (34)
 ├── Morphisms.lean              # Six morphism families: C/Res even-odd, Lyapunov bridge, μ-isometry, orbit, reality (20)
-├── ClosurePrediction.lean      # Dissociation hierarchy + assembly rule for 1/α (12)
+├── ClosurePrediction.lean      # Dissociation hierarchy + assembly rule for 1/α (15)
 └── Main.lean                   # Executable entry-point
 
 src/                            # Lean modules organised by topic
@@ -166,7 +166,7 @@ tests/                          # Cross-module consistency checks
 ```bash
 cd formal-lean/
 lake exe cache get   # download pre-built Mathlib cache (~5 min)
-lake build           # verify all 656 theorems, 0 sorry
+lake build           # verify all 659 theorems, 0 sorry
 lake exe formalLean  # print summary of verified theorems
 ```
 

@@ -114,7 +114,7 @@ integer satisfying all three conditions simultaneously:
 | Condition | Statement | Lean theorem |
 |-----------|-----------|--------------|
 | (P) Primality | $137$ is prime | `prime_137` |
-| (M) Phase preservation | $137 \equiv 1 \pmod{8}$, so $\mu^{137} = \mu$ | `mu_pow_137_eq_mu` |
+| (M) Phase preservation | $137 \equiv 1 \pmod{8}$, so $\mu^{137} = \mu$ | `mu_pow_137_from_8cycle` (ClosurePrediction §11) |
 | (C) Unit closure | $137 \cdot \alpha_\text{FS} = 1$ | `z137_prime_mod8_closure` |
 
 The phase-preservation condition (M) is the link to the 8-fold symmetry: since
@@ -123,7 +123,26 @@ application.  Condition (C) ties the structural integer $Z$ back to $\alpha$:
 the unique positive coupling such that $|V_Z(137, \alpha)| = 1$ at the Dirac
 criticality threshold.
 
-**Lean theorem** (NumericalAlignments.lean §13):
+**In-module derivation** (ClosurePrediction.lean §11) — the integer constraint
+is proved *directly from* $\mu^8 = 1$ within the same file, without importing
+from `NumericalAlignments`:
+
+```lean
+-- [13] General phase preservation from the 8-cycle
+theorem phase_preserved_of_mod8 (Z : ℕ) (h8 : μ ^ 8 = 1) (hmod : Z % 8 = 1) :
+    μ ^ Z = μ := by
+  have hdiv : Z = 8 * (Z / 8) + 1 := by omega
+  rw [hdiv, pow_add, pow_mul, h8, one_pow, pow_one, one_mul]
+
+-- [14] The integer constraint for Z = 137
+theorem z137_mod8 : 137 % 8 = 1 := by decide
+
+-- [15] μ^137 = μ  derived in-module from μ^8 = 1
+theorem mu_pow_137_from_8cycle : μ ^ 137 = μ :=
+  phase_preserved_of_mod8 137 mu_pow_eight z137_mod8
+```
+
+**Lean theorem** (NumericalAlignments.lean §13) — the full triple uniqueness:
 
 ```lean
 theorem z137_prime_mod8_closure :
@@ -282,10 +301,13 @@ BalanceHypothesis.lean
             ├─ dissociation_ordering           FS < FK (hierarchy)
             ├─ dissociation_fail_point_connection  bridge to ChemicalBonds [29]
             ├─ assembly_formula_correction_positive  correction > 0 for Z > 1
-            └─ assembly_rule                   α⁻¹(Z) > Z for Z > 1
+            ├─ assembly_rule                   α⁻¹(Z) > Z for Z > 1
+            ├─ phase_preserved_of_mod8         μ^8=1 ∧ Z%8=1 → μ^Z=μ  (general)
+            ├─ z137_mod8                       137 % 8 = 1  (by decide)
+            └─ mu_pow_137_from_8cycle          μ^137=μ derived in-module from μ^8=1
 ```
 
-All 12 theorems in `ClosurePrediction.lean` are machine-checked.  Zero `sorry`.
+All 15 theorems in `ClosurePrediction.lean` are machine-checked.  Zero `sorry`.
 
 ---
 
