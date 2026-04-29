@@ -34,7 +34,7 @@ lean_lib «FormalLean» where
   roots := #[`CriticalEigenvalue, `TimeCrystal, `SpaceTime, `Turbulence, `FineStructure,
              `ParticleMass, `OhmTriality, `SilverCoherence, `KernelAxle, `ForwardClassicalTime,
              `SpeedOfLight, `GravityQuantumDuality, `Quantization, `Chemistry, `BidirectionalTime,
-             `BalanceHypothesis, `NumericalAlignments, `Cosmology, `Morphisms, `OilVinegar,
+             `BalanceHypothesis, `BalanceInstances, `NumericalAlignments, `Cosmology, `Morphisms, `OilVinegar,
              `FourSector, `Observer, `SignVerify, `MultiMessage, `FiniteFieldUOV]
 
 /-- Executable entry point that prints a summary of verified theorems. -/
