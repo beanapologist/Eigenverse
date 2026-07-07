@@ -584,4 +584,30 @@ theorem reality_unique (z : ℂ)
   · rw [hre, mu_re_is_neg_eta]
   · rw [him, mu_im_is_eta]
 
+/-- **Geometric uniqueness of μ**.
+    The unit-circle constraint `z.re^2 + z.im^2 = 1` and directed-balance line
+    `-z.re = z.im` force `z` to lie on the intersection of:
+      • the circle `x^2 + y^2 = 1`,
+      • the line `y = -x`,
+      • and the second quadrant (`x < 0`).
+    This intersection is the single point `(-η, η) = μ`. -/
+theorem reality_unique_geometric (z : ℂ)
+    (hQ2_re  : z.re < 0)
+    (hbal    : -z.re = z.im)
+    (henergy : z.re ^ 2 + z.im ^ 2 = 1) :
+    z = μ := by
+  have him_pos : 0 < z.im := by
+    have hneg_re_pos : 0 < -z.re := by linarith
+    linarith [hbal, hneg_re_pos]
+  have hsq : z.re ^ 2 = z.im ^ 2 := by
+    have hsq' := congrArg (fun t : ℝ => t ^ 2) hbal
+    simpa [neg_sq] using hsq'
+  have htwice : 2 * z.im ^ 2 = 1 := by
+    linarith [henergy, hsq]
+  have him : z.im = η := (balance_eq_iff_eta z.im him_pos).1 htwice
+  have hre : z.re = -η := by linarith [hbal, him]
+  apply Complex.ext
+  · rw [hre, mu_re_is_neg_eta]
+  · rw [him, mu_im_is_eta]
+
 end -- noncomputable section
